@@ -1,0 +1,31 @@
+version: '2.1'
+
+services:
+
+  dx-db:
+    container_name: dx-db
+    build: ./project/db
+    ports:
+        - 5435:5432  # expose ports - HOST:CONTAINER
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: exit 0
+
+  dx-service:
+    container_name: dx-service
+    build: ./
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - 5001:5000 # expose ports - HOST:CONTAINER
+    environment:
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@dx-db:5432/dx_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@dx-db:5432/dx_test
+    depends_on:
+      dx-db:
+        condition: service_healthy
+    links:
+      - dx-db

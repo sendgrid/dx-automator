@@ -1,0 +1,127 @@
+gists:
+  v3-hello-email.js: '069d788aefb7853706f424cbdfd7ee3c'
+  v3-hello-email.cs: '96491eb186b73b5c00756ad9195f3a0b'
+  v3-hello-email.java: '78d8385f823e0d69580644cc6ca97101'
+  v3-hello-email.php: 'bd1b8a0b2adce2acf72aa8ecb82b51a5'
+  v3-hello-email.go: '516d64061098eb21af72971b8a63cc4a'
+  v3-hello-email.py: 'fb86b16be981e203e3d08e67d7863e46'
+  v3-hello-email.rb: '4be3a76b716e16c274c2ad0f6a99e9b4'
+  
+  nodejs-library-requirements.txt: 'f4d558a73cb70f98a78e7514d314ed6d'
+  python-library-requirements.txt: '84f7a4adf90e45879bc78d6a33db004d'
+  go-library-requirements.txt: '58fac202421268c8569803b0612baf9a'
+  php-library-requirements.txt: 'a803f8849237904edc7ea085d43e34d1'
+  ruby-library-requirements.txt: 'c6d1bd955429c8ad406b9f20d8932775'
+  csharp-library-requirements.txt: 'd09e7780bafadf0dab6fb5e99d88ce58'
+  java-library-requirements.txt: '327cb8293d0798de392c9fb01ed58974'
+  
+  create-environment-variable-cli.txt: 'bc83b49e3729a1801b027ba0ec651cd1'
+  
+  php-composer-installation.txt: 'a9309a28b2253d44f75ac1a65ad2baa5'
+  nodejs-installation.txt: 'dc800250caccb1349479e399ecd15cff'
+  ruby-installation-1-of-3.txt: 'd6364fc76be87c76b59cce7c1fc3c9d3'
+  ruby-installation-2-of-3.txt: '56d3ffab50f977e3962b842abd36a614'
+  ruby-installation-3-of-3.txt: '2580350091fc2b5c878991828c69f284'
+  python-installation.txt: '7ef4c34fcd045439c364c450c37ce231'
+  go-installation.txt: '8c16d70eae2490c93b07d82d21b02757'
+  csharp-installation.txt: 'bdc2a68a56ecae8532ff106de42b451f'
+  java-installation.txt: '511bcd12700cfd2264cf4576e15792c1'
+  build.gradle: '94a7cc4fb89df4e91a0978cd47ae1a67'
+
+hipchat:
+  channel: 139903
+
+kotis:
+  sku_water_bottle_black: 100019702
+  sku_unfitted_tees_blue_s: 100019703
+  sku_unfitted_tees_blue_m: 100019704
+  sku_unfitted_tees_blue_l: 100019705
+  sku_unfitted_tees_blue_xl: 100019706
+  sku_unfitted_tees_blue_xxl: 100019707
+  sku_fitted_tees_blue_s: 100019708
+  sku_fitted_tees_blue_m: 100019709
+  sku_fitted_tees_blue_l: 100019710
+  sku_fitted_tees_blue_xl: 100019711
+  sku_sticker_2_inches: 100029505
+  sku_sticker_4_inches: 100029504
+  sku_contributor_pins: 100043295
+  sku_hacker_pins: 100043296
+  sku_blogger_pins: 100043297
+  sku_sendgrid_pens: 100045399
+  sku_hacktoberfest_sticker: 100105240
+  sku_unfitted_tees_hacktoberfest_charcoal_xs: 100105242
+  sku_unfitted_tees_hacktoberfest_charcoal_s: 100105243
+  sku_unfitted_tees_hacktoberfest_charcoal_m: 100105244
+  sku_unfitted_tees_hacktoberfest_charcoal_l: 100105245
+  sku_unfitted_tees_hacktoberfest_charcoal_xl: 100105246
+  sku_unfitted_tees_hacktoberfest_charcoal_xxl: 100105247
+  sku_unfitted_tees_hacktoberfest_charcoal_xxxl: 100105248
+  ship_ups_ground: 'UPS Ground'
+  ship_ups_3_day_select: 'UPS 3 Day Select'
+  ship_ups_2nd_day_air: 'UPS 2nd Day Air'
+  ship_ups_2nd_day_air_am: 'UPS 2nd Day Air AM'
+  ship_ups_next_day_air: 'UPS Next Day Air'
+  ship_usps: 'USPS'
+  ship_ups_worldwide_expedited: 'UPS Worldwide Expedited'
+  ship_ups_worldwide_saver: 'UPS Worldwide Saver'
+  ship_ups_worldwide_express: 'UPS Worldwide Express'
+  ship_ups_worldwide_express_plus: 'UPS Worldwide Express Plus'
+  ship_will_call: 'Will Call'
+  ship_lowest_possible_rate: 'ship via lowest possible rate'
+
+newsletters:
+  sender_id: 151161  # Found by API (or NewsletterDebugger.get_senders)
+  subject: "New release in {repo_name}: {release_name}"
+  title: "Release {release_name} in {repo_name}"
+  template_names: 
+    # filenames for templates in app/templates folder
+    html_content: 'newsletter.html'
+    plain_content: 'newsletter_plain_text.txt'
+  repository_ids:
+    # Each repository is identified by its unique repository ID, found via API.
+    # For instance, 'id' fields in https://api.github.com/users/sendgrid/repos
+    dummyrepo: 96131094
+    java: 12328480
+    go: 12774055
+    ruby: 20687208
+    python: 3546794
+    php: 3348788
+    nodejs: 3114742
+    csharp: 3114746
+    oai: 43522136
+  contact_list_test_ids: [1710159]  # optional.  all newsletters also send here
+  contact_list_ids:
+    # Found in URL after clicking on a contact list in Campaigns (or use API)
+    96131094: [1710159] # dummyrepo
+    3114746: [1710084]  # csharp
+    12774055: [1710087] # go
+    12328480: [1710090] # java
+    3114742: [1710092]  # nodejs
+    43522136: [1710094] # oai
+    3348788: [1710098]  # php
+    3546794: [1710101]  # python
+    20687208: [1710104] # ruby
+  privy_account_id: 'F8A1A3D72B0B8C8C9AAB9D40'  # found in "Privy Code" section
+  privy_form_ids: 
+    # From clicking "get embed code" on a form in Privy editor
+    multi: 255216 # multi-signup
+    96131094: 252710 # dummyrepo
+    12328480: 255173 # java
+    12774055: 255175 # go
+    20687208: 255180 # ruby
+    3546794: 255187  # python
+    3348788: 255190  # php
+    3114742: 255191  # nodejs
+    3114746: 255192  # csharp
+    43522136: 255193 # oai
+  suppression_group_ids:
+    # Found in Unsubscribe Groups section in Campaigns (or use API)
+    96131094: 2921 # dummyrepo
+    3114746:  2905 # csharp
+    12774055: 2907 # go
+    12328480: 2909 # java
+    3114742:  2911 # nodejs
+    43522136: 2913 # oai
+    3348788:  2915 # php
+    3546794:  2917 # python
+    20687208: 2919 # ruby
