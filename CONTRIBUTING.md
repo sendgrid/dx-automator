@@ -12,7 +12,7 @@ Hello! Thank you for choosing to help contribute to one of the SendGrid open sou
 - [Code Reviews](#code-reviews)
 
 <a name="roadmap"></a>
-We use [Milestones](https://github.com/sendgrid/sendgrid-python/milestones) to help define current roadmaps, please feel free to grab an issue from the current milestone. Please indicate that you have begun work on it to avoid collisions. Once a PR is made, community review, comments, suggestions and additional PRs are welcomed and encouraged.
+We use [Milestones](https://github.com/sendgrid/dx-automator/milestones) to help define current roadmaps, please feel free to grab an issue from the current milestone. Please indicate that you have begun work on it to avoid collisions. Once a PR is made, community review, comments, suggestions and additional PRs are welcomed and encouraged.
 
 <a name="cla"></a>
 ## CLAs and CCLAs
@@ -52,87 +52,35 @@ Before you decide to create a new issue, please try the following:
 
 ### Please use our Bug Report Template
 
-In order to make the process easier, we've included a [sample bug report template]((https://github.com/sendgrid/sendgrid-python/.github/ISSUE_TEMPLATE)) (borrowed from [Ghost](https://github.com/TryGhost/Ghost/)). The template uses [GitHub flavored markdown](https://help.github.com/articles/github-flavored-markdown/) for formatting.
+In order to make the process easier, we've included a [sample bug report template]((https://github.com/sendgrid/dx-automator/.github/ISSUE_TEMPLATE)) (borrowed from [Ghost](https://github.com/TryGhost/Ghost/)). The template uses [GitHub flavored markdown](https://help.github.com/articles/github-flavored-markdown/) for formatting.
 
 <a name="improvements-to-the-codebase"></a>
 ## Improvements to the Codebase
 
-We welcome direct contributions to the sendgrid-python code base. Thank you!
+We welcome direct contributions to the dx-automator code base. Thank you!
+
+### How we use branches
+All PRs and changes will be made to the `develop` branch. Once we have that branch stable, we will make merges to `master` and update the package managers.
 
 ### Development Environment ###
 
 #### Using Docker ####
-You can use our Docker image to avoid setting up the development environment yourself.  See [USAGE.md](https://github.com/sendgrid/sendgrid-python/blob/master/docker/USAGE.md).
+You can use our Docker image to avoid setting up the development environment yourself.  See [USAGE.md](https://github.com/sendgrid/dx-automator/blob/master/docker/USAGE.md).
 
 #### Install and Run Locally ####
 
 ##### Prerequisites #####
 
-- Python 2.6 through 3.6
-- [python_http_client](https://github.com/sendgrid/python-http-client)
+- Python 3.6
+
+* please see the [requirements.txt](./requirements.txt) file *
 
 ##### Initial setup: #####
 
 ```bash
-git clone https://github.com/sendgrid/sendgrid-python.git
-cd sendgrid-python
+git clone https://github.com/sendgrid/dx-automator.git
+cd dx-automator
 ```
-
-## Environment Variables
-
-First, get your free SendGrid account [here](https://sendgrid.com/free?source=sendgrid-python).
-
-Next, update your environment with your [SENDGRID_API_KEY](https://app.sendgrid.com/settings/api_keys).
-
-```bash
-echo "export SENDGRID_API_KEY='YOUR_API_KEY'" > sendgrid.env
-echo "sendgrid.env" >> .gitignore
-source ./sendgrid.env
-```
-
-##### Execute: #####
-
-See the [examples folder](https://github.com/sendgrid/sendgrid-python/tree/master/examples) to get started quickly.
-
-If testing from the root directory of this repo, create a new file (e.g. test.py) and replace `import sendgrid` with `from sendgrid import *`
-
-<a name="understanding-the-codebase"></a>
-## Understanding the Code Base
-
-**/examples**
-
-Working examples that demonstrate usage.
-
-**/tests**
-
-We currently have unit tests for this project. 
-
-**/logs**
-
-docker-compose logs -f dx-service
-
-<a name="testing"></a>
-## Testing
-
-All PRs require passing tests before the PR will be reviewed.
-
-All test files are in the [`tests`](./project/tests) directory.
-
-In Docker: 
-
-```bash
-docker-compose run dx-service python3 manage.py test
-```
-
-Locally or on a server:
-
-```bash
-python manage.py test
-```
-
-### Testing Multiple Versions of Python
-
-All PRs require passing tests before the PR will be reviewed.
 
 #### Install and Execute: ####
 
@@ -160,18 +108,18 @@ Please run your code through:
 
    ```bash
    # Clone your fork of the repo into the current directory
-   git clone https://github.com/sendgrid/sendgrid-python
+   git clone https://github.com/sendgrid/dx-automator
    # Navigate to the newly cloned directory
-   cd sendgrid-python
+   cd dx-automator
    # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/sendgrid/sendgrid-python
+   git remote add upstream https://github.com/sendgrid/dx-automator
    ```
 
 2. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
-   git checkout <dev-branch>
-   git pull upstream <dev-branch>
+   git checkout develop
+   git pull upstream develop
    ```
 
 3. Create a new topic branch (off the main project development branch) to
