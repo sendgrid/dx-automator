@@ -3,8 +3,8 @@ from github3 import login
 
 github_blueprint = Blueprint('github', __name__)
 
-@github_blueprint.route('/is_a_member/<username>', methods=['GET'])
-def is_a_member(username):
+@github_blueprint.route('/is_member/<username>', methods=['GET'])
+def is_member(username):
     """Check if user is a member of your GitHub organization"""
     github_token = current_app.config['GITHUB_TOKEN']
     github = login(token=github_token)
