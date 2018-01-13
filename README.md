@@ -49,8 +49,8 @@ eval "$(docker-machine env dx)"
 
 Build the docker container
 ```bash
-docker-compose build
-docker-compose up -d
+docker-compose -f docker-compose-dev.yml build
+docker-compose -f docker-compose-dev.yml up -d
 ```
 
 Get the IP of your docker container and curl to make sure it's running
@@ -61,8 +61,8 @@ curl http://$DX_IP:5001/ping
 
 Set up the database
 ```bash
-docker-compose run dx-service python3 manage.py recreate_db
-docker-compose run dx-service python3 manage.py seed_db
+docker-compose run -f docker-compose-dev.yml dx-service python3 manage.py recreate_db
+docker-compose run -f docker-compose-dev.yml dx-service python3 manage.py seed_db
 ```
 
 Validate that the items are seeded into the database
@@ -72,7 +72,7 @@ curl http://$DX_IP:5001/items
 
 Run the tests to make sure everything is working! 
 ```bash
-docker-compose run dx-service python3 manage.py test
+docker-compose -f docker-compose-dev.yml run dx-service python3 manage.py test
 ```
 
 ### Your Server or On your machine
