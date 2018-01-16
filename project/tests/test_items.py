@@ -214,3 +214,64 @@ class TestItemService(BaseTestCase):
             self.assertTrue('maintainer' in data['data']['items'][1])
 
             self.assertIn('success', data['status'])
+
+
+    def test_edit_item(self):
+        """Ensure we can edit an item."""
+        with self.client:
+            subject = 'A editable item'
+            url = url_issue_1
+            response = self.client.post(
+                '/items',
+                data=json.dumps(dict(
+                    subject=subject,
+                    url=url,
+                    requestor='a_github_user'
+                )),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertIn('{0} was added!'.format(subject), data['message'])
+            self.assertIn('success', data['status'])
+
+            # Attempt to edit the subject and url
+            subject = 'A edited item'
+            url = url_issue_2
+            github_username = 'a_github_user'
+            response = self.client.patch(
+                '/items/{0}'.format(data['data']['id']),
+                data=json.dumps(dict(
+                    subject=subject,
+                    url=url,
+                    requestor=github_username
+                )),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertIn(subject, data['data']['subject'])
+            self.assertIn(url_issue_2, data['data']['url'])
+            self.assertIn(github_username, data['data']['requestor'])
+
+            # Verify the data was stored correctly
+            response = self.client.get('/items/{0}'.format(data['data']['id']))
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(subject, data['data']['subject'])
+            self.assertIn(url_issue_2, data['data']['url'])
+            self.assertIn('success', data['status'])
+
+    def test_items_equal(self):
+        """Ensure we can detect two equal and unequal items."""
+        item_1 = add_item('A test item to be added',
+                    url_issue_1,
+                    'a_github_user')
+        item_2 = add_item('Another test item to be added',
+                    url_issue_2,
+                    'a_2nd_github_user')
+        self.assertEqual(False, Item.items_equal(item_1, item_2))
+        item_3 = add_item('A test item to be added',
+                    url_issue_1,
+                    'a_github_user')
+        self.assertEqual(True, Item.items_equal(item_1, item_3))

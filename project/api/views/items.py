@@ -1,3 +1,5 @@
+import copy
+
 from flask import Blueprint, jsonify, request
 
 from project.api.models import Item
@@ -145,9 +147,8 @@ def get_all_items():
     }
     return jsonify(response_object), 200
 
-
 @items_blueprint.route('/items/<item_id>', methods=['PATCH'])
-def edit_single_item():
+def edit_single_item(item_id):
     """Edit a single todo item"""
     post_data = request.get_json()
     if not post_data:
@@ -159,14 +160,14 @@ def edit_single_item():
 
     try:
         item = Item.query.filter_by(id=int(item_id)).first()
+        item_orig = copy.copy(item)
         if not item:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry. That github item already exists.'
+                'message': 'Sorry. That item does not exist.'
             }
             return jsonify(response_object), 400
         else:
-            item_orig = item.copy()
             subject = post_data.get('subject')
             status = post_data.get('status')
             url = post_data.get('url')
@@ -188,7 +189,7 @@ def edit_single_item():
             if maintainer:
                 item.maintainer = maintainer
 
-            if item_orig != item:
+            if Item.items_equal(item, item_orig) is False:
                 db.session.commit()
                 response_object = {
                     'status': 'success',

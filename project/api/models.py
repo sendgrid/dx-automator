@@ -45,3 +45,20 @@ class Item(db.Model):
         self.requestor = requestor
         self.due_date = due_date
         self.status = 1
+    
+    # Determine if two Items are equal
+    @staticmethod
+    def items_equal(item_1, item_2):
+        if item_1.subject != item_2.subject:
+            return False
+        if item_1.status != item_2.status:
+            return False
+        if item_1.url != item_2.url:
+            return False
+        if item_1.requestor != item_2.requestor:
+            return False
+        if item_1.maintainer != item_2.maintainer:
+            return False
+        if item_1.due_date != item_2.due_date:
+            return False
+        return True
