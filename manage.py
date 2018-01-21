@@ -29,7 +29,7 @@ import unittest
 
 from flask_script import Manager
 from project import create_app, db
-from project.api.models import Item, Item_Status
+from project.api.models import Item, ItemStatus
 
 app = create_app()
 manager = Manager(app)
@@ -58,84 +58,84 @@ def seed_db():
     """Seeds the database."""
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Intake",
             value="1000000000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Needs PR Deploy",
             value="60000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Needs PR Merge",
             value="55000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Waiting for CLA",
             value="50000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Waiting for feedback",
             value="50000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Waiting for changes",
             value="50000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Waiting for build to run",
             value="50000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Needs PR Review",
             value="49000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="In Progress",
             value="20000",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Completed",
             value="-1",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Deferred",
             value="-1",
             value_type="multiplier"
             ))
 
     db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Solved",
             value="-1",
             value_type="multiplier"

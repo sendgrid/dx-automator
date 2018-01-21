@@ -6,7 +6,7 @@ import unittest
 
 from project.tests.base import BaseTestCase
 from project import db
-from project.api.models import Item, Item_Status
+from project.api.models import Item, ItemStatus
 
 url_issue_1 = 'https://github.com/SendGridDX/testing-playground/issues/1'
 url_issue_2 = 'https://github.com/SendGridDX/testing-playground/issues/2'
@@ -25,7 +25,7 @@ class TestItemService(BaseTestCase):
     def config(self):
         """Make sure the foreign key is there!"""
         db.session.add(
-        Item_Status(
+        ItemStatus(
             name="Intake",
             value="1000000000",
             value_type="multiplier"
