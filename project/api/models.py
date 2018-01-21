@@ -6,7 +6,7 @@ import datetime
 from project import db
 
 
-class Item_Status(db.Model):
+class ItemStatus(db.Model):
     __tablename__ = "item_status"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(128), nullable=False)
@@ -21,6 +21,17 @@ class Item_Status(db.Model):
             self.value_type = value_type
             self.created_at = datetime.datetime.utcnow()
             self.updated_at = datetime.datetime.utcnow()
+
+    # Determine if two Items Status' are equal
+    @staticmethod
+    def items_equal(item_status_1, item_status_2):
+        if item_status_1.name!= item_status_2.name:
+            return False
+        if item_status_1.value != item_status_2.value:
+            return False
+        if item_status_1.value_type != item_status_2.value_type:
+            return False
+        return True
 
 
 class Item(db.Model):
