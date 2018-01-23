@@ -9,6 +9,7 @@ from sqlalchemy import exc
 
 items_statuses_blueprint = Blueprint('items_statuses', __name__)
 
+
 @items_statuses_blueprint.route('/item_statuses', methods=['POST'])
 def add_item_status():
     post_data = request.get_json()
@@ -131,6 +132,7 @@ def get_all_item_statuses():
     }
     return jsonify(response_object), 200
 
+
 @items_statuses_blueprint.route('/item_statuses/<item_status_id>', methods=['PATCH'])
 def edit_single_item_status(item_status_id):
     """Edit a single item status"""
@@ -195,6 +197,22 @@ def edit_single_item_status(item_status_id):
                 }
                 return jsonify(response_object), 304
 
+    except exc.IntegrityError as e:
+        db.session.rollback()
+        response_object = {
+            'status': 'fail',
+            'message': 'Invalid payload.'
+        }
+        return jsonify(response_object), 400
+
+
+@items_statuses_blueprint.route('/item_statuses/<item_status_id>', methods=['DELETE'])
+def delete_single_item_status(item_status_id):
+    try:
+        item_status = ItemStatus.query.filter_by(id=int(item_status_id)).first()
+        db.session.delete(item_status)
+        db.session.commit()
+        return '', 204
     except exc.IntegrityError as e:
         db.session.rollback()
         response_object = {
