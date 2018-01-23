@@ -10,6 +10,7 @@ from project.api.models import ItemStatus
 
 status_1 = 'status_1'
 status_2 = 'status_2'
+status_3 = 'status_3'
 
 def add_item_status(name, value, value_type):
     item_status = ItemStatus(name=name, value=value, value_type=value_type)
@@ -226,3 +227,33 @@ class TestItemStatusService(BaseTestCase):
             self.assertEqual(value, data['data']['value'])
             self.assertIn(value_type, data['data']['value_type'])
             self.assertIn('success', data['status'])
+
+    def test_delete_item_status(self):
+        """Ensure we can delete an item's status."""
+        with self.client:
+            name = status_3
+            value = 5
+            value_type = 'Multiplier'
+
+            response = self.client.post(
+                '/item_statuses',
+                data=json.dumps(dict(
+                    name=name,
+                    value=value,
+                    value_type=value_type
+                )),
+                content_type='application/json',
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertIn('{0} was added!'.format(name), data['message'])
+            self.assertIn('success', data['status'])
+
+            # Attempt to delete the item status
+            response = self.client.delete('/item_statuses/{0}'.format(data['data']['id']))  
+            self.assertEqual(response.status_code, 204)
+
+            # Verify the item status no longer exists
+            response = self.client.get('/item_statuses/{0}'.format(data['data']['id']))
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 404)        
