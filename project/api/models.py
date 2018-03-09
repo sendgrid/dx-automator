@@ -73,3 +73,19 @@ class Item(db.Model):
         if item_1.due_date != item_2.due_date:
             return False
         return True
+
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    github_username = db.Column(db.String(128), nullable=False)
+    email_address = db.Column(db.String(128), nullable=False)
+    twitter_username = db.Column(db.String(128), nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    updated_at = db.Column(db.DateTime, nullable=False, onupdate=datetime.datetime.now)
+
+    def __init__(self, github_username, email_address, twitter_username=None):
+        self.github_username = github_username
+        self.email_address = email_address
+        self.twitter_username = twitter_username
+        self.created_at = datetime.datetime.utcnow()
+        self.updated_at = datetime.datetime.utcnow()
