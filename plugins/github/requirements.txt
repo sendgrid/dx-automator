@@ -1,6 +1,0 @@
-Flask==0.12.1
-Flask-Script==2.0.5
-Flask-Testing==0.6.2
-github3.py==0.9.5
-python-http-client==2.2.1
-gunicorn==19.7.1
