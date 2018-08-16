@@ -93,3 +93,5 @@ client_secret.json
 temp.json
 
 awscli-bundle*
+
+.DS_Store
