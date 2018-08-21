@@ -36,9 +36,14 @@ services:
     build: ./services/nginx/
     restart: always
     ports:
-      - 80:80
+      - 81:81
     depends_on:
       - users
     links:
       - users
-  
+
+  looker:
+    container_name: looker
+    build: ./services/looker
+    ports:
+      - 82:82
