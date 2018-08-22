@@ -96,3 +96,5 @@ awscli-bundle*
 
 .DS_Store
 .vscode
+
+/services/client-react/node_modules
