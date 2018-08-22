@@ -95,3 +95,4 @@ temp.json
 awscli-bundle*
 
 .DS_Store
+.vscode
