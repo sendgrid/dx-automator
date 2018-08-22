@@ -1,0 +1,33 @@
+version: '3.6'
+
+services:
+  looker:
+    build:
+    context: .
+    dockerfile: Dockerfile-prod
+    expose:
+      - "5000"
+    environment:
+    - FLASK_ENV=production
+    - APP_SETTINGS=project.config.ProductionConfig
+    - DATABASE_URL=postgres://postgres:postgres@looker-db:5432/looker_dev
+    - DATABASE_TEST_URL=postgres://postgres:postgres@looker-db:5432/looker_test
+    depends_on:
+    - looker-db
+
+  looker-db:
+    build: ./project/db
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_LOOKER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  nginx:
+    build: ./nginx
+    dockerfile: Dockerfile-prod
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - looker
