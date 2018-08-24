@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PageHeader, PageHeading } from "@sendgrid/ui-components";
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {

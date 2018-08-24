@@ -2,26 +2,26 @@ version: '3.3'
 
 services:
 
-  users:
-    container_name: users
+  tasks:
+    container_name: tasks
     build:
-      context: ./services/users
+      context: ./services/tasks
       dockerfile: Dockerfile-prod
     expose:
       - '5000'
     environment:
       - APP_SETTINGS=project.config.ProductionConfig
-      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_prod
-      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      - DATABASE_URL=postgres://postgres:postgres@tasks-db:5432/tasks_prod
+      - DATABASE_TEST_URL=postgres://postgres:postgres@tasks-db:5432/tasks_test
     depends_on:
-      - users-db
+      - tasks-db
     links:
-      - users-db
+      - tasks-db
 
-  users-db:
-    container_name: users-db
+  tasks-db:
+    container_name: tasks-db
     build:
-      context: ./services/users/project/db
+      context: ./services/tasks/project/db
       dockerfile: Dockerfile
     ports:
       - 5435:5432
@@ -36,6 +36,6 @@ services:
     ports:
       - 80:80
     depends_on:
-      - users
+      - tasks
     links:
-      - users
+      - tasks

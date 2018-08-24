@@ -2,28 +2,28 @@ version: '3.3'
 
 services:
 
-  users:
-    container_name: users
+  tasks-service:
+    container_name: tasks-service
     build:
-      context: ./services/users
+      context: ./services/tasks
       dockerfile: Dockerfile-dev
     volumes:
-      - './services/users:/usr/src/app'
+      - './services/tasks:/usr/src/app'
     ports:
       - 5001:5000
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
-      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
-      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      - DATABASE_URL=postgres://postgres:postgres@tasks-db:5432/tasks_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@tasks-db:5432/tasks_test
     depends_on:
-      - users-db
+      - tasks-db
     links:
-      - users-db
+      - tasks-db
 
-  users-db:
-    container_name: users-db
+  tasks-db:
+    container_name: tasks-db
     build:
-      context: ./services/users/project/db
+      context: ./services/tasks/project/db
       dockerfile: Dockerfile
     ports:
       - 5435:5432
@@ -31,14 +31,35 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  nginx:
-    container_name: nginx
-    build: ./services/nginx/
-    restart: always
+  # nginx:
+  #   container_name: nginx
+  #   build: ./services/nginx/
+  #   restart: always
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - tasks-service
+  #   links:
+  #     - tasks-service
+
+  client:
+    container_name: client-react
+    build:
+      context: ./services/client-react
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/client-react:/usr/src/app'
     ports:
-      - 80:80
+      - '3000:3000' # expose ports - HOST:CONTAINER
+    environment:
+      - NODE_ENV=development
+      # - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+      # - REACT_APP_API_GATEWAY_URL=${REACT_APP_API_GATEWAY_URL}
+      # - REACT_APP_EXERCISES_SERVICE_URL=${REACT_APP_EXERCISES_SERVICE_URL}
+      # - REACT_APP_SCORES_SERVICE_URL=${REACT_APP_SCORES_SERVICE_URL}
+      # - CHOKIDAR_USEPOLLING=true
     depends_on:
-      - users
+      - tasks-service
     links:
-      - users
+      - tasks-service
   

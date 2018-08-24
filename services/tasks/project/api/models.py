@@ -11,6 +11,21 @@ class Task(db.Model):
     twitter_username = db.Column(db.String(128), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False, onupdate=datetime.now)
+    link = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(128), nullable=False)
+    due_date = db.Column(db.DateTime, nullable=True)
+    task_type = db.Column(db.String(128), nullable=False)
+    category = db.Column(db.String(128), nullable=False)
+    maintainer = db.Column(db.String(128), nullable=True)
+    language = db.Column(db.String(128), nullable=True)
+    customers_count = db.Column(db.Integer, nullable=False)
+    estimated_custmomer_points = db.Column(db.Integer, nullable=True)
+    estimated_points = db.Column(db.Integer, nullable=True)
+    impact = db.Column(db.Integer, nullable=True)
+    confidence = db.Column(db.String(128), nullable=False)
+    reach = db.Column(db.Integer, nullable=False)
+    effort = db.Column(db.String(128), nullable=True)
+    date_multiplier = db.Column(db.Integer, nullable=False)
 
     def __init__(self, creator, link, title="", due_date=None, task_type="", category="",
     maintainer=None, language=None, customers_count=1, estimated_custmomer_points=None,

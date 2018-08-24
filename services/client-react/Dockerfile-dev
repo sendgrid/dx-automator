@@ -1,5 +1,4 @@
-# base image
-FROM node:9.6.1
+FROM node:latest
 
 # set working directory
 RUN mkdir /usr/src/app
@@ -9,10 +8,13 @@ WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 # install and cache app dependencies
-COPY package.json /usr/src/app/package.json
+ADD package.json /usr/src/app/package.json
 RUN npm install @sendgrid/ui-components --silent
 RUN npm install --silent
-RUN npm install react-scripts@1.1.1 -g --silent
+RUN npm install react-scripts@1.0.15 -g --silent
+
+# add app
+# ADD . /usr/src/app
 
 # start app
 CMD ["npm", "start"]

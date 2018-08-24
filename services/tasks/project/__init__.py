@@ -1,15 +1,8 @@
-# tasks/__init__.py
+# services/tasks/project/__init__.py
 
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
-# integrate the app
-app = Flask(__name__)
-
-# set config
-app_settings = os.getenv('APP_SETTINGS')
-app.config.from_object(app_settings)
 
 # instantiate the db
 db = SQLAlchemy(app)
