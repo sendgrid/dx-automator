@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sendgrid/ui-components": "^1.5.11",
     "react": "^16.4.2",
+    "react-animate-height": "^2.0.4",
     "react-dom": "^16.4.2",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "react-select": "^2.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
