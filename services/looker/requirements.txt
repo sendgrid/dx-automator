@@ -2,7 +2,11 @@ Flask==1.0.2
 Flask-SQLAlchemy==2.3.2
 psycopg2==2.7.5
 Flask-Testing==0.7.1
+<<<<<<< HEAD
 coverage==4.5.1
 flake8==3.5.0
 flask-debugtoolbar==0.10.1
 requests==2.19.1
+=======
+gunicorn==19.9.0
+>>>>>>> parent of 935efdf... working users service
