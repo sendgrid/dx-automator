@@ -4,10 +4,6 @@ import os
 import pprint
 
 
-def parse_dx_look_json(json_dict: dict):
-    pprint.pprint(json_dict)
-
-
 class DxLooker(object):
     def __init__(self, client_id: str, client_secret: str, endpoint: str):
         self._client_id = client_id
@@ -17,7 +13,7 @@ class DxLooker(object):
         self.endpt = endpoint
         self.session = requests.session()
 
-    def authenticate(self):
+    def login(self):
         """Updates session with Looker token from given client credentials"""
         params = {"client_id": self._client_id,
                   "client_secret": self._client_secret}
@@ -30,9 +26,13 @@ class DxLooker(object):
 
     def run_look(self, look_id: str, result_format="json"):
         """Returns response from GET of specified look_id"""
-        return looker_api.session.get("{}/api/3.0/looks/{}/run/{}".format(
+        return self.session.get("{}/api/3.0/looks/{}/run/{}".format(
             self.endpt, look_id, result_format)
         )
+
+    def logout(self):
+        """Logout to revoke access token"""
+        return self.session.delete("{}/api/3.0/logout".format(self.endpt))
 
 
 if __name__ == "__main__":
@@ -40,6 +40,6 @@ if __name__ == "__main__":
     sg_client_secret = os.environ.get("LOOKER_CLIENT_SECRET")
     sg_endpoint = os.environ.get("SENDGRID_LOOKER")
     looker_api = DxLooker(sg_client_id, sg_client_secret, sg_endpoint)
-    looker_api.authenticate()
+    looker_api.login()
     json_object = looker_api.run_look("4405").json()
-    parse_dx_look_json(json_object)
+    looker_api.logout()
