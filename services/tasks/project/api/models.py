@@ -1,14 +1,14 @@
-# services/tasks/api/models.py
+# services/tasks/project/api/models.py
 
 from project import db
 from datetime import datetime
 
 class Task(db.Model):
+    
     __tablename__ = "tasks"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     creator = db.Column(db.String(128), nullable=False)
-    email_address = db.Column(db.String(128), nullable=False)
-    twitter_username = db.Column(db.String(128), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False, onupdate=datetime.now)
     link = db.Column(db.String(128), nullable=False)
@@ -58,3 +58,11 @@ class Task(db.Model):
         if due_date and isinstance(due_date, datetime):
             return due_date - datetime.today()
         return None
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'link': self.link,
+            'creator': self.creator,
+            'due_date': self.due_date
+        }
