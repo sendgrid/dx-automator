@@ -2,11 +2,11 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_debugtoolbar import DebugToolbarExtension
 
 # instantiate the db
 db = SQLAlchemy()
-
+toolbar = DebugToolbarExtension()
 
 def create_app(script_info=None):
 
@@ -19,6 +19,7 @@ def create_app(script_info=None):
 
     # set up extensions
     db.init_app(app)
+    toolbar.init_app(app)
 
     # register blueprints
     from project.api.looker import looker_blueprint
