@@ -8,7 +8,6 @@ services:
         ports:
           - 5001:5000
         environment:
-          - FLASK_ENV=development
           - APP_SETTINGS=project.config.DevelopmentConfig
           - DATABASE_URL=postgres://postgres:postgres@looker-db:5432/looker_dev
           - DATABASE_TEST_URL=postgres://postgres:postgres@looker-db:5432/looker_test

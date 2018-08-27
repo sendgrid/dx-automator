@@ -1,10 +1,10 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from sqlalchemy import exc
 
 from project.api.models import Looker
 from project import db
 
-looker_blueprint = Blueprint("looker", __name__)
+looker_blueprint = Blueprint("looker", __name__, template_folder="./templates")
 
 
 @looker_blueprint.route("/looker/ping", methods=["GET"])
@@ -38,7 +38,7 @@ def add_user():
         else:
             response_object["message"] = "Sorry. That email already exists."
             return jsonify(response_object), 400
-    except exc.IntegrityError as e:
+    except exc.IntegrityError:
         db.session.rollback()
         return jsonify(response_object), 400
 
@@ -74,8 +74,19 @@ def get_all_users():
     """Get all users"""
     response_object = {
         "status": "success",
-        "data":{
+        "data": {
             "users": [user.to_json() for user in Looker.query.all()]
         }
     }
     return jsonify(response_object), 200
+
+
+@looker_blueprint.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        username = request.form["username"]
+        email = request.form["email"]
+        db.session.add(Looker(username=username, email=email))
+        db.session.commit()
+    users = Looker.query.all()
+    return render_template("index.html", users=users)
