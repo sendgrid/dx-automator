@@ -1,6 +1,6 @@
 # services/tasks/api/models.py
 
-from tasks import db
+from project import db
 from datetime import datetime
 
 class Task(db.Model):

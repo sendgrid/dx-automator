@@ -1,17 +1,17 @@
 # services/tasks/project/__init__.py
 
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 # instantiate the db
-db = SQLAlchemy(app)
-
+db = SQLAlchemy()
+app = Flask(__name__)
 
 def create_app():
 
     # instantiate the app
-    app = Flask(__name__)
+    # app = Flask(__name__)
 
     # set config
     app_settings = os.getenv('APP_SETTINGS')
@@ -29,3 +29,11 @@ def create_app():
     # app.register_blueprint(users_blueprint)
 
     return app
+
+# routes
+@app.route('/tasks/ping', methods=['GET'])
+def ping_pong():
+    return jsonify({
+        'status': 'success',
+        'message': 'pong!'
+    })
