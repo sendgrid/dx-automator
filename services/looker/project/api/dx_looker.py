@@ -16,7 +16,7 @@ class DxLooker(object):
 
         self.endpt = endpoint
         self.session = requests.session()
-        
+
     def authenticate(self):
         """Updates session with Looker token from given client credentials"""
         params = {"client_id": self._client_id,
