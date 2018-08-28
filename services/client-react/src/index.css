@@ -3,3 +3,21 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+#app-maindiv {
+  padding: 2em;
+}
+
+#divider {
+  margin: 0.5em 0em 2em 0em;
+}
+
+#Tabs {
+  margin-bottom: 2em;
+}
+
+#tasks-card {
+  widows: 95%;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
+}
