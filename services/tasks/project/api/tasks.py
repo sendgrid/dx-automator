@@ -1,14 +1,21 @@
 # services/tasks/project/api/tasks.py
 
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from project import db
 from sqlalchemy import exc
 from project.api.models import Task
 
 
-tasks_blueprint = Blueprint('tasks', __name__)
+tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 
+@tasks_blueprint.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        db.session.add(Task(creator=request.form['creator'], link=request.form['link']))
+        db.session.commit()
+    tasks = Task.query.all()
+    return render_template('index.html', tasks=tasks)
 
 @tasks_blueprint.route('/tasks/ping', methods=['GET'])
 def ping_pong():
@@ -26,6 +33,8 @@ def add_single_task():
     }
     if not post_data:
         return jsonify(response_object), 400
+    
+    # TODO: Add the other optional paramaters here
     creator = post_data.get('creator')
     link = post_data.get('link')
     try:

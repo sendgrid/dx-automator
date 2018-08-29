@@ -1,4 +1,4 @@
-# tasks/config.py
+# tasks/project/config.py
 
 
 import os

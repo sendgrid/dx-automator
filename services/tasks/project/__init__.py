@@ -27,4 +27,8 @@ def create_app():
     # app.register_blueprint(items_statuses_blueprint)
     app.register_blueprint(tasks_blueprint)
 
+    @app.shell_context_processor
+    def ctx():
+        return {'app': app, 'db': db}
+
     return app

@@ -2,16 +2,19 @@ version: '3.3'
 
 services:
 
-  tasks-service:
-    container_name: tasks-service
+  tasks:
+    container_name: tasks
     build:
       context: ./services/tasks
       dockerfile: Dockerfile-dev
     volumes:
       - './services/tasks:/usr/src/app'
-    ports:
-      - 5001:5000
+    # ports:
+    #   - 5001:5000
+    expose:
+      - '5000'
     environment:
+      - FLASK_ENV=development
       - APP_SETTINGS=project.config.DevelopmentConfig
       - DATABASE_URL=postgres://postgres:postgres@tasks-db:5432/tasks_dev
       - DATABASE_TEST_URL=postgres://postgres:postgres@tasks-db:5432/tasks_test
@@ -31,16 +34,18 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  # nginx:
-  #   container_name: nginx
-  #   build: ./services/nginx/
-  #   restart: always
-  #   ports:
-  #     - 80:80
-  #   depends_on:
-  #     - tasks-service
-  #   links:
-  #     - tasks-service
+  nginx:
+    container_name: nginx
+    build: 
+      context: ./services/nginx/
+      dockerfile: Dockerfile-dev
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - tasks
+    links:
+      - tasks
 
   client:
     container_name: client-react
@@ -59,7 +64,7 @@ services:
       # - REACT_APP_SCORES_SERVICE_URL=${REACT_APP_SCORES_SERVICE_URL}
       # - CHOKIDAR_USEPOLLING=true
     depends_on:
-      - tasks-service
+      - tasks
     links:
-      - tasks-service
+      - tasks
   

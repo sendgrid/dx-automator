@@ -31,7 +31,9 @@ services:
 
   nginx:
     container_name: nginx
-    build: ./services/nginx/
+    build: 
+      context: ./services/nginx/
+      dockerfile: Dockerfile-prod
     restart: always
     ports:
       - 80:80
