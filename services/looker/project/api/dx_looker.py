@@ -1,45 +1,131 @@
-import requests
-import json
 import os
-import pprint
+
+from flask import Blueprint, jsonify, request
+from sqlalchemy import exc
+
+from project.api.models import DXLooker
+from project import db
+
+dx_looker_blueprint = Blueprint("dx_looker", __name__)
+
+ESM = "email_send_month"
 
 
-class DxLooker(object):
-    def __init__(self, client_id: str, client_secret: str, endpoint: str):
-        self._client_id = client_id
-        self._client_secret = client_secret
-        self._token = None
-
-        self.endpt = endpoint
-        self.session = requests.session()
-
-    def login(self):
-        """Updates session with Looker token from given client credentials"""
-        params = {"client_id": self._client_id,
-                  "client_secret": self._client_secret}
-        response = self.session.post("{}/login".format(self.endpt),
-                                     params=params)
-        self._token = response.json().get("access_token")
-        self.session.headers.update(
-            {"Authorization": "token {}".format(self._token)}
-        )
-
-    def run_look(self, look_id: str, result_format="json"):
-        """Returns response from GET of specified look_id"""
-        return self.session.get("{}/api/3.0/looks/{}/run/{}".format(
-            self.endpt, look_id, result_format)
-        )
-
-    def logout(self):
-        """Logout to revoke access token"""
-        return self.session.delete("{}/api/3.0/logout".format(self.endpt))
+@dx_looker_blueprint.route("/dx_looker/ping", methods=["GET"])
+def ping_pong():
+    return jsonify({
+        "status": "success",
+        "message": "pong"
+    })
 
 
-if __name__ == "__main__":
-    sg_client_id = os.environ.get("LOOKER_CLIENT_ID")
-    sg_client_secret = os.environ.get("LOOKER_CLIENT_SECRET")
-    sg_endpoint = os.environ.get("SENDGRID_LOOKER")
-    looker_api = DxLooker(sg_client_id, sg_client_secret, sg_endpoint)
-    looker_api.login()
-    json_object = looker_api.run_look("4405").json()
-    looker_api.logout()
+@dx_looker_blueprint.route("/dx_looker", methods=["POST"])
+def add_month():
+    post_data = request.get_json()
+    response_object = {
+        "status": "fail",
+        "message": "Invalid payload."
+    }
+    if not post_data:
+        return jsonify(response_object), 400
+    esm = post_data.get(ESM)
+    try:
+        dxl = DXLooker.query.filter_by(email_send_month=esm).first()
+        if not dxl:
+            db.session.add(DXLooker(email_send_month=esm))
+            db.session.commit()
+            response_object["status"] = "success"
+            response_object["message"] = "{} was added!".format(esm)
+            return jsonify(response_object), 201
+        else:
+            response_object["message"] = "That {} already exists.".format(ESM)
+            return jsonify(response_object), 400
+    except exc.IntegrityError:
+        db.session.rollback()
+        return jsonify(response_object), 400
+
+
+@dx_looker_blueprint.route("/dx_looker/<dxl_id>".format(ESM), methods=["GET"])
+def get_single_month(dxl_id):
+    """Get single email_send_month details"""
+    response_object = {
+        "status": "fail",
+        "message": "{} does not exist".format(ESM)
+    }
+    try:
+        dxl = DXLooker.query.filter_by(id=int(dxl_id)).first()
+        if not dxl:
+            return jsonify(response_object), 404
+        else:
+            response_object = {
+                "status": "success",
+                "data": dxl.to_json()
+            }
+            return jsonify(response_object), 200
+    except ValueError:
+        return jsonify(response_object), 404
+
+# @looker_blueprint.route("/looker", methods=["POST"])
+# def add_user():
+#     post_data = request.get_json()
+#     response_object = {
+#         "status": "fail",
+#         "message": "Invalid payload."
+#     }
+#     if not post_data:
+#         return jsonify(response_object), 400
+#     username = post_data.get("username")
+#     email = post_data.get("email")
+#
+#     try:
+#         user = Looker.query.filter_by(email=email).first()
+#         if not user:
+#             db.session.add(Looker(username=username, email=email))
+#             db.session.commit()
+#             response_object["status"] = "success"
+#             response_object["message"] = "{} was added!".format(email)
+#             return jsonify(response_object), 201
+#         else:
+#             response_object["message"] = "Sorry. That email already exists."
+#             return jsonify(response_object), 400
+#     except exc.IntegrityError as e:
+#         db.session.rollback()
+#         return jsonify(response_object), 400
+#
+#
+# @looker_blueprint.route("/looker/<user_id>", methods=["GET"])
+# def get_single_user(user_id):
+#     """Get single user details"""
+#     response_object = {
+#         "status": "fail",
+#         "message": "User does not exist"
+#     }
+#     try:
+#         user = Looker.query.filter_by(id=int(user_id)).first()
+#         if not user:
+#             return jsonify(response_object), 404
+#         else:
+#             response_object = {
+#                 "status": "success",
+#                 "data": {
+#                     "id": user.id,
+#                     "username": user.username,
+#                     "email": user.email,
+#                     "active": user.active
+#                 }
+#             }
+#             return jsonify(response_object), 200
+#     except ValueError:
+#         return jsonify(response_object), 404
+#
+#
+# @looker_blueprint.route("/looker", methods=["GET"])
+# def get_all_users():
+#     """Get all users"""
+#     response_object = {
+#         "status": "success",
+#         "data": {
+#             "users": [user.to_json() for user in Looker.query.all()]
+#         }
+#     }
+#     return jsonify(response_object), 200

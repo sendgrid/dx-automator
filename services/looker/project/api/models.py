@@ -1,25 +1,52 @@
-from sqlalchemy.sql import func
-
 from project import db
 
 
-class Looker(db.Model):
-    __tablename__ = "looker"
+class DXLooker(db.Model):
+    __tablename__ = "dx_looker"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(128), nullable=False)
-    email = db.Column(db.String(128), nullable=False)
-    active = db.Column(db.Boolean(), default=True, nullable=False)
-    created_date = db.Column(db.DateTime, default=func.now(), nullable=False)
 
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
+    email_send_month = db.Column(db.Date, nullable=False)
+
+    net = db.Column(db.Integer)
+    csharp = db.Column(db.Integer)
+    django = db.Column(db.Integer)
+    go = db.Column(db.Integer)
+    java = db.Column(db.Integer)
+    nodejs = db.Column(db.Integer)
+    perl = db.Column(db.Integer)
+    php = db.Column(db.Integer)
+    prolific = db.Column(db.Integer)
+    python = db.Column(db.Integer)
+    ruby = db.Column(db.Integer)
+    scala = db.Column(db.Integer)
+    swift = db.Column(db.Integer)
+
+    def __init__(self, email_send_month):
+        self.email_send_month = email_send_month
 
     def to_json(self):
         return {
             "id": self.id,
-            "username": self.username,
-            "email": self.email,
-            "active": self.email
+            "email_send_month": self.email_send_month,
+            "net": self.net,
+            "csharp": self.csharp,
+            "go": self.go,
+            "java": self.java,
+            "nodejs": self.nodejs,
+            "perl": self.perl,
+            "php": self.php,
+            "prolific": self.prolific,
+            "python": self.python,
+            "ruby": self.ruby,
+            "scala": self.scala,
+            "swift": self.swift
         }
+
+
+class SendsByLibrary(DXLooker):
+    __tablename__ = "mail_sends_by_library_language"
+
+
+class InvoicingByLibrary(DXLooker):
+    __tablename__ = "invoicing_by_library_language"

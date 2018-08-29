@@ -10,10 +10,12 @@ services:
         environment:
           - FLASK_ENV=development
           - APP_SETTINGS=project.config.DevelopmentConfig
-          - DATABASE_URL=postgres://postgres:postgres@looker-db:5432/looker_dev
-          - DATABASE_TEST_URL=postgres://postgres:postgres@looker-db:5432/looker_test
+          - DATABASE_URL=postgres://postgres:postgres@looker-db:5432/dx_looker_dev
+          - DATABASE_TEST_URL=postgres://postgres:postgres@looker-db:5432/dx_looker_test
         depends_on:
           - looker-db
+        env_file:
+          - .env
     looker-db:
         build: ./project/db
         ports:

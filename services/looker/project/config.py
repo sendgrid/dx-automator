@@ -8,6 +8,9 @@ class BaseConfig:
     SECRET_KEY = "my_precious"
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+    EMAIL_SEND_MONTH = "email_send_month"
+    TOTAL_EI_REVENUE = "total_ei_revenue"
+    LANGUAGE = "language"
 
 
 class DevelopmentConfig(BaseConfig):
