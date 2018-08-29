@@ -11,6 +11,7 @@ from project import create_app
 
 app = create_app()
 
+
 class TestDevelopmentConfig(TestCase):
     def create_app(self):
         app.config.from_object('project.config.DevelopmentConfig')
@@ -23,6 +24,7 @@ class TestDevelopmentConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'] ==
             os.environ.get('DATABASE_URL')
         )
+        self.assertTrue(app.config['DEBUG_TB_ENABLED'])  # new
 
 
 class TestTestingConfig(TestCase):
@@ -38,6 +40,7 @@ class TestTestingConfig(TestCase):
             app.config['SQLALCHEMY_DATABASE_URI'] ==
             os.environ.get('DATABASE_TEST_URL')
         )
+        self.assertFalse(app.config['DEBUG_TB_ENABLED'])  # new
 
 
 class TestProductionConfig(TestCase):
@@ -48,6 +51,7 @@ class TestProductionConfig(TestCase):
     def test_app_is_production(self):
         self.assertTrue(app.config['SECRET_KEY'] == 'my_precious')
         self.assertFalse(app.config['TESTING'])
+        self.assertFalse(app.config['DEBUG_TB_ENABLED'])  # new
 
 
 if __name__ == '__main__':

@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
 import { PageHeader, PageHeading, Divider,
   DropdownButton, Card, Tab, Tabs} from "@sendgrid/ui-components";
-import './App.css';
+import axios from 'axios';
+
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      tasks: []
+    };
+  }
+
+  componentDidMount() {
+    this.getTasks();
+  };
+
   getTasks(){
-    // return axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`)
+    return axios.get(`${process.env.REACT_APP_TASKS_SERVICE_URL}/tasks`)
+    .then((res) => {this.setState({tasks: res.data.data.tasks});})
+    .catch((err) => { console.log(err); });
   };
 
   render() {
@@ -31,10 +45,10 @@ class App extends Component {
             <Tab>Soon</Tab>
           </Tabs>
           <div className="list">
-            <div className="col-8" id="tasks-card">
-              <Card
-              // body={this.getTasks}
-              />
+            <div className="col-8" >
+              { this.state.tasks.map((task) => {
+                return(<Card id="tasks-card" key={task.id} body={task.link}/>)
+              })}
             </div>
           </div>
         </div>
