@@ -1,14 +1,18 @@
 import json
 import unittest
-from datetime import date
+from datetime import datetime
 
 from project.tests.base import BaseTestCase
 from project.api.models import DXLooker
 from project import db
 
 ESM = "email_send_month"
-TEST_DATE = date(2018, 8, 1).isoformat()
-TEST_DATE_CHECK = "01 Aug 2018"
+
+TEST_DATE1 = datetime(2018, 8, 1).isoformat()
+TEST_DATE_CHECK1 = "01 Aug 2018"
+
+TEST_DATE2 = datetime(2018, 8, 2).isoformat()
+TEST_DATE_CHECK2 = "02 Aug 2018"
 
 
 def add_month(email_send_month):
@@ -35,14 +39,14 @@ class TestDXLooker(BaseTestCase):
             response = self.client.post(
                 "/dx_looker",
                 data=json.dumps({
-                    ESM: TEST_DATE,
+                    ESM: TEST_DATE1,
                 }),
                 content_type="application/json"
             )
             data = json.loads(response.data.decode())
 
             self.assertEqual(response.status_code, 201)
-            self.assertIn("{} was added!".format(TEST_DATE), data["message"])
+            self.assertIn("{} was added!".format(TEST_DATE1), data["message"])
             self.assertIn("success", data["status"])
 
     def test_add_email_send_month_invalid_json(self):
@@ -80,14 +84,14 @@ class TestDXLooker(BaseTestCase):
             self.client.post(
                 "/dx_looker",
                 data=json.dumps({
-                    ESM: TEST_DATE
+                    ESM: TEST_DATE1
                 }),
                 content_type="application/json"
             )
             response = self.client.post(
                 "/dx_looker",
                 data=json.dumps(
-                    {ESM: TEST_DATE}
+                    {ESM: TEST_DATE1}
                 ),
                 content_type="application/json"
             )
@@ -98,15 +102,13 @@ class TestDXLooker(BaseTestCase):
 
     def test_single_month(self):
         """Ensure get single month behaves correctly."""
-        dxl = DXLooker(TEST_DATE)
-        db.session.add(dxl)
-        db.session.commit()
+        dxl = add_month(TEST_DATE1)
         with self.client:
             response = self.client.get(
                 "/dx_looker/{}".format(dxl.id))
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
-            self.assertIn(TEST_DATE_CHECK, data["data"][ESM])
+            self.assertIn(TEST_DATE_CHECK1, data["data"][ESM])
             self.assertIn("success", data["status"])
 
     def test_single_month_no_id(self):
@@ -126,106 +128,18 @@ class TestDXLooker(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn("{} does not exist".format(ESM), data["message"])
             self.assertIn("fail", data["status"])
-    # def test_add_user_invalid_json(self):
-    #     """Ensure error is thrown if the JSON object is empty."""
-    #     with self.client:
-    #         response = self.client.post(
-    #             "/looker",
-    #             data=json.dumps({}),
-    #             content_type="application/json"
-    #         )
-    #         data = json.loads(response.data.decode())
-    #
-    #         self.assertEqual(response.status_code, 400)
-    #         self.assertIn("Invalid payload.", data["message"])
-    #         self.assertIn("fail", data["status"])
-    #
-    # def test_add_user_invalid_json_keys(self):
-    #     """
-    #     Ensure error is thrown if the JSON object does not have a username key
-    #     """
-    #     with self.client:
-    #         response = self.client.post(
-    #             "/looker",
-    #             data=json.dumps({"email": "james@sendgrid.com"}),
-    #             content_type="application/json"
-    #         )
-    #         data = json.loads(response.data.decode())
-    #
-    #         self.assertEqual(response.status_code, 400)
-    #         self.assertIn("Invalid payload.", data["message"])
-    #         self.assertIn("fail", data["status"])
-    #
-    # def test_add_user_duplicate_email(self):
-    #     """Ensure error is thrown if the email already exists."""
-    #     with self.client:
-    #         self.client.post(
-    #             "/looker",
-    #             data=json.dumps({
-    #                 "username": "james",
-    #                 "email": "james@sendgrid.com"
-    #             }),
-    #             content_type="application/json"
-    #         )
-    #         response = self.client.post(
-    #             "/looker",
-    #             data=json.dumps({
-    #                 "username": "james",
-    #                 "email": "james@sendgrid.com"
-    #             }),
-    #             content_type="application/json"
-    #         )
-    #         data = json.loads(response.data.decode())
-    #         self.assertEqual(response.status_code, 400)
-    #         self.assertIn(
-    #             "Sorry. That email already exists.",
-    #             data["message"]
-    #         )
-    #         self.assertIn("fail", data["status"])
-    #
-    # def test_single_user(self):
-    #     """Ensure get single user behaves correctly"""
-    #     user = add_user(username="james", email="james@sendgrid.com")
-    #     with self.client:
-    #         response = self.client.get("/looker/{}".format(user.id))
-    #         data = json.loads(response.data.decode())
-    #         self.assertEqual(response.status_code, 200)
-    #         self.assertIn("james", data["data"]["username"])
-    #         self.assertIn("james@sendgrid.com", data["data"]["email"])
-    #         self.assertIn("success", data["status"])
-    #
-    # def test_single_user_no_id(self):
-    #     """Ensure error is thrown if an id is not provided."""
-    #     with self.client:
-    #         response = self.client.get("/looker/blah")
-    #         data = json.loads(response.data.decode())
-    #         self.assertEqual(response.status_code, 404)
-    #         self.assertIn("User does not exist", data["message"])
-    #         self.assertIn("fail", data["status"])
-    #
-    # def test_single_user_incorrect_id(self):
-    #     """Ensure error is thrown if the id does not exist"""
-    #     with self.client:
-    #         response = self.client.get("/looker/999")
-    #         data = json.loads(response.data.decode())
-    #         self.assertEqual(response.status_code, 404)
-    #         self.assertIn("User does not exist", data["message"])
-    #         self.assertIn("fail", data["status"])
-    #
-    # def test_all_users(self):
-    #     """Ensure get all users behaves correctly."""
-    #     add_user("james", "james@sendgrid.com")
-    #     add_user("purpura", "purpura@sendgrid.com")
-    #     with self.client:
-    #         response = self.client.get("/looker")
-    #         data = json.loads(response.data.decode())
-    #         self.assertEqual(response.status_code, 200)
-    #         self.assertEqual(len(data["data"]["users"]), 2)
-    #         self.assertIn("james", data["data"]["users"][0]["username"])
-    #         self.assertIn("james@sendgrid.com", data["data"]["users"][0]["email"])
-    #         self.assertIn("purpura", data["data"]["users"][1]["username"])
-    #         self.assertIn("purpura@sendgrid.com", data["data"]["users"][1]["email"])
-    #         self.assertIn("success", data["status"])
+
+    def test_all_months(self):
+        """Ensure get all months behaves correctly"""
+        add_month(TEST_DATE1)
+        add_month(TEST_DATE2)
+        with self.client:
+            response = self.client.get("/dx_looker")
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(data["data"]["rows"]), 2)
+            self.assertIn(TEST_DATE_CHECK1, data["data"]["rows"][0][ESM])
+            self.assertIn(TEST_DATE_CHECK2, data["data"]["rows"][1][ESM])
 
 
 if __name__ == "__main__":

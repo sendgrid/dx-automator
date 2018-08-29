@@ -2,7 +2,8 @@ import requests
 import json
 import os
 import pprint
-# from project.api.util import clean_invoice_json
+from project.api.util import clean_invoice_json
+from project.api.models import InvoicingByLibrary
 # from project import create_app
 
 
@@ -37,11 +38,10 @@ class LookerApiHandler(object):
         return self.session.delete("{}/api/3.0/logout".format(self.endpt))
 
 
-if __name__ == "__main__":
+def main():
     # app = create_app()
     # app.config.from_object("project.config.BaseConfig")
-    # email_send_month = app.config["EMAIL_SEND_MONTH"]
-    # total_ei_revenue = app.config["TOTAL_EI_REVENUE"]
+
     # language = app.config["LANGUAGE"]
 
     sg_client_id = os.environ.get("LOOKER_CLIENT_ID")
@@ -52,6 +52,11 @@ if __name__ == "__main__":
     looker_api.login()
     json_object = looker_api.run_look("4405").json()
     print(json_object)
-    # print(clean_invoice_json(json_object, email_send_month,
-    #                          total_ei_revenue, language))
+    clean_json = []
+    for j in json_object:
+        c = clean_invoice_json(j, "email_send_month", "total_ei_revenue")
+        clean_json.append(c)
+
+    print(clean_json)
     looker_api.logout()
+    return clean_json

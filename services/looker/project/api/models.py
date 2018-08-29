@@ -6,7 +6,7 @@ class DXLooker(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    email_send_month = db.Column(db.Date, nullable=False)
+    email_send_month = db.Column(db.DateTime, nullable=False)
 
     net = db.Column(db.Integer)
     csharp = db.Column(db.Integer)
@@ -21,9 +21,6 @@ class DXLooker(db.Model):
     ruby = db.Column(db.Integer)
     scala = db.Column(db.Integer)
     swift = db.Column(db.Integer)
-
-    def __init__(self, email_send_month):
-        self.email_send_month = email_send_month
 
     def to_json(self):
         return {
@@ -45,8 +42,8 @@ class DXLooker(db.Model):
 
 
 class SendsByLibrary(DXLooker):
-    __tablename__ = "mail_sends_by_library_language"
+    __tablename__ = "4404_mail_sends_by_library_language"
 
 
 class InvoicingByLibrary(DXLooker):
-    __tablename__ = "invoicing_by_library_language"
+    __tablename__ = "4405_invoicing_by_library_language"
