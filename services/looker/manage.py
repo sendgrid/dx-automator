@@ -1,10 +1,11 @@
 import unittest
-from datetime import date
+import click
+from datetime import datetime
 
 from flask.cli import FlaskGroup
 from project import create_app, db
 from project.api.models import DXLooker, InvoicingByLibrary
-from project.api.looker_api_handler import main
+from project.api.looker_api_handler import get_look
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -30,13 +31,14 @@ def test():
 @cli.command()
 def seed_db():
     """Seeds the database"""
-    db.session.add(DXLooker(date(2018, 8, 1).isoformat()))
+    db.session.add(DXLooker(datetime(2018, 8, 1).isoformat()))
     db.session.commit()
 
 
 @cli.command()
-def populate_invoicing():
-    json_object = main()
+@click.option("-l")
+def pull_look(l):
+    json_object = get_look(l)
     for j in json_object:
         i = InvoicingByLibrary(**j)
         db.session.add(i)
