@@ -11,15 +11,14 @@ def clean_key(key: str):
     return k.replace("#", "sharp")
 
 
-def clean_invoice_json(json_dict: dict, email_send_month: str,
-                       total_ei_revenue: str):
+def clean_invoice_json(json_dict: dict, month: str, columns_key: str):
     clean_dict = dict()
     for key in json_dict:
         cleaned = clean_key(key)
-        if cleaned == email_send_month:
+        if cleaned == month:
             d = datetime.strptime(json_dict[key], "%Y-%m")
             clean_dict[cleaned] = d
-        elif cleaned == total_ei_revenue:
+        elif cleaned == columns_key:
             li = list(json_dict[key].values())[0]
             for l in li:
                 clean_dict[clean_key(l)] = li[l]

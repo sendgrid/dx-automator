@@ -40,6 +40,12 @@ class DXLooker(db.Model):
             "swift": self.swift
         }
 
+    def __repr__(self):
+        str_list = []
+        for attr, value in self.to_json().items():
+            str_list.append("{}={}".format(attr, value))
+        return "{}({})".format(self.__class__.__name__, ",".join(str_list))
+
 
 class SendsByLibrary(DXLooker):
     __tablename__ = "4404_mail_sends_by_library_language"

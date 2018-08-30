@@ -14,6 +14,8 @@ class LookerApiHandler(object):
         self.endpt = endpoint
         self.session = requests.session()
 
+        self.dx_cache = None
+
     def login(self, client_id, client_secret):
         """Updates session with Looker token from given client credentials"""
         params = {"client_id": client_id,

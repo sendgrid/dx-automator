@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request
 from sqlalchemy import exc
 
 from project.api.models import DXLooker
-from project import db
+from project import db, dx_cache
 
 dx_looker_blueprint = Blueprint("dx_looker", __name__)
 
@@ -30,8 +30,11 @@ def add_month():
         return jsonify(response_object), 400
     esm = post_data.get(ESM)
     try:
+        # dxl = dx_cache.dx_looker.query.filter_by(email_send_month=esm).first()
         dxl = DXLooker.query.filter_by(email_send_month=esm).first()
         if not dxl:
+            # dx_cache.db.session.add(dx_cache.dx_looker(email_send_month=esm))
+            # dx_cache.db.commit()
             db.session.add(DXLooker(email_send_month=esm))
             db.session.commit()
             response_object["status"] = "success"
@@ -41,6 +44,7 @@ def add_month():
             response_object["message"] = "That {} already exists.".format(ESM)
             return jsonify(response_object), 400
     except exc.IntegrityError:
+        # dx_cache.db.session.rollback()
         db.session.rollback()
         return jsonify(response_object), 400
 
@@ -53,6 +57,7 @@ def get_single_month(dxl_id):
         "message": "{} does not exist".format(ESM)
     }
     try:
+        # dxl = dx_cache.dx_looker.query.filter_by(id=int(dxl_id)).first()
         dxl = DXLooker.query.filter_by(id=int(dxl_id)).first()
         if not dxl:
             return jsonify(response_object), 404
