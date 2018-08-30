@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tabs, Tab, Button} from "@sendgrid/ui-components"
+import {Tabs, Tab} from "@sendgrid/ui-components"
 
 const ContentClassTabs = () => {
   return (

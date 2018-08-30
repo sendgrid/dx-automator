@@ -72,8 +72,8 @@ def seed_db():
         title="First test issue"
     ))
     db.session.add(Task(
-        creator="af4ro",
-        link="https://github.com/sendgrid",
+        creator="anshul",
+        link="anshulsinghal.me",
         title="Second test issue",
         due_date=datetime(2018,3,20)
     ))
