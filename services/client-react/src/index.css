@@ -1,7 +1,6 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
 }
 
 #app-maindiv {
@@ -12,8 +11,9 @@ body {
   margin: 0.5em 0em 2em 0em;
 }
 
-#Tabs {
+#tabs {
   margin-bottom: 2em;
+  width: 95%;
 }
 
 #tasks-card {
@@ -24,4 +24,14 @@ body {
   padding: 1em;
   size: 1em;
   margin-bottom: 0.5em;
+}
+
+#tabs-container {
+  width: 100%;
+  display:flex;
+}
+
+#add-task-button-conatiner {
+  width: 10%;
+  position: relative;
 }
