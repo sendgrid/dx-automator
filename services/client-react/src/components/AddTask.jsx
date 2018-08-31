@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button, CenterModal, ButtonList} from "@sendgrid/ui-components"
-import {StatefulTextInput} from "@sendgrid/ui-components/text-input"
+import { TextInput} from "@sendgrid/ui-components/text-input"
 
 class AddTask extends Component {
     constructor() {
@@ -22,6 +22,9 @@ class AddTask extends Component {
       this.addLink = e => {
         this.setState({ linkValue: e.target.value});
       };
+      this.resetblanks = e => {
+        this.setState({ creatorValue: "", linkValue: ""})
+      };
     }
 
     renderBody() {
@@ -29,21 +32,23 @@ class AddTask extends Component {
       return (
         <form>
           <div className="field">
-              <StatefulTextInput
+              <TextInput
                   type="text"
                   label="Creator"
                   isRequired={true}
                   id="test-input-simple"
+                  value={this.state.creatorValue}
                   onChange={this.addCreator}
                   // onBlur={action("onBlur Called")}
               />
           </div>
           <div className="field">
-              <StatefulTextInput
+              <TextInput
                   type="text"
                   label="Link"
                   isRequired={true}
                   id="test-input-simple"
+                  value={this.state.linkValue}
                   onChange={this.addLink}
                   // onBlur={action("onBlur Called")}
               />
@@ -55,7 +60,10 @@ class AddTask extends Component {
     render() {
       return (
         <div>
-          <Button type="primary" icon="create" onClick={this.open}>
+          <Button type="primary" icon="create" onClick={() => {
+            this.resetblanks()
+            this.open()
+            }}>
             Add task
           </Button>
           <CenterModal
