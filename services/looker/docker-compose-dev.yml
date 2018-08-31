@@ -17,7 +17,7 @@ services:
         env_file:
           - .env
     looker-db:
-        build: ./project/db
+        build: project/db_creation
         ports:
           - 5435:5432
         environment:

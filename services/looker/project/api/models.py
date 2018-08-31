@@ -6,8 +6,6 @@ class DXLooker(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    email_send_month = db.Column(db.DateTime, nullable=False)
-
     net = db.Column(db.Integer)
     csharp = db.Column(db.Integer)
     django = db.Column(db.Integer)
@@ -39,6 +37,9 @@ class DXLooker(db.Model):
             "scala": self.scala,
             "swift": self.swift
         }
+
+    def set_tablename(self, name: str):
+        self.__tablename__ = name
 
     def __repr__(self):
         str_list = []

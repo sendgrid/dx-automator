@@ -1,27 +1,23 @@
-from project.api.models import DXLooker
 from flask_sqlalchemy import SQLAlchemy
 
 
 class Builder(object):
-
-    def __init__(self, db: SQLAlchemy, dx_looker: DXLooker):
-        self.db = db
-        self.dx_looker = dx_looker
+    def __init__(self, db_model):
+        self.db_model = db_model
 
     def build_cache(self):
-        d = dict()
-        for r in self.db.query.all():
-            key = r["email_send_month"]
-            new_r = r.copy().pop(key)
-            d[key] = new_r
-        return d
+        cache = []
+        for r in self.db_model.query.all():
+            cache.append(r.to_json())
+        return cache
 
 
 class DXCache(object):
-    def __init__(self, db):
-        self.cache = dict()
+    def __init__(self, db: SQLAlchemy, db_model):
+        self.cache = []
         self.db = db
-        self.builder = Builder(self.db)
+        self.db_model = db_model
+        self.builder = Builder(self.db_model)
 
-    def get_month(self, email_send_month):
-        return self.cache.get(email_send_month, None)
+    def refresh_cache(self):
+        self.cache = self.builder.build_cache()

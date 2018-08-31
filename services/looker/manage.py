@@ -3,8 +3,8 @@ import click
 from datetime import datetime
 
 from flask.cli import FlaskGroup
-from project import create_app, db, dx_cache
-from project.api.models import DXLooker, InvoicingByLibrary
+from project import create_app, dx_cache, db
+from project.api.models import DXLooker
 from project.api.looker_api_handler import get_look
 
 app = create_app()
@@ -13,12 +13,9 @@ cli = FlaskGroup(create_app=create_app)
 
 @cli.command()
 def recreate_db():
-    # dx_cache.db.drop_all()
-    # dx_cache.db.create_all()
-    # dx_cache.db.session.commit()
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
+    dx_cache.db.drop_all()
+    dx_cache.db.create_all()
+    dx_cache.db.session.commit()
 
 
 @cli.command()
@@ -36,11 +33,9 @@ def seed_db():
     """Seeds the database"""
     d = dict()
     d["email_send_month"] = datetime(2018, 8, 1).isoformat()
-    dx = DXLooker(**d)
-    # dx_cache.db.session.add(dx)
-    # dx_cache.db.session.commit()
-    db.session.add(dx)
-    db.session.commit()
+    dx = dx_cache.db_model(**d)
+    dx_cache.db.session.add(dx)
+    dx_cache.db.session.commit()
 
 
 @cli.command()
@@ -48,12 +43,9 @@ def seed_db():
 def pull_look(l):
     json_object = get_look(l)
     for j in json_object:
-        i = InvoicingByLibrary(**j)
-        print(i)
-        # dx_cache.db.session.add(i)
-        db.session.add(i)
-    db.session.commit()
-    # print(InvoicingByLibrary.query.all())
+        i = dx_cache.db_model(**j)
+        dx_cache.db.session.add(i)
+    dx_cache.db.session.commit()
 
 
 if __name__ == "__main__":

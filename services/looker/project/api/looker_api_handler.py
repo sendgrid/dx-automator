@@ -3,7 +3,6 @@ import json
 import os
 import pprint
 from project.api.util import clean_invoice_json
-from project.api.models import InvoicingByLibrary
 # from project import create_app
 
 

@@ -16,7 +16,7 @@ services:
     - looker-db
 
   looker-db:
-    build: ./project/db
+    build: project/db_creation
     ports:
       - 5435:5432
     environment:
