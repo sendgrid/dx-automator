@@ -22,12 +22,3 @@ services:
     environment:
       - POSTGRES_LOOKER=postgres
       - POSTGRES_PASSWORD=postgres
-
-  nginx:
-    build: ./nginx
-    dockerfile: Dockerfile-prod
-    restart: always
-    ports:
-      - 80:80
-    depends_on:
-      - looker
