@@ -20,4 +20,6 @@ class DXCache(object):
         self.builder = Builder(self.db_model)
 
     def refresh_cache(self):
-        self.cache = self.builder.build_cache()
+        cache = self.builder.build_cache()
+        self.cache = cache
+        return cache

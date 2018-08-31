@@ -6,6 +6,8 @@ class DXLooker(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
+    email_send_month = db.Column(db.DateTime, nullable=False)
+
     net = db.Column(db.Integer)
     csharp = db.Column(db.Integer)
     django = db.Column(db.Integer)
