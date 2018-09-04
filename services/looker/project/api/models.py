@@ -1,6 +1,14 @@
 from project import db
 
 
+def get_attrs(dx_looker):
+    attrs = []
+    for attr in dir(dx_looker):
+        if not callable(getattr(dx_looker, attr)) and not attr.startswith("__"):
+            attrs.append(attr)
+    return attrs
+
+
 class DXLooker(db.Model):
     __tablename__ = "dx_looker"
 
@@ -23,22 +31,7 @@ class DXLooker(db.Model):
     swift = db.Column(db.Integer)
 
     def to_json(self):
-        return {
-            "id": self.id,
-            "email_send_month": self.email_send_month,
-            "net": self.net,
-            "csharp": self.csharp,
-            "go": self.go,
-            "java": self.java,
-            "nodejs": self.nodejs,
-            "perl": self.perl,
-            "php": self.php,
-            "prolific": self.prolific,
-            "python": self.python,
-            "ruby": self.ruby,
-            "scala": self.scala,
-            "swift": self.swift
-        }
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
 
     def set_tablename(self, name: str):
         self.__tablename__ = name

@@ -16,7 +16,6 @@ cli = FlaskGroup(create_app=create_app)
 conf = config.DevelopmentConfig
 c_id, c_secret, endpoint = get_looker_credentials()
 handler = LookerApiHandler(endpoint)
-handler.login(c_id, c_secret)
 look = Look(conf.LOOKS["INVOICING"], handler)
 json_cleaner = JsonCleaner(read_json(conf.TRANSFORMATIONS))
 ibl_service = DXLookerService(ibl_cache, db, look, json_cleaner)
@@ -24,9 +23,9 @@ ibl_service = DXLookerService(ibl_cache, db, look, json_cleaner)
 
 @cli.command()
 def recreate_db():
-    ibl_cache.db.drop_all()
-    ibl_cache.db.create_all()
-    ibl_cache.db.session.commit()
+    ibl_service.db.drop_all()
+    ibl_service.db.create_all()
+    ibl_service.db.session.commit()
 
 
 @cli.command()
@@ -59,4 +58,6 @@ def pull_look(l):
 
 
 if __name__ == "__main__":
+    handler.login(c_id, c_secret)
     cli()
+    handler.logout()

@@ -1,5 +1,5 @@
 from project.api.looker_api_handler import get_look
-from project.api.json_cleaner import read_json, JsonCleaner
+from project.api.json_cleaner import JsonCleaner
 from project.api.db_cache import DBCache, Look
 from flask_sqlalchemy import SQLAlchemy
 

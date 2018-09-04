@@ -1,7 +1,5 @@
 import requests
-import json
 import os
-import pprint
 
 
 def get_look(look_id):
@@ -28,8 +26,6 @@ class LookerApiHandler(object):
         self.endpt = endpoint
         self.session = requests.session()
 
-        self.dx_cache = None
-
     def login(self, client_id, client_secret):
         """Updates session with Looker token from given client credentials"""
         params = {"client_id": client_id,
@@ -50,6 +46,3 @@ class LookerApiHandler(object):
     def logout(self):
         """Logout to revoke access token"""
         return self.session.delete("{}/api/3.0/logout".format(self.endpt))
-
-    def __del__(self):
-        self.logout()

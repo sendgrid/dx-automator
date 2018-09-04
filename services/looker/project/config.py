@@ -10,6 +10,7 @@ class BaseConfig:
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     TRANSFORMATIONS = "project/db_creation/column_transformations.json"
     LOOKS = {
+        # "Alias": "look_id"
         "MAIL_SENDS": "4404",
         "INVOICING": "4405"
     }
