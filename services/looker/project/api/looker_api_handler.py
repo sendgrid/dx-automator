@@ -2,7 +2,23 @@ import requests
 import json
 import os
 import pprint
-# from project import create_app
+
+
+def get_look(look_id):
+    cid, cs, endpt = get_looker_credentials()
+    looker_api = LookerApiHandler(endpt)
+    looker_api.login(cid, cs)
+    json_object = looker_api.run_look(look_id).json()
+    looker_api.logout()
+    return json_object
+
+
+def get_looker_credentials():
+    client_id = os.environ.get("LOOKER_CLIENT_ID")
+    client_secret = os.environ.get("LOOKER_CLIENT_SECRET")
+    endpoint = os.environ.get("SENDGRID_LOOKER")
+
+    return client_id, client_secret, endpoint
 
 
 class LookerApiHandler(object):
@@ -35,26 +51,5 @@ class LookerApiHandler(object):
         """Logout to revoke access token"""
         return self.session.delete("{}/api/3.0/logout".format(self.endpt))
 
-
-def get_look(look_id):
-    cid, cs, endpt = get_looker_credentials()
-    looker_api = LookerApiHandler(endpt)
-    looker_api.login(cid, cs)
-    json_object = looker_api.run_look(look_id).json()
-    # print(json_object)
-    # clean_json = []
-    # for j in json_object:
-    #     c = clean_invoice_json(j, "email_send_month", "total_ei_revenue")
-    #     clean_json.append(c)
-    #
-    # print(clean_json)
-    looker_api.logout()
-    return json_object
-
-
-def get_looker_credentials():
-    client_id = os.environ.get("LOOKER_CLIENT_ID")
-    client_secret = os.environ.get("LOOKER_CLIENT_SECRET")
-    endpoint = os.environ.get("SENDGRID_LOOKER")
-
-    return client_id, client_secret, endpoint
+    def __del__(self):
+        self.logout()

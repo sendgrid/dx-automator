@@ -1,4 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
 from project.api.looker_api_handler import LookerApiHandler
 
 
@@ -15,9 +14,8 @@ class Builder(object):
 
 
 class DBCache(object):
-    def __init__(self, db, db_model):
+    def __init__(self, db_model):
         self.cache = []
-        self.db = db
         self.db_model = db_model
         self.builder = Builder(self.db_model)
 
@@ -28,12 +26,10 @@ class DBCache(object):
 
 
 class Look(object):
-    def __init__(self, cache: DBCache, look_id: int,
-                 looker_api_handler: LookerApiHandler):
-        self.cache = cache
+    def __init__(self, look_id: int, handler: LookerApiHandler):
         self.look_id = look_id
-        self.looker_api = looker_api_handler
+        self.handler = handler
 
     def load_db(self):
-        json_object = self.looker_api.run_look(look_id=self.look_id)
-        print(json_object)
+        json_object = self.handler.run_look(look_id=self.look_id)
+

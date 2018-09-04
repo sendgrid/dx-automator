@@ -3,12 +3,23 @@ import click
 from datetime import datetime
 
 from flask.cli import FlaskGroup
-from project import create_app, ibl_cache
-from project.api.looker_api_handler import get_look
-from project.api.clean_looker_json import CleanLookerJson, read_json
+from project import create_app, ibl_cache, db, config
+from project.api.dx_looker_service import DXLookerService
+from project.api.json_cleaner import JsonCleaner, read_json
+from project.api.looker_api_handler import LookerApiHandler, get_looker_credentials
+from project.api.db_cache import Look
+
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
+
+conf = config.DevelopmentConfig
+c_id, c_secret, endpoint = get_looker_credentials()
+handler = LookerApiHandler(endpoint)
+handler.login(c_id, c_secret)
+look = Look(conf.LOOKS["INVOICING"], handler)
+json_cleaner = JsonCleaner(read_json(conf.TRANSFORMATIONS))
+ibl_service = DXLookerService(ibl_cache, db, look, json_cleaner)
 
 
 @cli.command()
@@ -41,16 +52,10 @@ def seed_db():
 @cli.command()
 @click.option("-l")
 def pull_look(l):
-    json_object = get_look(l)
-    trans = read_json("project/db_creation/column_transformations.json")
-    cleaner = CleanLookerJson(trans)
-    for j in json_object:
-        print(j)
-        print(cleaner.clean_json(j))
-    # for j in json_object:
-    #     i = ibl_cache.db_model(**j)
-    #     ibl_cache.db.session.add(i)
-    # ibl_cache.db.session.commit()
+    if l not in conf.LOOKS.values():
+        print("Invalid Look ID")
+    else:
+        ibl_service.cache_look()
 
 
 if __name__ == "__main__":

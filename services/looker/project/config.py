@@ -8,6 +8,11 @@ class BaseConfig:
     SECRET_KEY = "my_precious"
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+    TRANSFORMATIONS = "project/db_creation/column_transformations.json"
+    LOOKS = {
+        "MAIL_SENDS": "4404",
+        "INVOICING": "4405"
+    }
 
 
 class DevelopmentConfig(BaseConfig):

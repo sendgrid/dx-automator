@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 
 def read_json(file):
     with open(file) as f:
@@ -7,7 +7,16 @@ def read_json(file):
     return data
 
 
-class CleanLookerJson(object):
+def to_datetime(date_str: str) -> datetime:
+    d = date_str
+    try:
+        dte = datetime.strptime(d, "%Y-%m")
+    except ValueError:
+        dte = date_str
+    return dte
+
+
+class JsonCleaner(object):
     def __init__(self, transformed=None):
         self.trans = transformed
 
@@ -21,7 +30,7 @@ class CleanLookerJson(object):
                     clean_dict.update(self._clean_looker_columns(values))
             else:
                 # value is primary key
-                clean_dict[self._transform_looker_key(k)] = v
+                clean_dict[self._transform_looker_key(k)] = to_datetime(v)
         return clean_dict
 
     def _transform_looker_key(self, key: str):
@@ -36,5 +45,4 @@ class CleanLookerJson(object):
         for key, value in columns_dict.items():
             clean_dict[self._transform_looker_key(key)] = value
         return clean_dict
-
 
