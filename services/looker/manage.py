@@ -3,9 +3,9 @@ import click
 from datetime import datetime
 
 from flask.cli import FlaskGroup
-from project import create_app, dx_cache, db
-from project.api.models import DXLooker
+from project import create_app, ibl_cache
 from project.api.looker_api_handler import get_look
+from project.api.clean_looker_json import CleanLookerJson, read_json
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -13,9 +13,9 @@ cli = FlaskGroup(create_app=create_app)
 
 @cli.command()
 def recreate_db():
-    dx_cache.db.drop_all()
-    dx_cache.db.create_all()
-    dx_cache.db.session.commit()
+    ibl_cache.db.drop_all()
+    ibl_cache.db.create_all()
+    ibl_cache.db.session.commit()
 
 
 @cli.command()
@@ -33,19 +33,24 @@ def seed_db():
     """Seeds the database"""
     d = dict()
     d["email_send_month"] = datetime(2018, 8, 1).isoformat()
-    dx = dx_cache.db_model(**d)
-    dx_cache.db.session.add(dx)
-    dx_cache.db.session.commit()
+    dx = ibl_cache.db_model(**d)
+    ibl_cache.db.session.add(dx)
+    ibl_cache.db.session.commit()
 
 
 @cli.command()
 @click.option("-l")
 def pull_look(l):
     json_object = get_look(l)
+    trans = read_json("project/db_creation/column_transformations.json")
+    cleaner = CleanLookerJson(trans)
     for j in json_object:
-        i = dx_cache.db_model(**j)
-        dx_cache.db.session.add(i)
-    dx_cache.db.session.commit()
+        print(j)
+        print(cleaner.clean_json(j))
+    # for j in json_object:
+    #     i = ibl_cache.db_model(**j)
+    #     ibl_cache.db.session.add(i)
+    # ibl_cache.db.session.commit()
 
 
 if __name__ == "__main__":

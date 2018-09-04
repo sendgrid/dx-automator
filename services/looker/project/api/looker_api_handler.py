@@ -2,7 +2,6 @@ import requests
 import json
 import os
 import pprint
-from project.api.util import clean_invoice_json
 # from project import create_app
 
 
@@ -38,24 +37,24 @@ class LookerApiHandler(object):
 
 
 def get_look(look_id):
-    # app = create_app()
-    # app.config.from_object("project.config.BaseConfig")
-
-    # language = app.config["LANGUAGE"]
-
-    sg_client_id = os.environ.get("LOOKER_CLIENT_ID")
-    sg_client_secret = os.environ.get("LOOKER_CLIENT_SECRET")
-    sg_endpoint = os.environ.get("SENDGRID_LOOKER")
-
-    looker_api = LookerApiHandler(sg_endpoint)
-    looker_api.login(sg_client_id, sg_client_secret)
+    cid, cs, endpt = get_looker_credentials()
+    looker_api = LookerApiHandler(endpt)
+    looker_api.login(cid, cs)
     json_object = looker_api.run_look(look_id).json()
-    print(json_object)
-    clean_json = []
-    for j in json_object:
-        c = clean_invoice_json(j, "email_send_month", "total_ei_revenue")
-        clean_json.append(c)
-
-    print(clean_json)
+    # print(json_object)
+    # clean_json = []
+    # for j in json_object:
+    #     c = clean_invoice_json(j, "email_send_month", "total_ei_revenue")
+    #     clean_json.append(c)
+    #
+    # print(clean_json)
     looker_api.logout()
-    return clean_json
+    return json_object
+
+
+def get_looker_credentials():
+    client_id = os.environ.get("LOOKER_CLIENT_ID")
+    client_secret = os.environ.get("LOOKER_CLIENT_SECRET")
+    endpoint = os.environ.get("SENDGRID_LOOKER")
+
+    return client_id, client_secret, endpoint

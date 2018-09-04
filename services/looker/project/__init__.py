@@ -5,12 +5,11 @@ from flask import Flask
 
 db = SQLAlchemy()
 # must create db before import DXCache
-from project.api.dx_cache import DXCache
+from project.api.db_cache import DBCache
 from project.api.models import DXLooker, InvoicingByLibrary, SendsByLibrary
 
-dx_cache = DXCache(db, DXLooker)
-ibl_cache = DXCache(db, InvoicingByLibrary)
-sends_cache = DXCache(db, SendsByLibrary)
+ibl_cache = DBCache(db, InvoicingByLibrary)
+sends_cache = DBCache(db, SendsByLibrary)
 
 look_ids = {
     "4404": ibl_cache,
@@ -24,13 +23,13 @@ def create_app(script_info=None):
     app_settings = os.getenv("APP_SETTINGS")
     app.config.from_object(app_settings)
 
-    dx_cache.db.init_app(app)
+    ibl_cache.db.init_app(app)
 
-    from project.api.dx_looker import dx_looker_blueprint
+    from project.api.routes import dx_looker_blueprint
     app.register_blueprint(dx_looker_blueprint)
 
     @app.shell_context_processor
     def ctx():
-        return {"app": app, "db": dx_cache.db}
+        return {"app": app, "db": ibl_cache.db}
 
     return app
