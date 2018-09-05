@@ -55,14 +55,10 @@ services:
     volumes:
       - './services/client-react:/usr/src/app'
     ports:
-      - '3000:3000' # expose ports - HOST:CONTAINER
+      - '3000:3000'
     environment:
       - NODE_ENV=development
       - REACT_APP_TASKS_SERVICE_URL=${REACT_APP_TASKS_SERVICE_URL}
-      # - REACT_APP_API_GATEWAY_URL=${REACT_APP_API_GATEWAY_URL}
-      # - REACT_APP_EXERCISES_SERVICE_URL=${REACT_APP_EXERCISES_SERVICE_URL}
-      # - REACT_APP_SCORES_SERVICE_URL=${REACT_APP_SCORES_SERVICE_URL}
-      # - CHOKIDAR_USEPOLLING=true
     depends_on:
       - tasks
     links:
