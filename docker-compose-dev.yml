@@ -47,14 +47,14 @@ services:
     links:
       - tasks
 
-  client:
+  client-react:
     container_name: client-react
     build:
       context: ./services/client-react
       dockerfile: Dockerfile-dev
     volumes:
       - './services/client-react:/usr/src/app'
-      - /usr/src/app/node_modules
+      - '/usr/src/app/node_modules'
     ports:
       - '3000:3000'
     environment:

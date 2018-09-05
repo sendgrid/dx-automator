@@ -6,7 +6,7 @@ services:
     container_name: client-react
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     volumes:
       - '.:/usr/src/app'
       - '/usr/src/app/node_modules'
@@ -14,3 +14,4 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=development
+      - REACT_APP_TASKS_SERVICE_URL=${REACT_APP_TASKS_SERVICE_URL}
