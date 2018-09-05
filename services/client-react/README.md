@@ -14,12 +14,6 @@ export REACT_APP_TASKS_SERVICE_URL=http://localhost
 docker-compose -f docker-compose-prod.yml up -d --build
 ```
 
-### Create Local Docker Machine
-
-```bash
-docker-machine create -d virtualbox dx-automator-dev
-```
-
 ### Create and populate DB
 
 ```bash
