@@ -23,3 +23,6 @@ docker-compose -f docker-compose-dev.yml run tasks python manage.py seed_db
 
 If bash doesn't recognize the **REACT_APP_TASKS_SERVICE_URL** environment variable just export it and run the last two commands again.
 
+### Open up a browser
+
+You should find the React client at http://localhost:3000/
