@@ -44,6 +44,16 @@ docker-compose -f docker-compose-dev.yml up -d --build
 docker-compose -f docker-compose-dev.yml run python main.py recreate_db -l <look_id>
 ```
 
+**Populate DB table with data from a given look_id**  
+```
+docker-compose -f docker-compose-dev.yml run looker python main.py pull_looks -l <look_id>
+```
+
+**See look data**  
+```
+docker-compose -f docker-compose-dev.yml run looker
+```
+The data will be available at `http://localhost:5001/dx_looker/<look_id>`
 
 **To Do**
 -

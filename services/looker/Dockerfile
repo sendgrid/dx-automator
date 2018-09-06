@@ -23,4 +23,4 @@ RUN chmod +x /usr/src/app/entrypoint.sh
 COPY . /usr/src/app
 
 # run server
-CMD python manage.py run -h 0.0.0.0
+CMD python main.py run -h 0.0.0.0

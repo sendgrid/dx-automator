@@ -7,4 +7,4 @@ done
 
 echo "PostgresSQL started"
 
-python manage.py run -h 0.0.0.0
+python main.py run -h 0.0.0.0
