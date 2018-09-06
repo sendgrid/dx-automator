@@ -14,7 +14,7 @@ def get_look(look_id):
 def get_looker_credentials():
     client_id = os.environ.get("LOOKER_CLIENT_ID")
     client_secret = os.environ.get("LOOKER_CLIENT_SECRET")
-    endpoint = os.environ.get("SENDGRID_LOOKER")
+    endpoint = os.environ.get("LOOKER_ENDPOINT")
 
     return client_id, client_secret, endpoint
 

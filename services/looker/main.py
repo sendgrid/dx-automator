@@ -21,10 +21,12 @@ services = {
 }
 
 
-def recreate_db(service):
-    service.db.drop_all()
-    service.db.create_all()
-    service.db.session.commit()
+@cli.command()
+@click.option("-l")
+def recreate_db(l):
+    services[l].db.drop_all()
+    services[l].db.create_all()
+    services[l].db.session.commit()
 
 
 @cli.command()
@@ -44,8 +46,7 @@ def pull_looks(l: str):
     if service is None:
         print("{} is not a legal look id".format(l))
     else:
-        recreate_db(service)
-        service.cache_look()
+        services[l].cache_look()
         print(service.db_cache.db_model.query.all())
 
 

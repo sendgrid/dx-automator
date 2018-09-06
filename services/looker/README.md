@@ -25,7 +25,28 @@ JsonCleaner
 DXLookerService
 - container to hold objects necessary for DX Looker API
 
+**To Run**  
+- 
+**Create .env file with Looker API credentials**
+```
+LOOKER_CLIENT_ID=client_id_goes_here
+LOOKER_CLIENT_SECRET=client_secret_goes_here
+LOOKER_ENDPOINT=looker_endpoint_goes_here
+```
+
+**Build and Run Docker Containers** 
+```
+docker-compose -f docker-compose-dev.yml up -d --build
+```
+
+**Rebuild DB table for a given look id**
+```
+docker-compose -f docker-compose-dev.yml run python main.py recreate_db -l <look_id>
+```
+
+
 **To Do**
+-
 - make table names configurable
 - build API routes (basic calls in place, but not configurable, 
 see project/api/routes.py)
