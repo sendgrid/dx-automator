@@ -4,17 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 
 db = SQLAlchemy()
-# must create db before import DXCache
-from project.api.db_cache import DBCache
-from project.api.models import DXLooker, InvoicingByLibrary, SendsByLibrary
-
-ibl_cache = DBCache(InvoicingByLibrary)
-sends_cache = DBCache(SendsByLibrary)
-
-look_ids = {
-    "4404": ibl_cache,
-    "4405": sends_cache
-}
 
 
 def create_app(script_info=None):

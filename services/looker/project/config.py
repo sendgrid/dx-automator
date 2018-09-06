@@ -11,8 +11,16 @@ class BaseConfig:
     TRANSFORMATIONS = "project/db_creation/column_transformations.json"
     LOOKS = {
         # "Alias": "look_id"
-        "MAIL_SENDS": "4404",
-        "INVOICING": "4405"
+        "MAIL_SENDS": {
+            "look_id": "4404",
+            "table": "mail_sends_by_library_language",
+            "model": "SendsByLibrary"
+        },
+        "INVOICING": {
+            "look_id": "4405",
+            "table": "invoicing_by_library_language",
+            "model": "InvoicingByLibrary"
+        },
     }
 
 

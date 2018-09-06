@@ -19,6 +19,13 @@ def get_looker_credentials():
     return client_id, client_secret, endpoint
 
 
+def build_handler():
+    c_id, c_secret, endpoint = get_looker_credentials()
+    handler = LookerApiHandler(endpoint)
+    handler.login(c_id, c_secret)
+    return handler
+
+
 class LookerApiHandler(object):
     def __init__(self, endpoint: str):
         self._token = None
@@ -46,3 +53,4 @@ class LookerApiHandler(object):
     def logout(self):
         """Logout to revoke access token"""
         return self.session.delete("{}/api/3.0/logout".format(self.endpt))
+

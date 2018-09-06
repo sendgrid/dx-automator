@@ -2,7 +2,6 @@ import os
 
 from flask import Blueprint, jsonify, request
 
-from project import look_ids
 from project.api.looker_api_handler import get_look
 
 dx_looker_blueprint = Blueprint("dx_looker", __name__)
