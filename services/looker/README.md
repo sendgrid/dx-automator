@@ -1,6 +1,6 @@
 **Goal**  
 -
-API to read/write data to and from Looker. 
+API to read/write data to and from Looker.
 
 
 **Structure**  
@@ -27,11 +27,11 @@ DXLookerService
 
 **To Run**  
 - 
-**Create .env file with Looker API credentials**
+**Create ~/services/looker/.env file with Looker API credentials**
 ```
 LOOKER_CLIENT_ID=client_id_goes_here
 LOOKER_CLIENT_SECRET=client_secret_goes_here
-LOOKER_ENDPOINT=looker_endpoint_goes_here
+LOOKER_ENDPOINT=looker_endpoint_goes_here (e.g. https://yourdomain.looker.com:port)
 ```
 
 **Build and Run Docker Containers** 
