@@ -13,23 +13,23 @@ def get_attrs(dx_looker):
 class DXLooker(db.Model):
     __tablename__ = "dx_looker"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
 
     email_send_month = db.Column(db.DateTime, nullable=False)
 
-    net = db.Column(db.Integer)
-    csharp = db.Column(db.Integer)
-    django = db.Column(db.Integer)
-    go = db.Column(db.Integer)
-    java = db.Column(db.Integer)
-    nodejs = db.Column(db.Integer)
-    perl = db.Column(db.Integer)
-    php = db.Column(db.Integer)
-    prolific = db.Column(db.Integer)
-    python = db.Column(db.Integer)
-    ruby = db.Column(db.Integer)
-    scala = db.Column(db.Integer)
-    swift = db.Column(db.Integer)
+    net = db.Column(db.BigInteger)
+    csharp = db.Column(db.BigInteger)
+    django = db.Column(db.BigInteger)
+    go = db.Column(db.BigInteger)
+    java = db.Column(db.BigInteger)
+    nodejs = db.Column(db.BigInteger)
+    perl = db.Column(db.BigInteger)
+    php = db.Column(db.BigInteger)
+    prolific = db.Column(db.BigInteger)
+    python = db.Column(db.BigInteger)
+    ruby = db.Column(db.BigInteger)
+    scala = db.Column(db.BigInteger)
+    swift = db.Column(db.BigInteger)
 
     def to_json(self):
         return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
@@ -47,23 +47,23 @@ class DXLooker(db.Model):
 class SendsByLibrary(db.Model):
     __tablename__ = "sends_by_library"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
 
     email_send_month = db.Column(db.DateTime, nullable=False)
 
-    net = db.Column(db.Integer)
-    csharp = db.Column(db.Integer)
-    django = db.Column(db.Integer)
-    go = db.Column(db.Integer)
-    java = db.Column(db.Integer)
-    nodejs = db.Column(db.Integer)
-    perl = db.Column(db.Integer)
-    php = db.Column(db.Integer)
-    prolific = db.Column(db.Integer)
-    python = db.Column(db.Integer)
-    ruby = db.Column(db.Integer)
-    scala = db.Column(db.Integer)
-    swift = db.Column(db.Integer)
+    net = db.Column(db.BigInteger)
+    csharp = db.Column(db.BigInteger)
+    django = db.Column(db.BigInteger)
+    go = db.Column(db.BigInteger)
+    java = db.Column(db.BigInteger)
+    nodejs = db.Column(db.BigInteger)
+    perl = db.Column(db.BigInteger)
+    php = db.Column(db.BigInteger)
+    prolific = db.Column(db.BigInteger)
+    python = db.Column(db.BigInteger)
+    ruby = db.Column(db.BigInteger)
+    scala = db.Column(db.BigInteger)
+    swift = db.Column(db.BigInteger)
 
     def to_json(self):
         return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
@@ -81,23 +81,23 @@ class SendsByLibrary(db.Model):
 class InvoicingByLibrary(db.Model):
     __tablename__ = "invoicing_by_library"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
 
     email_send_month = db.Column(db.DateTime, nullable=False)
 
-    net = db.Column(db.Integer)
-    csharp = db.Column(db.Integer)
-    django = db.Column(db.Integer)
-    go = db.Column(db.Integer)
-    java = db.Column(db.Integer)
-    nodejs = db.Column(db.Integer)
-    perl = db.Column(db.Integer)
-    php = db.Column(db.Integer)
-    prolific = db.Column(db.Integer)
-    python = db.Column(db.Integer)
-    ruby = db.Column(db.Integer)
-    scala = db.Column(db.Integer)
-    swift = db.Column(db.Integer)
+    net = db.Column(db.BigInteger)
+    csharp = db.Column(db.BigInteger)
+    django = db.Column(db.BigInteger)
+    go = db.Column(db.BigInteger)
+    java = db.Column(db.BigInteger)
+    nodejs = db.Column(db.BigInteger)
+    perl = db.Column(db.BigInteger)
+    php = db.Column(db.BigInteger)
+    prolific = db.Column(db.BigInteger)
+    python = db.Column(db.BigInteger)
+    ruby = db.Column(db.BigInteger)
+    scala = db.Column(db.BigInteger)
+    swift = db.Column(db.BigInteger)
 
     def to_json(self):
         return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
