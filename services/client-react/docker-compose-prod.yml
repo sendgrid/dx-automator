@@ -1,0 +1,11 @@
+version: '3.5'
+
+services:
+
+  client-react-prod:
+    container_name: client-react-prod
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+    ports:
+      - '80:80'

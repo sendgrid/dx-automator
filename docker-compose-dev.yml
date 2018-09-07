@@ -2,6 +2,36 @@ version: '3.3'
 
 services:
 
+  tasks:
+    container_name: tasks
+    build:
+      context: ./services/tasks
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/tasks:/usr/src/app'
+    expose:
+      - '5000'
+    environment:
+      - FLASK_ENV=development
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@tasks-db:5432/tasks_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@tasks-db:5432/tasks_test
+    depends_on:
+      - tasks-db
+    links:
+      - tasks-db
+
+  tasks-db:
+    container_name: tasks-db
+    build:
+      context: ./services/tasks/project/db
+      dockerfile: Dockerfile
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
   users:
     container_name: users
     build:
@@ -13,8 +43,8 @@ services:
       - 5001:5000
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
-      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
-      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      # - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
+      # - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
     depends_on:
       - users-db
     links:
@@ -33,14 +63,36 @@ services:
 
   nginx:
     container_name: nginx
-    build: ./services/nginx/
+    build: 
+      context: ./services/nginx/
+      dockerfile: Dockerfile-dev
     restart: always
     ports:
       - 81:81
     depends_on:
+      - tasks
       - users
     links:
+      - tasks
       - users
+
+  client-react:
+    container_name: client-react
+    build:
+      context: ./services/client-react
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/client-react:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_TASKS_SERVICE_URL=${REACT_APP_TASKS_SERVICE_URL}
+    depends_on:
+      - tasks
+    links:
+      - tasks
 
   looker:
     container_name: looker
