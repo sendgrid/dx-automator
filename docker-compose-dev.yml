@@ -9,8 +9,6 @@ services:
       dockerfile: Dockerfile-dev
     volumes:
       - './services/tasks:/usr/src/app'
-    # ports:
-    #   - 5001:5000
     expose:
       - '5000'
     environment:
@@ -34,6 +32,35 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
+  users:
+    container_name: users
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/users:/usr/src/app'
+    ports:
+      - 5001:5000
+    environment:
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      # - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
+      # - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+    depends_on:
+      - users-db
+    links:
+      - users-db
+
+  users-db:
+    container_name: users-db
+    build:
+      context: ./services/users/project/db
+      dockerfile: Dockerfile
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
   nginx:
     container_name: nginx
     build: 
@@ -41,11 +68,13 @@ services:
       dockerfile: Dockerfile-dev
     restart: always
     ports:
-      - 80:80
+      - 81:81
     depends_on:
       - tasks
+      - users
     links:
       - tasks
+      - users
 
   client-react:
     container_name: client-react
@@ -64,4 +93,9 @@ services:
       - tasks
     links:
       - tasks
-  
+
+  looker:
+    container_name: looker
+    build: ./services/looker
+    ports:
+      - 82:82

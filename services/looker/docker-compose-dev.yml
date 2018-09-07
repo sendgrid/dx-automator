@@ -1,0 +1,27 @@
+version: '3.6'
+
+services:
+    looker:
+        build: .
+        volumes:
+          - '.:/usr/src/app'
+        ports:
+          - 5001:5000
+        environment:
+          - MAIL_SENDS=4404
+          - INVOICING=4405
+          - FLASK_ENV=development
+          - APP_SETTINGS=project.config.DevelopmentConfig
+          - DATABASE_URL=postgres://postgres:postgres@looker-db:5432/dx_looker_dev
+          - DATABASE_TEST_URL=postgres://postgres:postgres@looker-db:5432/dx_looker_test
+        depends_on:
+          - looker-db
+        env_file:
+          - .env
+    looker-db:
+        build: ./project/db_creation
+        ports:
+          - 5435:5432
+        environment:
+          - POSTGRES_LOOKER=postgres
+          - POSTGRES_PASSWORD=postgres
