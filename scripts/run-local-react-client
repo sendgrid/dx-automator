@@ -1,0 +1,2 @@
+export REACT_APP_TASKS_SERVICE_URL=http://localhost
+docker-compose -f docker-compose-dev.yml up -d --build
