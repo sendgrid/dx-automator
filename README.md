@@ -2,7 +2,7 @@
 
 This tool is intended to help make managing multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams. 
 
-Please check out the [develop branch](https://github.com/sendgrid/dx-automator/tree/develop) to see what's going on.
+Please check out the [development branch](https://github.com/sendgrid/dx-automator/tree/development) to see what's going on.
 
 We will update this README and the master branch, as well as deploy the code to pypi once the MVP is ready!
 
