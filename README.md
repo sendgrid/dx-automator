@@ -12,9 +12,6 @@ Everyone who participates in our repo is expected to comply with our [Code of Co
 We welcome [contributions](./CONTRIBUTING.md) in the form of issues, pull requests and code reviews. Or you can simply shoot us an [email](mailto:dx@sendgrid.com).
 
 ## Attributions
-<<<<<<< HEAD
-We believe in open source and want to give credit where it's due. We used the amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting a solid foundation using flask, docker, and (eventually) node and react. From this tutorial, we began to build and iterate.
-=======
 We believe in open source and want to give credit where it's due. We used the amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting a solid foundation using flask, docker, and (eventually) node and react. From this tutorial, we began to build and iterate.
 
 ## Usage
@@ -62,4 +59,4 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 # select * from users;
 # \q
 ```
->>>>>>> development
+
