@@ -1,6 +1,6 @@
 # DX Automator React Client
 
-**Run these commands from the root directory and not from /client-react**
+**Run these commands from the root directory and not from the /client-react**
 
 ### Export localhost for development
 
@@ -18,7 +18,7 @@ OR
 ./scripts/run-local-react-client
 ```
 
-### Create and populate DB
+### Create and populate the DB
 
 ```bash
 docker-compose -f docker-compose-dev.yml run tasks python manage.py recreate_db
@@ -29,7 +29,7 @@ OR
 ./scripts/setup-local-db
 ```
 
-If bash doesn't recognize the **REACT_APP_TASKS_SERVICE_URL** environment variable just export it and run the last two commands again.
+If the bash doesn't recognize the **REACT_APP_TASKS_SERVICE_URL** environment variable, just export it and run the last two commands again.
 
 ### Open up a browser
 
