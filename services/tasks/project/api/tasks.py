@@ -9,20 +9,24 @@ from project.api.models import Task
 
 tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 
+
 @tasks_blueprint.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        db.session.add(Task(creator=request.form['creator'], link=request.form['link']))
+        db.session.add(Task(creator=request.form['creator'],
+                       link=request.form['link']))
         db.session.commit()
     tasks = Task.query.all()
     return render_template('index.html', tasks=tasks)
+
 
 @tasks_blueprint.route('/tasks/ping', methods=['GET'])
 def ping_pong():
     return jsonify({
         'status': 'success',
         'message': 'pong!'
-})
+    })
+
 
 @tasks_blueprint.route('/tasks', methods=['POST'])
 def add_single_task():
@@ -33,7 +37,7 @@ def add_single_task():
     }
     if not post_data:
         return jsonify(response_object), 400
-    
+
     # TODO: Add the other optional paramaters here
     creator = post_data.get('creator')
     link = post_data.get('link')
@@ -53,6 +57,7 @@ def add_single_task():
     except exc.IntegrityError:
         db.session.rollback()
         return jsonify(response_object), 400
+
 
 @tasks_blueprint.route('/tasks/<task_id>', methods=['GET'])
 def get_single_task(task_id):
@@ -77,6 +82,7 @@ def get_single_task(task_id):
     except ValueError:
         return jsonify(response_object), 404
 
+
 @tasks_blueprint.route('/tasks', methods=['GET'])
 def get_all_tasks():
     response_object = {
@@ -86,4 +92,3 @@ def get_all_tasks():
         }
     }
     return jsonify(response_object), 200
-    
