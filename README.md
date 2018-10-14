@@ -16,7 +16,7 @@ We believe in open source and want to give credit where it's due. We used an ama
 
 ## Usage
 
-### Create the AWS Docker Machine
+### Create AWS Docker Machine
 
 ```bash
 docker-machine create --driver amazonec2 dx-automator-prod
@@ -33,7 +33,7 @@ curl http://$DX_IP/users/ping
 curl http://$DX_IP/users
 ```
 
-### Create the Local Docker Machine
+### Create Local Docker Machine
 
 ```bash
 docker-machine create -d virtualbox dx-automator-dev
