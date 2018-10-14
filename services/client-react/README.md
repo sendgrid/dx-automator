@@ -18,7 +18,7 @@ OR
 ./scripts/run-local-react-client
 ```
 
-### Create and populate the DB
+### Create and populate DB
 
 ```bash
 docker-compose -f docker-compose-dev.yml run tasks python manage.py recreate_db
@@ -29,7 +29,7 @@ OR
 ./scripts/setup-local-db
 ```
 
-If the bash doesn't recognize the **REACT_APP_TASKS_SERVICE_URL** environment variable, just export it and run the last two commands again.
+If bash doesn't recognize the **REACT_APP_TASKS_SERVICE_URL** environment variable, just export it and run the last two commands again.
 
 ### Open up a browser
 
