@@ -1,6 +1,6 @@
 **Goal**  
 -
-API to read/write the data to and from Looker.
+API to read/write data to and from Looker.
 
 
 **Structure**  
@@ -10,14 +10,14 @@ SendsByLibrary / InvoicingByLibrary
 - Inherits the schema from DXLooker, with appropriate table name
 
 LookerAPIHandler  
-- Handles the authentication of theLooker API
-- Uses the credentials to pull the latest look data fromthe  Looker 
+- Handles the authentication of the Looker API
+- Uses the credentials to pull the latest look data from Looker 
 
 DBCache
 - Queries database to store all the rows locally for faster access
 
 Look
-- Stores Looker look the id and LookerApiHandler instance
+- Stores Looker look id and LookerApiHandler instance
 
 JsonCleaner
 - Cleans JSON objects to fit the DB model schema
