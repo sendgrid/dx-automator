@@ -89,13 +89,13 @@ docker-compose -f docker-compose-prod.yml run github-service python manage.py te
 
 # Reference
 
-### Kill all the Running Docker Instances
+### Kill All the Running Docker Instances
 
 ```bash
 docker stop $(docker ps -a -q)
 ```
 
-### Check Environment on the Server
+### Check the Environment on the Server
 
 ```bash
 docker-compose -f docker-compose-prod.yml run github-service env
