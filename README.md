@@ -1,6 +1,6 @@
 # The Developer Experience (DX) Automator
 
-This tool is intended to help make managing, the multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams. 
+This tool is intended to help make managing multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams. 
 
 Please check out the [development branch](https://github.com/sendgrid/dx-automator/tree/development) to see what's going on with the project.
 
