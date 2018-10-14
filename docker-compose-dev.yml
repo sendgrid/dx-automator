@@ -43,8 +43,8 @@ services:
       - 5001:5000
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
-      # - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
-      # - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
     depends_on:
       - users-db
     links:
@@ -65,15 +65,14 @@ services:
     container_name: nginx
     build: 
       context: ./services/nginx/
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile
     restart: always
     ports:
-      - 81:81
+      - 80:80
     depends_on:
-      - tasks
       - users
+      - client-react
     links:
-      - tasks
       - users
 
   client-react:
@@ -85,7 +84,7 @@ services:
       - './services/client-react:/usr/src/app'
       - '/usr/src/app/node_modules'
     ports:
-      - '3000:3000'
+      - '3007:3000'
     environment:
       - NODE_ENV=development
       - REACT_APP_TASKS_SERVICE_URL=${REACT_APP_TASKS_SERVICE_URL}
@@ -97,5 +96,5 @@ services:
   looker:
     container_name: looker
     build: ./services/looker
-    ports:
-      - 82:82
+    expose:
+      - '5000'

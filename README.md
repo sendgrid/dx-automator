@@ -14,7 +14,52 @@ We welcome [contributions](./CONTRIBUTING.md) in the form of issues, pull reques
 ## Attributions
 We believe in open source and want to give credit where it's due. We used an amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting up a solid foundation using flask, docker, and (eventually) node and react. This tutorial helped us build and iterate this project successfully!
 
-## Usage
+## Usage - Local
+
+### Create Local Docker Machine
+
+```bash
+docker-machine create -d virtualbox dx-automator-dev
+```
+
+### Deploy Locally
+
+```bash
+docker-machine start dx-automator-dev
+docker-machine env dx-automator-dev
+eval $(docker-machine env dx-automator-dev)
+docker-compose -f docker-compose-dev.yml up -d --build
+DX_IP="$(docker-machine ip dx-automator-dev)"
+./scripts/setup-local-db
+```
+
+Run these commands to test if everything is working correctly.
+
+```
+curl http://$DX_IP/tasks/ping
+curl http://$DX_IP/tasks
+curl http://$DX_IP/users/ping
+curl http://$DX_IP/users
+```
+
+Grab the IP address.
+
+```
+echo $DX_IP
+```
+
+And now paste that IP into your browser and you should see a task list.
+
+### Connect to the Local DB
+
+```bash
+docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
+# \c users_dev
+# select * from users;
+# \q
+```
+
+## Usage - Cloud
 
 ### Create AWS Docker Machine
 
@@ -31,31 +76,4 @@ docker-compose -f docker-compose-prod.yml up -d --build
 DX_IP="$(docker-machine ip dx-automator-prod)"
 curl http://$DX_IP/users/ping
 curl http://$DX_IP/users
-```
-
-### Create Local Docker Machine
-
-```bash
-docker-machine create -d virtualbox dx-automator-dev
-```
-
-### Deploy Locally
-
-```bash
-docker-machine start dx-automator-dev
-docker-machine env dx-automator-dev
-eval $(docker-machine env dx-automator-dev)
-docker-compose -f docker-compose-dev.yml up -d --build
-DX_IP="$(docker-machine ip dx-automator-dev)"
-curl http://$DX_IP/users/ping
-curl http://$DX_IP/users
-```
-
-### Connect to the Local DB
-
-```bash
-docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
-# \c users_dev
-# select * from users;
-# \q
 ```
