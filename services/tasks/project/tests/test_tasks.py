@@ -8,11 +8,13 @@ from project import db
 from project.api.models import Task
 from project.tests.base import BaseTestCase
 
+
 def add_task(creator, link):
     task = Task(creator=creator, link=link)
     db.session.add(task)
     db.session.commit()
     return task
+
 
 class TestTaskService(BaseTestCase):
     """Tests for the Tasks Service."""
@@ -130,7 +132,7 @@ class TestTaskService(BaseTestCase):
             self.assertIn(
                 'another.com', data['data']['tasks'][1]['link'])
             self.assertIn('success', data['status'])
-    
+
 
 if __name__ == '__main__':
     unittest.main()

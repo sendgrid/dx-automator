@@ -3,6 +3,7 @@ from github3 import login
 
 github_blueprint = Blueprint('github', __name__)
 
+
 @github_blueprint.route('/is_member/<username>', methods=['GET'])
 def is_member(username):
     """Check if user is a member of your GitHub organization"""
@@ -20,7 +21,7 @@ def is_member(username):
         return jsonify(response_object), status_code
     except AttributeError:
         return "GITHUB_TOKEN may not be valid", 400
-    
+
 
 @github_blueprint.route('/members', methods=['GET'])
 def get_all_members():
@@ -38,4 +39,3 @@ def get_all_members():
     except AttributeError:
         status_code = 400
         return "GITHUB_TOKEN may not be valid", status_code
-    

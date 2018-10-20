@@ -1,5 +1,6 @@
 import os
 
+
 class BaseConfig:
     """Base configuration"""
     DEBUG = False
@@ -10,14 +11,17 @@ class BaseConfig:
         'test_exception_user'
     ]
 
+
 class DevelopmentConfig(BaseConfig):
     """Development configuration"""
     DEBUG = True
+
 
 class TestingConfig(BaseConfig):
     """Testing configuration"""
     DEBUG = False
     TESTING = True
+
 
 class ProductionConfig(BaseConfig):
     """Production configuration"""
