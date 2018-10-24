@@ -3,8 +3,14 @@ from github3 import login
 
 github_blueprint = Blueprint('github', __name__)
 
+@github_blueprint.route('/github/ping', methods=['GET'])
+def ping_pong():
+    return jsonify({
+        'status': 'success',
+        'message': 'pong!'
+    })
 
-@github_blueprint.route('/is_member/<username>', methods=['GET'])
+@github_blueprint.route('/github/is_member/<username>', methods=['GET'])
 def is_member(username):
     """Check if user is a member of your GitHub organization"""
     github_token = current_app.config['GITHUB_TOKEN']
@@ -23,7 +29,7 @@ def is_member(username):
         return "GITHUB_TOKEN may not be valid", 400
 
 
-@github_blueprint.route('/members', methods=['GET'])
+@github_blueprint.route('/github/members', methods=['GET'])
 def get_all_members():
     """Get all the members from your Github organization"""
     members = []
