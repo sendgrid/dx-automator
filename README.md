@@ -40,6 +40,9 @@ curl http://$DX_IP/tasks/ping
 curl http://$DX_IP/tasks
 curl http://$DX_IP/users/ping
 curl http://$DX_IP/users
+curl http://$DX_IP/github/ping
+curl http://$DX_IP/github/members
+curl http://$DX_IP/github/is_member/<github_username>
 ```
 
 Grab the IP address.
