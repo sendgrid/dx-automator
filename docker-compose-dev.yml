@@ -98,6 +98,10 @@ services:
     build: ./services/looker
     expose:
       - '5000'
+    environment:
+      - LOOKER_CLIENT_ID=${LOOKER_CLIENT_ID}
+      - LOOKER_CLIENT_SECRET=${LOOKER_CLIENT_SECRET}
+      - LOOKER_ENDPOINT=${LOOKER_ENDPOINT}
 
   github-service:
     container_name: github-service
