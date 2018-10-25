@@ -47,12 +47,12 @@ docker-compose -f docker-compose-dev.yml up -d --build
 
 **Rebuild DB table for a given look id**
 ```
-docker-compose -f docker-compose-dev.yml run looker python main.py recreate_db -l <look_id>
+docker-compose -f docker-compose-dev.yml run looker python main.py recreate-db -l <look_id>
 ```
 
 **Populate DB table with data from a given look_id**  
 ```
-docker-compose -f docker-compose-dev.yml run looker python main.py pull_looks -l <look_id>
+docker-compose -f docker-compose-dev.yml run looker python main.py pull-looks -l <look_id>
 ```
 
 **See look data**  
