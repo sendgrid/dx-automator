@@ -24,7 +24,18 @@ docker-machine create -d virtualbox dx-automator-dev
 
 ### Deploy Locally
 
+Setup your environment variables:
+
 ```bash
+cp ./services/github/.env_sample ./services/github/.env
+cp ./services/looker/.env_sample ./services/github/.env
+```
+
+
+Install:
+
+```bash
+./source_the_things.sh
 docker-machine start dx-automator-dev
 docker-machine env dx-automator-dev
 eval $(docker-machine env dx-automator-dev)
