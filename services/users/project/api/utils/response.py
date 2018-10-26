@@ -8,6 +8,16 @@ def response_json_ok(json):
 
     return _make_json_response(json, 200)
 
+def response_json_created(json):
+    """Creates a tuple representing the HTTP package to
+    respond the requisition with the given JSON on its body
+    and status code 201
+    :param json: object to be sent on HTTP body
+    :return response: tuple representing the HTTP response package
+    """
+
+    return _make_json_response(json, 201)
+
 
 def response_json_bad_request(json):
     """Creates a tuple representing the HTTP package to
