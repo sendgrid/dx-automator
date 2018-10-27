@@ -87,7 +87,8 @@ services:
       - '3007:3000'
     environment:
       - NODE_ENV=development
-      - REACT_APP_TASKS_SERVICE_URL=${REACT_APP_TASKS_SERVICE_URL}
+      - REACT_APP_TASKS_SERVICE_URL=${DX_IP}/tasks
+      # - REACT_APP_TASKS_SERVICE_URL=${REACT_APP_TASKS_SERVICE_URL}
     depends_on:
       - tasks
     links:
