@@ -16,7 +16,7 @@ def run_query(query):
         return response.json().get('data'), response.ok
     return None, response.ok
 
-
+  
 @github_blueprint.route('/github/ping', methods=['GET'])
 def ping_pong():
     return jsonify({
