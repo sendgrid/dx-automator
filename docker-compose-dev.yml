@@ -72,8 +72,13 @@ services:
     depends_on:
       - users
       - client-react
+      - looker
+      - github-service
     links:
       - users
+      - client-react
+      - looker
+      - github-service
 
   client-react:
     container_name: client-react
@@ -95,14 +100,39 @@ services:
       - tasks
 
   looker:
-    container_name: looker
-    build: ./services/looker
-    expose:
-      - '5000'
-    environment:
-      - LOOKER_CLIENT_ID=${LOOKER_CLIENT_ID}
-      - LOOKER_CLIENT_SECRET=${LOOKER_CLIENT_SECRET}
-      - LOOKER_ENDPOINT=${LOOKER_ENDPOINT}
+      container_name: looker
+      build: 
+        context: ./services/looker
+        dockerfile: Dockerfile-dev
+      volumes:
+        - './services/looker:/usr/src/app'
+      expose:
+        - '5000'
+      environment:
+        - MAIL_SENDS=4404
+        - INVOICING=4405
+        - FLASK_ENV=development
+        - APP_SETTINGS=project.config.DevelopmentConfig
+        - DATABASE_URL=postgres://postgres:postgres@looker-db:5432/dx_looker_dev
+        - DATABASE_TEST_URL=postgres://postgres:postgres@looker-db:5432/dx_looker_test
+        - LOOKER_CLIENT_ID=${LOOKER_CLIENT_ID}
+        - LOOKER_CLIENT_SECRET=${LOOKER_CLIENT_SECRET}
+        - LOOKER_ENDPOINT=${LOOKER_ENDPOINT}
+      depends_on:
+        - looker-db
+      links:
+        - looker-db
+
+  looker-db:
+      container_name: looker-db
+      build: 
+        context: ./services/looker/project/db_creation
+        dockerfile: Dockerfile
+      ports:
+        - 5434:5431
+      environment:
+        - POSTGRES_LOOKER=postgres
+        - POSTGRES_PASSWORD=postgres
 
   github-service:
     container_name: github-service
