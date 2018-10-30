@@ -10,6 +10,7 @@ class BaseConfig:
     EXCEPTIONS = []
 
 
+
 class DevelopmentConfig(BaseConfig):
     """Development configuration"""
     DEBUG = True
@@ -23,6 +24,7 @@ class TestingConfig(BaseConfig):
         'test_exception_user'
     ]
     GITHUB_ORG = os.environ.get('GITHUB_ORG', 'pallets')
+
 
 
 class ProductionConfig(BaseConfig):

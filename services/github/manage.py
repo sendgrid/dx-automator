@@ -7,6 +7,7 @@ from project import create_app
 app = create_app()
 manager = Manager(app)
 
+
 @manager.command
 def test():
     """Runs the unit tests without test coverage."""
@@ -15,6 +16,7 @@ def test():
     if result.wasSuccessful():
         return 0
     return 1
+
 
 if __name__ == '__main__':
     manager.run()

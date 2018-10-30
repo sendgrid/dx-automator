@@ -3,6 +3,7 @@ import unittest
 from flask import current_app
 from flask_testing import TestCase
 from project import create_app
+
 app = create_app()
 
 
@@ -16,6 +17,7 @@ class TestDevelopmentConfig(TestCase):
         self.assertIsNotNone(current_app)
 
 
+
 class TestTestingConfig(TestCase):
     def create_app(self):
         app.config.from_object('project.config.TestingConfig')
@@ -25,6 +27,7 @@ class TestTestingConfig(TestCase):
         self.assertFalse(app.config['DEBUG'])
         self.assertTrue(app.config['TESTING'])
         self.assertTrue(app.config['EXCEPTIONS'])
+
 
 
 class TestProductionConfig(TestCase):
