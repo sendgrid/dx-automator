@@ -6,6 +6,10 @@ Please check out the [development branch](https://github.com/sendgrid/dx-automat
 
 We will update this README and the master branch, as well as deploy the code to pypi once the MVP is ready!
 
+# Announcements
+
+**NEW:** If you're a software engineer who is passionate about #DeveloperExperience and/or #OpenSource, [this is an incredible opportunity to join our #DX team](https://sendgrid.com/careers/role/1421152/?gh_jid=1421152) as a Developer Experience Engineer and work with [@thinkingserious](https://github.com/thinkingserious) and [@aroach](https://github.com/aroach)! Tell your friends :)
+
 ## Contributing
 Everyone who participates in our repo is expected to comply with our [Code of Conduct](./CODE_OF_CONDUCT).
 
