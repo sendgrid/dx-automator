@@ -27,7 +27,7 @@ def is_member(username):
         return jsonify(response_object), status_code
     except AttributeError:
         return "GITHUB_TOKEN may not be valid", 400
-    
+
 
 @github_blueprint.route('/github/members', methods=['GET'])
 def get_all_members():
@@ -45,4 +45,3 @@ def get_all_members():
     except AttributeError:
         status_code = 400
         return "GITHUB_TOKEN may not be valid", status_code
-    

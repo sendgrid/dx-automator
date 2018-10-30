@@ -3,8 +3,8 @@
 from project import db
 from datetime import datetime
 
+
 class Task(db.Model):
-    
     __tablename__ = "tasks"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -28,9 +28,9 @@ class Task(db.Model):
     date_multiplier = db.Column(db.Integer, nullable=False)
 
     def __init__(self, creator, link, title="", due_date=None, task_type="", category="",
-    maintainer=None, language=None, customers_count=1, estimated_custmomer_points=None,
-    estimated_points=None, impact=None, reach=1, effort=None, confidence="",
-    date_multiplier=1):
+                 maintainer=None, language=None, customers_count=1, estimated_custmomer_points=None,
+                 estimated_points=None, impact=None, reach=1, effort=None, confidence="",
+                 date_multiplier=1):
         self.creator = creator
         self.link = link
         self.title = title

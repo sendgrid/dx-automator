@@ -2,12 +2,13 @@ import json
 
 from project.tests.base import BaseTestCase
 
+
 class TestGitHubService(BaseTestCase):
     """Tests for the GitHub Service."""
 
     def test_is_member(self):
         """Ensure the user is a member of your GitHub organization."""
-        #TODO: This should be configurable
+        # TODO: This should be configurable
         test_users = [
             'mbernier',
             'thinkingserious',
@@ -26,7 +27,7 @@ class TestGitHubService(BaseTestCase):
 
     def test_get_all_members(self):
         """Ensure all the users are a member of your GitHub organization."""
-        #TODO: This should be configurable
+        # TODO: This should be configurable
         test_users = [
             'mbernier',
             'thinkingserious',
@@ -36,5 +37,3 @@ class TestGitHubService(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode())
         self.assertEqual(test_users, json.loads(response.data.decode()))
-       
-

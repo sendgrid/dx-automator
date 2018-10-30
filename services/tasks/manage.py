@@ -11,7 +11,6 @@ from flask_migrate import MigrateCommand
 from project import create_app, db
 from project.api.models import Task
 
-
 COV = coverage.coverage(
     branch=True,
     include='project/*',
@@ -22,7 +21,6 @@ COV = coverage.coverage(
     ]
 )
 COV.start()
-
 
 app = create_app()
 manager = Manager(app)
@@ -75,7 +73,7 @@ def seed_db():
         creator="anshul",
         link="anshulsinghal.me",
         title="Second test issue",
-        due_date=datetime(2018,3,20)
+        due_date=datetime(2018, 3, 20)
     ))
     db.session.commit()
 
