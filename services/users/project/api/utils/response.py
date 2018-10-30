@@ -5,7 +5,6 @@ def response_json_ok(json):
     :param json: object to be sent on HTTP body
     :return response: tuple representing the HTTP response package
     """
-
     return _make_json_response(json, 200)
 
 def response_json_created(json):
@@ -15,9 +14,7 @@ def response_json_created(json):
     :param json: object to be sent on HTTP body
     :return response: tuple representing the HTTP response package
     """
-
     return _make_json_response(json, 201)
-
 
 def response_json_bad_request(json):
     """Creates a tuple representing the HTTP package to
@@ -26,7 +23,6 @@ def response_json_bad_request(json):
     :param json: object to be sent on HTTP body
     :return response: tuple representing the HTTP response package
     """
-
     return _make_json_response(json, 400)
 
 
@@ -37,7 +33,6 @@ def response_json_unauthorized(json):
     :param json: object to be sent on HTTP body
     :return response: tuple representing the HTTP response package
     """
-
     return _make_json_response(json, 401)
 
 
@@ -48,7 +43,6 @@ def response_json_not_found(json):
     :param json: object to be sent on HTTP body
     :return response: tuple representing the HTTP response package
     """
-
     return _make_json_response(json, 404)
 
 
@@ -60,5 +54,4 @@ def _make_json_response(json, status):
     :param status: status code
     :return response: tuple representing the HTTP response package
     """
-
-  return json, status, {'Content-Type': 'application/json'}
+    return json, status, {'Content-Type': 'application/json'}
