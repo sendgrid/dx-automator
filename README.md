@@ -2,20 +2,20 @@
 
 This tool is intended to help make managing multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams. 
 
-Please check out the [development branch](https://github.com/sendgrid/dx-automator/tree/development) to see what's going on.
-
-We will update this README and the master branch, as well as deploy the code to pypi once the MVP is ready!
+We will deploy the code to pypi once the MVP is ready. Thank you for your support!
 
 # Announcements
 
 **NEW:** If you're a software engineer who is passionate about #DeveloperExperience and/or #OpenSource, [this is an incredible opportunity to join our #DX team](https://sendgrid.com/careers/role/1421152/?gh_jid=1421152) as a Developer Experience Engineer and work with [@thinkingserious](https://github.com/thinkingserious) and [@aroach](https://github.com/aroach)! Tell your friends :)
 
 ## Contributing
+
 Everyone who participates in our repo is expected to comply with our [Code of Conduct](./CODE_OF_CONDUCT).
 
 We welcome [contributions](./CONTRIBUTING.md) in the form of issues, pull requests and code reviews. Or you can simply shoot us an [email](mailto:dx@sendgrid.com).
 
 ## Attributions
+
 We believe in open source and want to give credit where it's due. We used the amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting a solid foundation using flask, docker, and (eventually) node and react. From this tutorial, we began to build and iterate.
 
 ## Usage - Local
@@ -34,7 +34,6 @@ Setup your environment variables:
 cp ./services/github/.env_sample ./services/github/.env
 cp ./services/looker/.env_sample ./services/github/.env
 ```
-
 
 Install:
 
