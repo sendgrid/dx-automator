@@ -1,5 +1,3 @@
-import os
-
 from flask import Blueprint, jsonify, request
 
 from project.api.looker_api_handler import build_handler
