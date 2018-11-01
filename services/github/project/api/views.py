@@ -29,6 +29,7 @@ def ping_pong():
 def is_member(username):
     """Check if user is a member of your GitHub organization"""
     github_org = current_app.config['GITHUB_ORG']
+    username = '"' + username + '"'
     query = f"""query {{
         user(login:{username}){{
             organization(login:{github_org}) {{
