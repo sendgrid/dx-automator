@@ -72,3 +72,9 @@ class TestGitHubService(BaseTestCase):
         response = self.client.get(f'github/members')
         self.assertEqual(response.status_code, 400)
         self.app.config['GITHUB_TOKEN'] = token
+
+    def test_get_all_open_prs(self):
+        """Get all the PRs for the chosen github repo."""
+        test_repo = 'sendgrid-python'
+        response = self.client.get(f'github/open_pr_urls/{test_repo}')
+        self.assertEqual(response.status_code, 200)
