@@ -52,6 +52,7 @@ def pull_looks(l: str):
         print("{} is not a legal look id".format(l))
     else:
         services[l].cache_look()
+        print(l)
         print(service.db_cache.db_model.query.all())
 
 
