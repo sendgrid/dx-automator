@@ -66,13 +66,13 @@ def get_all_members():
         query = f"""query{{
             organization(login: {github_org}){{
                 members(first: 50 after: {end_cursor}){{
-                nodes{{
-                    login
-                }}
-                pageInfo{{
-                    endCursor
-                    hasNextPage
-                }}
+                    nodes{{
+                        login
+                    }}
+                    pageInfo{{
+                        endCursor
+                        hasNextPage
+                    }}
                 }}
             }}
             }}"""
@@ -84,8 +84,8 @@ def get_all_members():
             for member in result.get('nodes'):
                 members.append(member.get('login'))
             has_next_page = result.get('pageInfo').get('hasNextPage')
-            if has_next_page:
+            if has_next_page == True:
                 end_cursor = f'"{result["pageInfo"]["endCursor"]}"'
         else:
             break
-        return jsonify(members), 200
+    return jsonify(members), 200
