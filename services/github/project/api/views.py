@@ -63,7 +63,6 @@ def get_all_members():
     has_next_page = True
     github_org = current_app.config['GITHUB_ORG']
     while has_next_page:
-        print("Iteration ")
         query = f"""query{{
             organization(login: {github_org}){{
                 members(first: 50 after: {end_cursor}){{
@@ -90,3 +89,41 @@ def get_all_members():
         else:
             break
     return jsonify(members), 200
+
+@github_blueprint.route('/github/open_pr_urls/<repo_name>', methods=['GET'])
+def get_all_open_prs(repo_name):
+    """Get the URLs of all open PRs in the given repo"""
+    repo_name = '"' + repo_name + '"'
+    urls = list()
+    end_cursor = ''
+    has_next_page = True
+    github_org = current_app.config['GITHUB_ORG']
+    while has_next_page:
+        query = f"""query{{
+            organization(login: {github_org}){{
+                repository(name: {repo_name}){{
+                    pullRequests(first: 50, states: OPEN, after: {end_cursor}){{
+                        nodes{{
+                            url
+                        }}
+                        pageInfo{{
+                            endCursor
+                            hasNextPage
+                        }}
+                    }}
+                }}
+            }}
+            }}"""
+        result, status = run_query(query)
+        if not status:
+            return "GITHUB_TOKEN may not be valid", 400
+        elif result:
+            result = result.get('organization').get('repository').get('pullRequests')
+            for url in result.get('nodes'):
+                urls.append(url.get('url'))
+            has_next_page = result.get('pageInfo').get('hasNextPage')
+            if has_next_page == True:
+                end_cursor = f'"{result["pageInfo"]["endCursor"]}"'
+        else:
+            break
+    return jsonify(urls), 200
