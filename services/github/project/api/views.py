@@ -1,5 +1,7 @@
-from flask import Blueprint, jsonify, current_app
+from flask import Blueprint, jsonify, current_app, request
 import requests
+import sys
+import json
 
 github_blueprint = Blueprint('github', __name__)
 
@@ -63,10 +65,9 @@ def get_all_members():
     has_next_page = True
     github_org = current_app.config['GITHUB_ORG']
     while has_next_page:
-        print("Iteration ")
         query = f"""query{{
             organization(login: {github_org}){{
-                members(first: 50 after: {end_cursor}){{
+                members(first: 100 after: {end_cursor}){{
                     nodes{{
                         login
                     }}
@@ -90,3 +91,101 @@ def get_all_members():
         else:
             break
     return jsonify(members), 200
+
+# labels must be a list of strings
+# TODO: should be able to select from a data range
+@github_blueprint.route('/github/prs', methods=['GET'])
+def get_prs():
+    """Get all of the PRs with a given list of labels from a particular repo"""
+    prs = list()
+    labels = list()
+    repo = request.args.get('repo', type = str)
+    list_of_labels = request.args.getlist('labels', type = str)
+    for label in list_of_labels:
+        print(label, file=sys.stderr)
+        try:
+            labels.append(label)
+        except:
+            continue
+    end_cursor = ''
+    has_next_page = True
+    github_org = current_app.config['GITHUB_ORG']
+    repo = '"' + repo + '"'
+    while has_next_page:
+        query = f"""query{{
+            organization(login: "{github_org}") {{
+                repository(name: {repo}) {{
+                pullRequests(first: 100, states: [OPEN, MERGED, CLOSED], labels: {json.dumps(labels)}, after: {end_cursor}) {{
+                    nodes {{
+                        url
+                        state
+                        createdAt
+                        reviews(first: 10) {{
+                            nodes {{
+                                author {{
+                                    login
+                                }}
+                            }}
+                        }}
+                        author {{
+                            login
+                        }}
+                        labels(first: 10) {{
+                            edges {{
+                                node {{
+                                    name
+                                }}
+                            }}
+                        }}
+                        }}
+                        pageInfo {{
+                            endCursor
+                            hasNextPage
+                        }}
+                    }}
+                }}
+            }}
+        }}"""
+        result, status = run_query(query)
+        if not status:
+            return "GITHUB_TOKEN may not be valid", 400
+        elif result:
+            result = result.get('organization').get('repository').get('pullRequests')
+            for r in result.get('nodes'):
+                pr = dict()
+                pr['url'] = r.get('url')
+                pr['createdAt'] = r.get('createdAt')
+                pr['author'] = r.get('author').get('login')
+                pr['points'] = get_points(r.get('labels').get('edges'))
+                pr['reviewers'] = get_reviewers(r.get('reviews').get('nodes'), pr['author'])
+                pr['reviewer_points'] = len(pr['reviewers']) * (pr['points'] / 2)
+                prs.append(pr)
+            has_next_page = result.get('pageInfo').get('hasNextPage')
+            if has_next_page == True:
+                end_cursor = f'"{result["pageInfo"]["endCursor"]}"'
+        else:
+            break
+    return jsonify(prs), 200
+
+def get_points(labels):
+    for label in labels:
+        if label.get('node').get('name') == 'difficulty: easy':
+            return 1
+        if label.get('node').get('name')  == 'difficulty: medium':
+            return 3
+        if label.get('node').get('name')  == 'difficulty: hard':
+            return 7
+        if label.get('node').get('name')  == 'difficulty: very hard':
+            return 15 
+    return 0
+
+EXCLUSIONS = [
+    'thinkingserious', 'ksigler7', 'Whatthefoxsays'
+]
+
+def get_reviewers(reviewers, author):
+    logins = list()
+    for reviewer in reviewers:
+        if (reviewer.get('author').get('login') != author) and (reviewer.get('author').get('login') not in EXCLUSIONS):
+            logins.append(reviewer.get('author').get('login'))
+    return list(set(logins))
