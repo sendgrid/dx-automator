@@ -1,6 +1,7 @@
 from python_http_client import Client
 import os
 import json
+from collections import defaultdict
 
 all_repos = [
     'sendgrid-nodejs',
@@ -42,6 +43,7 @@ def get_prs(repo):
 total_hacktoberfest_approved_prs = 0.0
 total_points_earned = 0.0
 total_contributors = list()
+points_earned = defaultdict(int)
 for repo in all_repos:
     repo_points_earned = 0.0
     repo_hacktoberfest_approved_prs = 0.0
@@ -54,10 +56,12 @@ for repo in all_repos:
             reviewers = ', '.join(str(x) for x in pr['reviewers'])
             print("{}, there were {} reviewers ({}) on this PR, worth {} points".format(text, num_reviewers, reviewers, pr['reviewer_points']))
             for reviewer in pr['reviewers']:
+                points_earned[reviewer] += pr['points'] / 2
                 total_contributors.append(reviewer)
                 repo_contributors.append(reviewer)
         else:
             print(text)
+        points_earned[pr['author']] += pr['points']
         total_points_earned += pr['points'] + pr['reviewer_points']
         repo_points_earned += pr['points'] + pr['reviewer_points']
         total_contributors.append(pr['author'])
@@ -71,4 +75,8 @@ for repo in all_repos:
 
 print("There were a total of {} unique contributors ".format(len(list(set(repo_contributors)))))
 print("There are a total of {} qualifying PRs".format(total_hacktoberfest_approved_prs))
-print("For a total of {} points earned".format(total_points_earned))
+print("For a total of {} points earned\n".format(total_points_earned))
+
+sorted_points_earned = [(k, points_earned[k]) for k in sorted(points_earned, key=points_earned.__getitem__, reverse=True)]
+for author, points in sorted_points_earned:
+    print("{} earned {} points".format(author, float(points)))

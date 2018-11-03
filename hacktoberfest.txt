@@ -5,7 +5,7 @@ https://github.com/sendgrid/sendgrid-nodejs/pull/757 by GuyKh is worth 1 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/759 by reedsa is worth 3 points, there were 1 reviewers (Ditofry) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/763 by aslafy-z is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/765 by ssiddhantsharma is worth 3 points
-https://github.com/sendgrid/sendgrid-nodejs/pull/767 by tony-ho is worth 3 points, there were 2 reviewers (reedsa, rafaelalmeidatk) on this PR, worth 3.0 points
+https://github.com/sendgrid/sendgrid-nodejs/pull/767 by tony-ho is worth 3 points, there were 2 reviewers (rafaelalmeidatk, reedsa) on this PR, worth 3.0 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/768 by valerianpereira is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/770 by aslafy-z is worth 3 points, there were 1 reviewers (reedsa) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/771 by aslafy-z is worth 3 points, there were 1 reviewers (Ditofry) on this PR, worth 1.5 points
@@ -24,7 +24,7 @@ https://github.com/sendgrid/sendgrid-nodejs/pull/795 by daniloff200 is worth 3 p
 https://github.com/sendgrid/sendgrid-nodejs/pull/797 by anand2131993 is worth 7 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/798 by kylearoberts is worth 1 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/802 by imagentleman is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
-https://github.com/sendgrid/sendgrid-nodejs/pull/803 by tony-ho is worth 1 points, there were 2 reviewers (reedsa, ashishpatelcs) on this PR, worth 1.0 points
+https://github.com/sendgrid/sendgrid-nodejs/pull/803 by tony-ho is worth 1 points, there were 2 reviewers (ashishpatelcs, reedsa) on this PR, worth 1.0 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/804 by aroach is worth 15 points, there were 1 reviewers (reedsa) on this PR, worth 7.5 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/806 by arguiot is worth 7 points
 https://github.com/sendgrid/sendgrid-nodejs/pull/809 by aslafy-z is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
@@ -358,7 +358,7 @@ https://github.com/sendgrid/smtpapi-python/pull/70 by myzeprog is worth 3 points
 https://github.com/sendgrid/smtpapi-python/pull/72 by ssiddhantsharma is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/smtpapi-python/pull/75 by StrikerRUS is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/smtpapi-python/pull/77 by daniloff200 is worth 3 points
-https://github.com/sendgrid/smtpapi-python/pull/79 by anatolyyyyyy is worth 1 points, there were 2 reviewers (hugovk, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/smtpapi-python/pull/79 by anatolyyyyyy is worth 1 points, there were 2 reviewers (misterdorm, hugovk) on this PR, worth 1.0 points
 https://github.com/sendgrid/smtpapi-python/pull/80 by crnbrdrck is worth 7 points, there were 1 reviewers (misterdorm) on this PR, worth 3.5 points
 https://github.com/sendgrid/smtpapi-python/pull/82 by hugovk is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/smtpapi-python/pull/83 by hugovk is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
@@ -366,7 +366,7 @@ https://github.com/sendgrid/smtpapi-python/pull/84 by hugovk is worth 1 points, 
 https://github.com/sendgrid/smtpapi-python/pull/85 by hugovk is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
 https://github.com/sendgrid/smtpapi-python/pull/86 by hugovk is worth 3 points, there were 1 reviewers (42B) on this PR, worth 1.5 points
 https://github.com/sendgrid/smtpapi-python/pull/87 by vkmrishad is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
-https://github.com/sendgrid/smtpapi-python/pull/88 by vinayak42 is worth 1 points, there were 2 reviewers (hugovk, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/smtpapi-python/pull/88 by vinayak42 is worth 1 points, there were 2 reviewers (misterdorm, hugovk) on this PR, worth 1.0 points
 https://github.com/sendgrid/smtpapi-python/pull/93 by krischoi07 is worth 1 points
 https://github.com/sendgrid/smtpapi-python/pull/98 by dhruvhacks is worth 1 points
 https://github.com/sendgrid/smtpapi-python/pull/99 by mtroiani is worth 1 points
@@ -486,7 +486,7 @@ https://github.com/sendgrid/python-http-client/pull/96 by nathan78906 is worth 1
 https://github.com/sendgrid/python-http-client/pull/99 by arghyaiitb is worth 3 points
 https://github.com/sendgrid/python-http-client/pull/102 by georgeyk is worth 7 points, there were 1 reviewers (misterdorm) on this PR, worth 3.5 points
 https://github.com/sendgrid/python-http-client/pull/104 by ely-alamillo is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
-https://github.com/sendgrid/python-http-client/pull/105 by StrikerRUS is worth 1 points, there were 2 reviewers (hugovk, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/python-http-client/pull/105 by StrikerRUS is worth 1 points, there were 2 reviewers (misterdorm, hugovk) on this PR, worth 1.0 points
 https://github.com/sendgrid/python-http-client/pull/107 by myzeprog is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/python-http-client/pull/111 by vkmrishad is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/python-http-client/pull/112 by shivanshs9 is worth 7 points, there were 1 reviewers (misterdorm) on this PR, worth 3.5 points
@@ -630,7 +630,7 @@ https://github.com/sendgrid/dx-mobile/pull/14 by Varpie is worth 3 points, there
 https://github.com/sendgrid/dx-mobile/pull/15 by agnesjang98 is worth 3 points
 https://github.com/sendgrid/dx-mobile/pull/16 by MaskyS is worth 3 points, there were 1 reviewers (agnesjang98) on this PR, worth 1.5 points
 https://github.com/sendgrid/dx-mobile/pull/17 by MaskyS is worth 3 points
-https://github.com/sendgrid/dx-mobile/pull/19 by Millsky is worth 1 points, there were 2 reviewers (jonjenkins, agnesjang98) on this PR, worth 1.0 points
+https://github.com/sendgrid/dx-mobile/pull/19 by Millsky is worth 1 points, there were 2 reviewers (agnesjang98, jonjenkins) on this PR, worth 1.0 points
 https://github.com/sendgrid/dx-mobile/pull/20 by michaelscof is worth 1 points, there were 1 reviewers (agnesjang98) on this PR, worth 0.5 points
 https://github.com/sendgrid/dx-mobile/pull/21 by bertilhatt is worth 1 points, there were 1 reviewers (agnesjang98) on this PR, worth 0.5 points
 https://github.com/sendgrid/dx-mobile/pull/23 by MaskyS is worth 1 points, there were 1 reviewers (agnesjang98) on this PR, worth 0.5 points
@@ -644,26 +644,26 @@ For a total of 41.0 points earned for repo dx-mobile
 
 https://github.com/sendgrid/ui-components/pull/270 by stevekinney is worth 1 points, there were 1 reviewers (chrischalstrom) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/273 by rahulkumaran is worth 1 points, there were 3 reviewers (Ditofry, reedsa, productdana) on this PR, worth 1.5 points
-https://github.com/sendgrid/ui-components/pull/274 by reedsa is worth 1 points, there were 2 reviewers (chrischalstrom, two24studios) on this PR, worth 1.0 points
-https://github.com/sendgrid/ui-components/pull/275 by reedsa is worth 1 points, there were 3 reviewers (chrischalstrom, two24studios, GiantRobots) on this PR, worth 1.5 points
+https://github.com/sendgrid/ui-components/pull/274 by reedsa is worth 1 points, there were 2 reviewers (two24studios, chrischalstrom) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/275 by reedsa is worth 1 points, there were 3 reviewers (two24studios, chrischalstrom, GiantRobots) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/276 by mauricetmeyer is worth 1 points, there were 1 reviewers (Ditofry) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/277 by chrischalstrom is worth 1 points, there were 3 reviewers (reedsa, two24studios, rachelmulligan) on this PR, worth 1.5 points
-https://github.com/sendgrid/ui-components/pull/278 by chrischalstrom is worth 1 points, there were 2 reviewers (alexabreu, two24studios) on this PR, worth 1.0 points
-https://github.com/sendgrid/ui-components/pull/279 by two24studios is worth 1 points, there were 2 reviewers (alexabreu, chrischalstrom) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/277 by chrischalstrom is worth 1 points, there were 3 reviewers (two24studios, rachelmulligan, reedsa) on this PR, worth 1.5 points
+https://github.com/sendgrid/ui-components/pull/278 by chrischalstrom is worth 1 points, there were 2 reviewers (two24studios, alexabreu) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/279 by two24studios is worth 1 points, there were 2 reviewers (chrischalstrom, alexabreu) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/280 by Progyan1997 is worth 1 points, there were 1 reviewers (chrischalstrom) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/281 by reedsa is worth 1 points, there were 2 reviewers (Ditofry, chrischalstrom) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/282 by chrischalstrom is worth 3 points, there were 2 reviewers (Ditofry, two24studios) on this PR, worth 3.0 points
 https://github.com/sendgrid/ui-components/pull/283 by Ditofry is worth 3 points, there were 1 reviewers (chrischalstrom) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/284 by rawkode is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/285 by rawkode is worth 3 points, there were 2 reviewers (reedsa, stevekinney) on this PR, worth 3.0 points
+https://github.com/sendgrid/ui-components/pull/285 by rawkode is worth 3 points, there were 2 reviewers (stevekinney, reedsa) on this PR, worth 3.0 points
 https://github.com/sendgrid/ui-components/pull/286 by GiantRobots is worth 3 points, there were 1 reviewers (productdana) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/288 by duncanleung is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/290 by two24studios is worth 1 points, there were 1 reviewers (GiantRobots) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/291 by two24studios is worth 3 points, there were 1 reviewers (Ditofry) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/292 by two24studios is worth 1 points, there were 1 reviewers (GiantRobots) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/293 by inyee786 is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/294 by chrischalstrom is worth 1 points, there were 2 reviewers (reedsa, two24studios) on this PR, worth 1.0 points
-https://github.com/sendgrid/ui-components/pull/295 by reedsa is worth 1 points, there were 2 reviewers (chrischalstrom, two24studios) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/294 by chrischalstrom is worth 1 points, there were 2 reviewers (two24studios, reedsa) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/295 by reedsa is worth 1 points, there were 2 reviewers (two24studios, chrischalstrom) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/296 by anatolyyyyyy is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/298 by chrischalstrom is worth 3 points, there were 1 reviewers (reedsa) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/299 by chrischalstrom is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
@@ -673,7 +673,7 @@ https://github.com/sendgrid/ui-components/pull/302 by sanjaysingh is worth 1 poi
 https://github.com/sendgrid/ui-components/pull/303 by vyaspranjal33 is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/304 by mmissey is worth 3 points, there were 1 reviewers (alexabreu) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/305 by mmissey is worth 1 points, there were 1 reviewers (alexabreu) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/306 by mmissey is worth 1 points, there were 2 reviewers (alexabreu, reedsa) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/306 by mmissey is worth 1 points, there were 2 reviewers (reedsa, alexabreu) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/307 by mmissey is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/309 by rahulkumaran is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 There were a total of 21 unique contributors for repo ui-components
@@ -737,7 +737,7 @@ https://github.com/sendgrid/docs/pull/4046 by StrikerRUS is worth 1 points
 https://github.com/sendgrid/docs/pull/4047 by StrikerRUS is worth 1 points
 https://github.com/sendgrid/docs/pull/4048 by StrikerRUS is worth 1 points
 https://github.com/sendgrid/docs/pull/4049 by StrikerRUS is worth 1 points
-https://github.com/sendgrid/docs/pull/4050 by danimart1991 is worth 3 points
+https://github.com/sendgrid/docs/pull/4050 by danimart1991 is worth 3 points, there were 1 reviewers (aroach) on this PR, worth 1.5 points
 https://github.com/sendgrid/docs/pull/4051 by mauricetmeyer is worth 1 points
 https://github.com/sendgrid/docs/pull/4052 by jessicaannpopp is worth 1 points
 https://github.com/sendgrid/docs/pull/4053 by jessicaannpopp is worth 1 points
@@ -1164,8 +1164,8 @@ https://github.com/sendgrid/docs/pull/4711 by vk-sourcefuse is worth 1 points
 https://github.com/sendgrid/docs/pull/4712 by vk-sourcefuse is worth 1 points
 There were a total of 133 unique contributors for repo docs
 There are a total of 482.0 qualifying PRs for repo docs
-For a total of 761.0 points earned for repo docs
+For a total of 762.5 points earned for repo docs
 
 There were a total of 133 unique contributors 
 There are a total of 1060.0 qualifying PRs
-For a total of 2502.0 points earned
+For a total of 2503.5 points earned
