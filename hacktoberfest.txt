@@ -134,10 +134,10 @@ https://github.com/sendgrid/sendgrid-python/pull/616 by hugovk is worth 3 points
 https://github.com/sendgrid/sendgrid-python/pull/618 by cmccandless is worth 3 points
 https://github.com/sendgrid/sendgrid-python/pull/619 by cmccandless is worth 1 points
 https://github.com/sendgrid/sendgrid-python/pull/624 by rahulkumaran is worth 1 points
-https://github.com/sendgrid/sendgrid-python/pull/625 by themousepotato is worth 3 points
+https://github.com/sendgrid/sendgrid-python/pull/625 by themousepotato is worth 3 points, there were 1 reviewers (42B) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/626 by hugovk is worth 3 points
 https://github.com/sendgrid/sendgrid-python/pull/628 by Jeremyyang920 is worth 1 points
-https://github.com/sendgrid/sendgrid-python/pull/631 by cmccandless is worth 3 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 3.0 points
+https://github.com/sendgrid/sendgrid-python/pull/631 by cmccandless is worth 3 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 3.0 points
 https://github.com/sendgrid/sendgrid-python/pull/633 by vinayak42 is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/634 by StrikerRUS is worth 3 points
 https://github.com/sendgrid/sendgrid-python/pull/636 by mattjegan is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
@@ -146,13 +146,13 @@ https://github.com/sendgrid/sendgrid-python/pull/638 by vinayak42 is worth 1 poi
 https://github.com/sendgrid/sendgrid-python/pull/640 by xeon-zolt is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/641 by varundey is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/647 by arshadkazmi42 is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
-https://github.com/sendgrid/sendgrid-python/pull/652 by kylesalk is worth 7 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 7.0 points
+https://github.com/sendgrid/sendgrid-python/pull/652 by kylesalk is worth 7 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 7.0 points
 https://github.com/sendgrid/sendgrid-python/pull/653 by meahow is worth 7 points
 https://github.com/sendgrid/sendgrid-python/pull/654 by moshemeirelles is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/655 by ChatPion is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/656 by joshuadeguzman is worth 1 points
 https://github.com/sendgrid/sendgrid-python/pull/658 by moshemeirelles is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
-https://github.com/sendgrid/sendgrid-python/pull/660 by Taiters is worth 15 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 15.0 points
+https://github.com/sendgrid/sendgrid-python/pull/660 by Taiters is worth 15 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 15.0 points
 https://github.com/sendgrid/sendgrid-python/pull/663 by StrikerRUS is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/664 by dhoeric is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/665 by cmccandless is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
@@ -163,9 +163,9 @@ https://github.com/sendgrid/sendgrid-python/pull/672 by PyroclasticMayhem is wor
 https://github.com/sendgrid/sendgrid-python/pull/674 by jaykay12 is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/676 by imagentleman is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/677 by myzeprog is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
-https://github.com/sendgrid/sendgrid-python/pull/678 by jamietanna is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/sendgrid-python/pull/678 by jamietanna is worth 1 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 1.0 points
 https://github.com/sendgrid/sendgrid-python/pull/679 by Skchoudhary is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
-https://github.com/sendgrid/sendgrid-python/pull/681 by aslafy-z is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/sendgrid-python/pull/681 by aslafy-z is worth 1 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 1.0 points
 https://github.com/sendgrid/sendgrid-python/pull/682 by vinayak42 is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/683 by tulikavijay is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/687 by crweiner is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
@@ -173,29 +173,29 @@ https://github.com/sendgrid/sendgrid-python/pull/690 by bhavinjawade is worth 1 
 https://github.com/sendgrid/sendgrid-python/pull/692 by pyasi is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/694 by arguiot is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/695 by PatOConnor43 is worth 7 points, there were 1 reviewers (misterdorm) on this PR, worth 3.5 points
-https://github.com/sendgrid/sendgrid-python/pull/697 by vkmrishad is worth 3 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 3.0 points
-https://github.com/sendgrid/sendgrid-python/pull/702 by alxshelepenok is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
-https://github.com/sendgrid/sendgrid-python/pull/703 by shendrekbharath is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/sendgrid-python/pull/697 by vkmrishad is worth 3 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 3.0 points
+https://github.com/sendgrid/sendgrid-python/pull/702 by alxshelepenok is worth 1 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 1.0 points
+https://github.com/sendgrid/sendgrid-python/pull/703 by shendrekbharath is worth 1 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 1.0 points
 https://github.com/sendgrid/sendgrid-python/pull/706 by vinayak42 is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/707 by s-Hale is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/709 by rawkode is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/sendgrid-python/pull/711 by rawkode is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
-https://github.com/sendgrid/sendgrid-python/pull/714 by agarwalrounak is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/sendgrid-python/pull/714 by agarwalrounak is worth 1 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 1.0 points
 https://github.com/sendgrid/sendgrid-python/pull/715 by PyroclasticMayhem is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
-https://github.com/sendgrid/sendgrid-python/pull/716 by ItsMeWithTheFace is worth 15 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 15.0 points
+https://github.com/sendgrid/sendgrid-python/pull/716 by ItsMeWithTheFace is worth 15 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 15.0 points
 https://github.com/sendgrid/sendgrid-python/pull/718 by Rishabh04-02 is worth 1 points
 https://github.com/sendgrid/sendgrid-python/pull/719 by Skchoudhary is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/720 by f1x3d is worth 7 points
 https://github.com/sendgrid/sendgrid-python/pull/722 by rahulpuroht is worth 1 points
 https://github.com/sendgrid/sendgrid-python/pull/727 by hugovk is worth 1 points
 https://github.com/sendgrid/sendgrid-python/pull/728 by browniebroke is worth 7 points
-https://github.com/sendgrid/sendgrid-python/pull/729 by pyasi is worth 7 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 7.0 points
+https://github.com/sendgrid/sendgrid-python/pull/729 by pyasi is worth 7 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 7.0 points
 https://github.com/sendgrid/sendgrid-python/pull/730 by myzeprog is worth 1 points, there were 1 reviewers (misterdorm) on this PR, worth 0.5 points
 https://github.com/sendgrid/sendgrid-python/pull/731 by gy741 is worth 3 points
 https://github.com/sendgrid/sendgrid-python/pull/732 by Sarthakagarwal22 is worth 3 points
 There were a total of 48 unique contributors for repo sendgrid-python
 There are a total of 64.0 qualifying PRs for repo sendgrid-python
-For a total of 265.5 points earned for repo sendgrid-python
+For a total of 267.0 points earned for repo sendgrid-python
 
 https://github.com/sendgrid/sendgrid-java/pull/358 by derjayjay is worth 3 points
 https://github.com/sendgrid/sendgrid-java/pull/436 by marshallpierce is worth 3 points
@@ -272,7 +272,7 @@ https://github.com/sendgrid/sendgrid-go/pull/315 by osule is worth 3 points, the
 https://github.com/sendgrid/sendgrid-go/pull/316 by alxshelepenok is worth 7 points
 https://github.com/sendgrid/sendgrid-go/pull/317 by eransevi is worth 3 points
 https://github.com/sendgrid/sendgrid-go/pull/318 by alxshelepenok is worth 7 points
-https://github.com/sendgrid/sendgrid-go/pull/319 by omar-h is worth 7 points
+https://github.com/sendgrid/sendgrid-go/pull/319 by omarhachach is worth 7 points
 https://github.com/sendgrid/sendgrid-go/pull/321 by gy741 is worth 3 points
 https://github.com/sendgrid/sendgrid-go/pull/322 by alimasyhur is worth 7 points
 https://github.com/sendgrid/sendgrid-go/pull/323 by gabrielclima is worth 7 points
@@ -362,8 +362,8 @@ https://github.com/sendgrid/smtpapi-python/pull/79 by anatolyyyyyy is worth 1 po
 https://github.com/sendgrid/smtpapi-python/pull/80 by crnbrdrck is worth 7 points, there were 1 reviewers (misterdorm) on this PR, worth 3.5 points
 https://github.com/sendgrid/smtpapi-python/pull/82 by hugovk is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/smtpapi-python/pull/83 by hugovk is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
-https://github.com/sendgrid/smtpapi-python/pull/84 by hugovk is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
-https://github.com/sendgrid/smtpapi-python/pull/85 by hugovk is worth 1 points, there were 2 reviewers (42B, misterdorm) on this PR, worth 1.0 points
+https://github.com/sendgrid/smtpapi-python/pull/84 by hugovk is worth 1 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 1.0 points
+https://github.com/sendgrid/smtpapi-python/pull/85 by hugovk is worth 1 points, there were 2 reviewers (misterdorm, 42B) on this PR, worth 1.0 points
 https://github.com/sendgrid/smtpapi-python/pull/86 by hugovk is worth 3 points, there were 1 reviewers (42B) on this PR, worth 1.5 points
 https://github.com/sendgrid/smtpapi-python/pull/87 by vkmrishad is worth 3 points, there were 1 reviewers (misterdorm) on this PR, worth 1.5 points
 https://github.com/sendgrid/smtpapi-python/pull/88 by vinayak42 is worth 1 points, there were 2 reviewers (misterdorm, hugovk) on this PR, worth 1.0 points
@@ -630,7 +630,7 @@ https://github.com/sendgrid/dx-mobile/pull/14 by Varpie is worth 3 points, there
 https://github.com/sendgrid/dx-mobile/pull/15 by agnesjang98 is worth 3 points
 https://github.com/sendgrid/dx-mobile/pull/16 by MaskyS is worth 3 points, there were 1 reviewers (agnesjang98) on this PR, worth 1.5 points
 https://github.com/sendgrid/dx-mobile/pull/17 by MaskyS is worth 3 points
-https://github.com/sendgrid/dx-mobile/pull/19 by Millsky is worth 1 points, there were 2 reviewers (agnesjang98, jonjenkins) on this PR, worth 1.0 points
+https://github.com/sendgrid/dx-mobile/pull/19 by Millsky is worth 1 points, there were 2 reviewers (jonjenkins, agnesjang98) on this PR, worth 1.0 points
 https://github.com/sendgrid/dx-mobile/pull/20 by michaelscof is worth 1 points, there were 1 reviewers (agnesjang98) on this PR, worth 0.5 points
 https://github.com/sendgrid/dx-mobile/pull/21 by bertilhatt is worth 1 points, there were 1 reviewers (agnesjang98) on this PR, worth 0.5 points
 https://github.com/sendgrid/dx-mobile/pull/23 by MaskyS is worth 1 points, there were 1 reviewers (agnesjang98) on this PR, worth 0.5 points
@@ -643,26 +643,26 @@ There are a total of 14.0 qualifying PRs for repo dx-mobile
 For a total of 41.0 points earned for repo dx-mobile
 
 https://github.com/sendgrid/ui-components/pull/270 by stevekinney is worth 1 points, there were 1 reviewers (chrischalstrom) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/273 by rahulkumaran is worth 1 points, there were 3 reviewers (Ditofry, reedsa, productdana) on this PR, worth 1.5 points
+https://github.com/sendgrid/ui-components/pull/273 by rahulkumaran is worth 1 points, there were 3 reviewers (reedsa, Ditofry, productdana) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/274 by reedsa is worth 1 points, there were 2 reviewers (two24studios, chrischalstrom) on this PR, worth 1.0 points
-https://github.com/sendgrid/ui-components/pull/275 by reedsa is worth 1 points, there were 3 reviewers (two24studios, chrischalstrom, GiantRobots) on this PR, worth 1.5 points
+https://github.com/sendgrid/ui-components/pull/275 by reedsa is worth 1 points, there were 3 reviewers (GiantRobots, two24studios, chrischalstrom) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/276 by mauricetmeyer is worth 1 points, there were 1 reviewers (Ditofry) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/277 by chrischalstrom is worth 1 points, there were 3 reviewers (two24studios, rachelmulligan, reedsa) on this PR, worth 1.5 points
-https://github.com/sendgrid/ui-components/pull/278 by chrischalstrom is worth 1 points, there were 2 reviewers (two24studios, alexabreu) on this PR, worth 1.0 points
-https://github.com/sendgrid/ui-components/pull/279 by two24studios is worth 1 points, there were 2 reviewers (chrischalstrom, alexabreu) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/277 by chrischalstrom is worth 1 points, there were 3 reviewers (rachelmulligan, reedsa, two24studios) on this PR, worth 1.5 points
+https://github.com/sendgrid/ui-components/pull/278 by chrischalstrom is worth 1 points, there were 2 reviewers (alexabreu, two24studios) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/279 by two24studios is worth 1 points, there were 2 reviewers (alexabreu, chrischalstrom) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/280 by Progyan1997 is worth 1 points, there were 1 reviewers (chrischalstrom) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/281 by reedsa is worth 1 points, there were 2 reviewers (Ditofry, chrischalstrom) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/282 by chrischalstrom is worth 3 points, there were 2 reviewers (Ditofry, two24studios) on this PR, worth 3.0 points
 https://github.com/sendgrid/ui-components/pull/283 by Ditofry is worth 3 points, there were 1 reviewers (chrischalstrom) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/284 by rawkode is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/285 by rawkode is worth 3 points, there were 2 reviewers (stevekinney, reedsa) on this PR, worth 3.0 points
+https://github.com/sendgrid/ui-components/pull/285 by rawkode is worth 3 points, there were 2 reviewers (reedsa, stevekinney) on this PR, worth 3.0 points
 https://github.com/sendgrid/ui-components/pull/286 by GiantRobots is worth 3 points, there were 1 reviewers (productdana) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/288 by duncanleung is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/290 by two24studios is worth 1 points, there were 1 reviewers (GiantRobots) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/291 by two24studios is worth 3 points, there were 1 reviewers (Ditofry) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/292 by two24studios is worth 1 points, there were 1 reviewers (GiantRobots) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/293 by inyee786 is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/294 by chrischalstrom is worth 1 points, there were 2 reviewers (two24studios, reedsa) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/294 by chrischalstrom is worth 1 points, there were 2 reviewers (reedsa, two24studios) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/295 by reedsa is worth 1 points, there were 2 reviewers (two24studios, chrischalstrom) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/296 by anatolyyyyyy is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/298 by chrischalstrom is worth 3 points, there were 1 reviewers (reedsa) on this PR, worth 1.5 points
@@ -673,7 +673,7 @@ https://github.com/sendgrid/ui-components/pull/302 by sanjaysingh is worth 1 poi
 https://github.com/sendgrid/ui-components/pull/303 by vyaspranjal33 is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/304 by mmissey is worth 3 points, there were 1 reviewers (alexabreu) on this PR, worth 1.5 points
 https://github.com/sendgrid/ui-components/pull/305 by mmissey is worth 1 points, there were 1 reviewers (alexabreu) on this PR, worth 0.5 points
-https://github.com/sendgrid/ui-components/pull/306 by mmissey is worth 1 points, there were 2 reviewers (reedsa, alexabreu) on this PR, worth 1.0 points
+https://github.com/sendgrid/ui-components/pull/306 by mmissey is worth 1 points, there were 2 reviewers (alexabreu, reedsa) on this PR, worth 1.0 points
 https://github.com/sendgrid/ui-components/pull/307 by mmissey is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 https://github.com/sendgrid/ui-components/pull/309 by rahulkumaran is worth 1 points, there were 1 reviewers (reedsa) on this PR, worth 0.5 points
 There were a total of 21 unique contributors for repo ui-components
@@ -1166,6 +1166,350 @@ There were a total of 133 unique contributors for repo docs
 There are a total of 482.0 qualifying PRs for repo docs
 For a total of 762.5 points earned for repo docs
 
-There were a total of 133 unique contributors 
+There were a total of 343 unique contributors 
 There are a total of 1060.0 qualifying PRs
-For a total of 2503.5 points earned
+For a total of 2505.0 points earned
+
+mauricetmeyer earned 64.0 points
+misterdorm earned 59.0 points
+shinypenny31 earned 54.0 points
+hugovk earned 49.0 points
+aroach earned 39.0 points
+crweiner earned 36.0 points
+kylearoberts earned 35.0 points
+reedsa earned 32.0 points
+42B earned 30.0 points
+Gimly earned 30.0 points
+KoditkarVedant earned 30.0 points
+dhoeric earned 30.0 points
+peter279k earned 27.0 points
+StrikerRUS earned 24.0 points
+krischoi07 earned 22.0 points
+pushkyn earned 22.0 points
+ssiddhantsharma earned 21.0 points
+KirankumarAmbati earned 21.0 points
+tony-ho earned 21.0 points
+daniloff200 earned 21.0 points
+alxshelepenok earned 20.0 points
+duncanleung earned 20.0 points
+justinwhall earned 20.0 points
+agnesjang98 earned 19.0 points
+drespinoza earned 19.0 points
+dharmendra-lingaiah earned 18.0 points
+lpresgrove earned 18.0 points
+rahulpuroht earned 17.0 points
+wdharmana earned 16.0 points
+rawkode earned 16.0 points
+vkmrishad earned 15.0 points
+arshadkazmi42 earned 15.0 points
+Taiters earned 15.0 points
+RolandBurrows earned 15.0 points
+ItsMeWithTheFace earned 15.0 points
+Austry earned 15.0 points
+tachyons earned 14.0 points
+mollyfriederich earned 14.0 points
+Veith3n earned 14.0 points
+pxgamer earned 14.0 points
+cozyplanes earned 14.0 points
+kelseyenglish earned 13.0 points
+misantron earned 13.0 points
+aslafy-z earned 13.0 points
+abbas10m earned 13.0 points
+douglaslise earned 13.0 points
+arguiot earned 13.0 points
+extemporalgenome earned 13.0 points
+hmbrown64 earned 13.0 points
+renshuki earned 13.0 points
+myzeprog earned 12.0 points
+gy741 earned 11.0 points
+jmauerhan earned 11.0 points
+kplimack earned 11.0 points
+missybreck earned 11.0 points
+s-Hale earned 11.0 points
+productdana earned 11.0 points
+katieporter earned 11.0 points
+chrischalstrom earned 11.0 points
+jvogit earned 11.0 points
+anatolyyyyyy earned 11.0 points
+mptap earned 11.0 points
+RohanTalip earned 11.0 points
+michizhou earned 10.0 points
+music-mind earned 10.0 points
+FannyVieira earned 10.0 points
+anujs3 earned 10.0 points
+richbachman earned 10.0 points
+pyasi earned 10.0 points
+Varpie earned 10.0 points
+sccalabr earned 10.0 points
+cmccandless earned 10.0 points
+alimasyhur earned 10.0 points
+nathan78906 earned 10.0 points
+valerianpereira earned 9.0 points
+iamnishantmishra earned 9.0 points
+aytekk earned 9.0 points
+tanhengyeow earned 9.0 points
+luciajimenez earned 9.0 points
+Sarthakagarwal22 earned 9.0 points
+ajloria earned 9.0 points
+ely-alamillo earned 9.0 points
+Ditofry earned 9.0 points
+semijoelon earned 9.0 points
+robincher earned 9.0 points
+uppe-r earned 9.0 points
+rohan-techfreak earned 9.0 points
+inyee786 earned 8.0 points
+sendgrid-ryan earned 8.0 points
+PatOConnor43 earned 8.0 points
+ViniFarias earned 8.0 points
+vinayak42 earned 8.0 points
+Bharat123rox earned 8.0 points
+KhushalGupta earned 8.0 points
+eyewritecode earned 8.0 points
+anchepiece earned 8.0 points
+prathamsharma92 earned 8.0 points
+smikis earned 7.0 points
+bigblind earned 7.0 points
+seanmateer earned 7.0 points
+meahow earned 7.0 points
+dmitraver earned 7.0 points
+tkmarie earned 7.0 points
+two24studios earned 7.0 points
+TonPC64 earned 7.0 points
+yeoji earned 7.0 points
+geryjuhasz earned 7.0 points
+Deborah-Digges earned 7.0 points
+omarhachach earned 7.0 points
+rosariopfernandes earned 7.0 points
+aleien earned 7.0 points
+browniebroke earned 7.0 points
+techgaun earned 7.0 points
+Fabio-Alexander-Bueno earned 7.0 points
+MaskyS earned 7.0 points
+kstolte earned 7.0 points
+crnbrdrck earned 7.0 points
+kylesalk earned 7.0 points
+saurabhrajguru earned 7.0 points
+jcfi earned 7.0 points
+georgeyk earned 7.0 points
+kentonh earned 7.0 points
+joanna-roberts earned 7.0 points
+nixphix earned 7.0 points
+Manjulika77 earned 7.0 points
+P3trur0 earned 7.0 points
+gabrielclima earned 7.0 points
+okrasn earned 7.0 points
+pangaunn earned 7.0 points
+DearGrenadier earned 7.0 points
+joostme earned 7.0 points
+ArthurNovaes earned 7.0 points
+shivanshs9 earned 7.0 points
+anand2131993 earned 7.0 points
+f1x3d earned 7.0 points
+jrectenwald earned 7.0 points
+geekysrm earned 6.0 points
+arnaudmaichac earned 6.0 points
+imagentleman earned 6.0 points
+Nerdwood earned 6.0 points
+valtlfelipe earned 6.0 points
+alanunruh earned 6.0 points
+jaykay12 earned 6.0 points
+Strum355 earned 6.0 points
+misselliev earned 6.0 points
+Rohit-T earned 6.0 points
+danimart1991 earned 6.0 points
+schmeiss earned 6.0 points
+ChatPion earned 6.0 points
+sanjaysingh earned 6.0 points
+reisraff earned 6.0 points
+Fraaankes earned 6.0 points
+SendBord earned 6.0 points
+mmissey earned 6.0 points
+PyroclasticMayhem earned 6.0 points
+cristianossd earned 6.0 points
+2mt-heuser earned 6.0 points
+radlinskii earned 6.0 points
+kieltyka earned 6.0 points
+ashishpatelcs earned 5.0 points
+arxdsilva earned 5.0 points
+beccaweisssg earned 5.0 points
+Rishabh04-02 earned 5.0 points
+posquit0 earned 5.0 points
+themousepotato earned 5.0 points
+navafkv earned 5.0 points
+mjclemente earned 5.0 points
+Jeremyyang920 earned 5.0 points
+vyaspranjal33 earned 5.0 points
+negarzipan earned 5.0 points
+bhammerquist earned 5.0 points
+vk-sourcefuse earned 5.0 points
+mtroiani earned 5.0 points
+vaskoz earned 5.0 points
+doilio earned 5.0 points
+gr8shivam earned 5.0 points
+rahulkumaran earned 4.0 points
+ThiruPraveen18 earned 4.0 points
+JoeRomeo earned 4.0 points
+jamietanna earned 4.0 points
+dhruvhacks earned 4.0 points
+vkartik97 earned 4.0 points
+moshemeirelles earned 4.0 points
+goldfndr earned 4.0 points
+dagolinuxoid earned 4.0 points
+rafaelalmeidatk earned 4.0 points
+vinird earned 3.0 points
+mattstates earned 3.0 points
+michaeljdennis earned 3.0 points
+velo earned 3.0 points
+eransevi earned 3.0 points
+hexmind earned 3.0 points
+rohandaxini earned 3.0 points
+ProZsolt earned 3.0 points
+cemurray earned 3.0 points
+redbrickone earned 3.0 points
+dipil-saud earned 3.0 points
+GeoffYoung earned 3.0 points
+ankitmahapatra22 earned 3.0 points
+adamk1230 earned 3.0 points
+derjayjay earned 3.0 points
+GiantRobots earned 3.0 points
+LautaroLobo12 earned 3.0 points
+graystevens earned 3.0 points
+tyoungNIO earned 3.0 points
+robertacosta earned 3.0 points
+PeterBooker earned 3.0 points
+arghyaiitb earned 3.0 points
+marshallpierce earned 3.0 points
+ays14 earned 3.0 points
+colinodell earned 3.0 points
+guillemm earned 3.0 points
+obahareth earned 3.0 points
+hulkur earned 3.0 points
+uLan08 earned 3.0 points
+shriyash earned 3.0 points
+iPoul earned 3.0 points
+aquibbaig earned 3.0 points
+LinkedList earned 3.0 points
+gsrajadh earned 3.0 points
+AllUsernamesHaveBeenTaken earned 3.0 points
+yashasingh earned 3.0 points
+haffla earned 3.0 points
+eitoball earned 3.0 points
+anthonyfalzetti earned 3.0 points
+hananezlitni earned 3.0 points
+prnvdixit earned 3.0 points
+andreblanke earned 3.0 points
+smrtab earned 3.0 points
+qligier earned 3.0 points
+harsh1201 earned 3.0 points
+osule earned 3.0 points
+mrala earned 3.0 points
+xeon-zolt earned 3.0 points
+jaycenhorton earned 3.0 points
+dixong earned 3.0 points
+bhargavigorantla earned 3.0 points
+sanketsingh24 earned 3.0 points
+madelinestein earned 2.0 points
+stevekinney earned 2.0 points
+Skchoudhary earned 2.0 points
+agarwalrounak earned 2.0 points
+incarnate earned 2.0 points
+iritch42 earned 2.0 points
+lweinig earned 2.0 points
+deullmer earned 2.0 points
+joshwooding earned 2.0 points
+joshuadeguzman earned 2.0 points
+jessicaannpopp earned 2.0 points
+Hestersue43 earned 2.0 points
+moutten earned 2.0 points
+adeen-s earned 2.0 points
+chaman-k earned 2.0 points
+vydao earned 2.0 points
+Rohithgilla12 earned 1.0 points
+kyliedale earned 1.0 points
+andreathniah earned 1.0 points
+fabricioveronez earned 1.0 points
+DakshMiglani earned 1.0 points
+hannahapuan earned 1.0 points
+buck06191 earned 1.0 points
+alfredlucero earned 1.0 points
+OrthoDex earned 1.0 points
+ed-parry earned 1.0 points
+JAmerkhanov earned 1.0 points
+starchow earned 1.0 points
+Reggionick earned 1.0 points
+fitzel earned 1.0 points
+m1guelpf earned 1.0 points
+partkyle earned 1.0 points
+mattreyuk earned 1.0 points
+narendravaghela earned 1.0 points
+gliptak earned 1.0 points
+3lnc earned 1.0 points
+vikasnautiyal earned 1.0 points
+AbhyudayaSharma earned 1.0 points
+Trshant earned 1.0 points
+Murrium123 earned 1.0 points
+yvesmh earned 1.0 points
+kdcr2d2 earned 1.0 points
+hanaure earned 1.0 points
+rafaelverger earned 1.0 points
+shivam077 earned 1.0 points
+girishbaviskar earned 1.0 points
+friederbluemle earned 1.0 points
+amandadavenport7 earned 1.0 points
+dmowcomber earned 1.0 points
+DrMeloMoney earned 1.0 points
+bertilhatt earned 1.0 points
+mattjegan earned 1.0 points
+abdullah-K earned 1.0 points
+hjmsw earned 1.0 points
+noahsilas earned 1.0 points
+jacobmovingfwd earned 1.0 points
+pktrieu earned 1.0 points
+mikestratton earned 1.0 points
+tulikavijay earned 1.0 points
+Rovel earned 1.0 points
+svenluijten earned 1.0 points
+tvvoorst earned 1.0 points
+h-a-r-s-h-a earned 1.0 points
+yudina-m earned 1.0 points
+Progyan1997 earned 1.0 points
+MartijnCuppens earned 1.0 points
+rkaranam earned 1.0 points
+dheeraj135 earned 1.0 points
+Mumbaikar007 earned 1.0 points
+thisaaronm earned 1.0 points
+GuyKh earned 1.0 points
+Taniuchis earned 1.0 points
+nikobozi earned 1.0 points
+RodgerLeblanc earned 1.0 points
+varundey earned 1.0 points
+nikhilbansal97 earned 1.0 points
+daredevilgeek earned 1.0 points
+llcodeAlphall earned 1.0 points
+KayDee earned 1.0 points
+shendrekbharath earned 1.0 points
+remyapv earned 1.0 points
+seasonguy earned 1.0 points
+mkasberg earned 1.0 points
+knc789 earned 1.0 points
+sjansen earned 1.0 points
+alexabreu earned 1.0 points
+toozdey earned 1.0 points
+michaelscof earned 1.0 points
+RossMacey earned 1.0 points
+spencerbyw earned 1.0 points
+anuragsachdeva28 earned 1.0 points
+Millsky earned 1.0 points
+Jac21 earned 1.0 points
+bhavinjawade earned 1.0 points
+brandt earned 1.0 points
+AnnaDodson earned 1.0 points
+jindalAnuj earned 1.0 points
+gabrielgene earned 1.0 points
+SGChiefFunOfficer earned 1.0 points
+daniporras earned 0.0 points
+jonjenkins earned 0.0 points
+berviantoleo earned 0.0 points
+roncanada earned 0.0 points
+rachelmulligan earned 0.0 points
+andy-v-h earned 0.0 points
