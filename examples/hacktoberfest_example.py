@@ -73,7 +73,7 @@ for repo in all_repos:
     print("There are a total of {} qualifying PRs for repo {}".format(repo_hacktoberfest_approved_prs, repo))
     print("For a total of {} points earned for repo {}\n".format(repo_points_earned, repo))
 
-print("There were a total of {} unique contributors ".format(len(list(set(repo_contributors)))))
+print("There were a total of {} unique contributors ".format(len(list(set(total_contributors)))))
 print("There are a total of {} qualifying PRs".format(total_hacktoberfest_approved_prs))
 print("For a total of {} points earned\n".format(total_points_earned))
 
