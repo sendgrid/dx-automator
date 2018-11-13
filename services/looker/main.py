@@ -1,6 +1,5 @@
 import unittest
 import click
-from datetime import datetime
 
 from flask.cli import FlaskGroup
 from flask_script import Manager
