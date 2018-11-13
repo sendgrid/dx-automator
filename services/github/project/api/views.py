@@ -168,7 +168,114 @@ def get_prs():
                 end_cursor = f'"{result["pageInfo"]["endCursor"]}"'
         else:
             break
-    return jsonify(prs), 200
+    return jsonify(prs), 200 
+
+# labels must be a list of strings
+# TODO: should be able to select from a data range
+@github_blueprint.route('/github/issues', methods=['GET'])
+def get_issues():
+    """Get all of the issues with a given list of labels from a particular repo, if no labels
+       are given, you will receive a list of unlabeled issues"""
+    issues = list()
+    labels = list()
+    repo = request.args.get('repo', type = str)
+    list_of_labels = request.args.getlist('labels', type = str)
+    for label in list_of_labels:
+        #print(label, file=sys.stderr)
+        try:
+            labels.append(label)
+        except:
+            continue
+    end_cursor = ''
+    has_next_page = True
+    github_org = current_app.config['GITHUB_ORG']
+    repo = '"' + repo + '"'
+    while has_next_page:
+        if labels:
+            query = f"""query{{
+                organization(login: "{github_org}") {{
+                    repository(name: {repo}) {{
+                    issues(first: 100, labels: {json.dumps(labels)}, states: [OPEN], after: {end_cursor}) {{
+                        nodes {{
+                            url
+                            state
+                            createdAt
+                            author {{
+                                login
+                            }}
+                            labels(first: 10) {{
+                                edges {{
+                                    node {{
+                                        name
+                                    }}
+                                }}
+                            }}
+                            }}
+                            pageInfo {{
+                                endCursor
+                                hasNextPage
+                            }}
+                        }}
+                    }}
+                }}
+            }}"""
+            result, status = run_query(query)
+        else:
+            query = f"""query{{
+                organization(login: "{github_org}") {{
+                    repository(name: {repo}) {{
+                    issues(first: 100, states: [OPEN], after: {end_cursor}) {{
+                        nodes {{
+                            url
+                            state
+                            createdAt
+                            author {{
+                                login
+                            }}
+                            labels(first: 1) {{
+                                edges {{
+                                    node {{
+                                        name
+                                    }}
+                                }}
+                            }}
+                            }}
+                            pageInfo {{
+                                endCursor
+                                hasNextPage
+                            }}
+                        }}
+                    }}
+                }}
+            }}"""
+            result, status = run_query(query)
+        if not status:
+            return "GITHUB_TOKEN may not be valid", 400
+        elif result:
+            result = result.get('organization').get('repository').get('issues')
+            for r in result.get('nodes'):
+                if not labels:
+                    if not r.get('labels').get('edges'):
+                        issue = dict()
+                        issue['url'] = r.get('url')
+                        issue['createdAt'] = r.get('createdAt')
+                        issue['labels'] = labels
+                        issues.append(issue)
+                else:
+                    issue = dict()
+                    issue['url'] = r.get('url')
+                    issue['createdAt'] = r.get('createdAt')
+                    issue_labels = list()
+                    for label in r.get('labels').get('edges'):
+                        issue_labels.append(label.get('node').get('name'))
+                    issue['labels'] = issue_labels
+                    issues.append(issue)
+            has_next_page = result.get('pageInfo').get('hasNextPage')
+            if has_next_page == True:
+                end_cursor = f'"{result["pageInfo"]["endCursor"]}"'
+        else:
+            break
+    return jsonify(issues), 200 
 
 def get_points(labels):
     for label in labels:
