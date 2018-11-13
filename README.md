@@ -56,6 +56,7 @@ curl http://$DX_IP/users
 curl http://$DX_IP/github/ping
 curl http://$DX_IP/github/members
 curl http://$DX_IP/github/is_member/<github_username>
+curl http://$DX_IP/github/open_pr_urls/<repo_name>
 curl http://$DX_IP/looker/ping
 curl http://$DX_IP/looker/4404
 ```

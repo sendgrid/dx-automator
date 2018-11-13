@@ -5,6 +5,9 @@ import json
 
 github_blueprint = Blueprint('github', __name__)
 
+EXCLUSIONS = [
+    'thinkingserious', 'ksigler7', 'Whatthefoxsays'
+]
 
 def run_query(query):
     """Runs GraphQL query"""
@@ -178,10 +181,6 @@ def get_points(labels):
         if label.get('node').get('name')  == 'difficulty: very hard':
             return 15 
     return 0
-
-EXCLUSIONS = [
-    'thinkingserious', 'ksigler7', 'Whatthefoxsays'
-]
 
 def get_reviewers(reviewers, author):
     logins = list()
