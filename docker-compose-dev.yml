@@ -145,3 +145,15 @@ services:
       - APP_SETTINGS=project.config.DevelopmentConfig
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - GITHUB_ORG=${GITHUB_ORG}
+
+  hacktoberfest:
+    container_name: hacktoberfest
+    build: 
+        context: ./services/hacktoberfest
+        dockerfile: Dockerfile-dev
+    volumes:
+      - './services/hacktoberfest:/usr/src/app'
+    expose:
+      - '5000'
+    environment:
+      - APP_SETTINGS=project.config.DevelopmentConfig

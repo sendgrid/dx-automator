@@ -61,6 +61,7 @@ curl http://$DX_IP/github/issues?repo=<repo_name>
 curl --globoff "http://$DX_IP/github/issues?repo=<repo_name>&labels=<label 1>&labels=<label 2>"
 curl http://$DX_IP/looker/ping
 curl http://$DX_IP/looker/4404
+curl http://$DX_IP/hacktoberfest/ping
 ```
 
 Grab the IP address.
