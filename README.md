@@ -32,7 +32,7 @@ Setup your environment variables:
 
 ```bash
 cp ./services/github/.env_sample ./services/github/.env
-cp ./services/looker/.env_sample ./services/github/.env
+cp ./services/looker/.env_sample ./services/looker/.env
 ```
 
 Install:
