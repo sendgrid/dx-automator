@@ -38,17 +38,12 @@ cp ./services/looker/.env_sample ./services/looker/.env
 Install:
 
 ```bash
-docker-machine start dx-automator-dev
-docker-machine env dx-automator-dev
-eval $(docker-machine env dx-automator-dev)
 source ./init.sh
-docker-compose -f docker-compose-dev.yml up -d --build
-./scripts/setup-local-db
 ```
 
 Run these commands to test if everything is working correctly.
 
-```
+```bash
 curl http://$DX_IP/tasks/ping
 curl http://$DX_IP/tasks
 curl http://$DX_IP/users/ping
@@ -62,6 +57,7 @@ curl --globoff "http://$DX_IP/github/issues?repo=<repo_name>&labels=<label 1>&la
 curl http://$DX_IP/looker/ping
 curl http://$DX_IP/looker/4404
 curl http://$DX_IP/hacktoberfest/ping
+curl http://$DX_IP/hacktoberfest/sendgrid/leaders/2018
 ```
 
 Grab the IP address.

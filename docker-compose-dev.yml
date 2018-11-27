@@ -157,3 +157,4 @@ services:
       - '5000'
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=${DATABASE_URL}
