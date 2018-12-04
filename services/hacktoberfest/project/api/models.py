@@ -11,6 +11,9 @@ class AddUpdateDelete():
     def delete(self, resource):
         db.session.delete(resource)
         return db.session.commit()
+    
+    def rollback(self):
+        return db.session.rollback()
 
 class Hacktoberfest(db.Model, AddUpdateDelete):
     __tablename__ = 'hacktoberfest'

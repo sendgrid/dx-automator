@@ -77,6 +77,12 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 # \q
 ```
 
+### Admin Commands
+
+```bash
+curl http://$DX_IP/hacktoberfest/leaders/update
+```
+
 ## Usage - Cloud
 
 ### Create AWS Docker Machine

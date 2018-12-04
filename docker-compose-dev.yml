@@ -158,3 +158,4 @@ services:
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
       - DATABASE_URL=${DATABASE_URL}
+      - DX_IP=${DX_IP}
