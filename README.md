@@ -83,6 +83,20 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 curl http://$DX_IP/hacktoberfest/leaders/update
 ```
 
+### Examples
+
+#### Retrieve all open and unlabed issues
+
+```bash
+python ./examples/unlabled_issues.py
+```
+
+#### Retrieve all open issues that are bugs
+
+```bash
+python ./examples/open_bugs.py
+```
+
 ## Usage - Cloud
 
 ### Create AWS Docker Machine
