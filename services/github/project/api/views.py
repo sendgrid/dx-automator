@@ -174,7 +174,7 @@ def get_prs():
 # TODO: should be able to select from a data range
 @github_blueprint.route('/github/issues', methods=['GET'])
 def get_issues():
-    """Get all of the issues with a given list of labels from a particular repo, if no labels
+    """Get all of the open issues with a given list of labels from a particular repo, if no labels
        are given, you will receive a list of unlabeled issues"""
     issues = list()
     labels = list()
