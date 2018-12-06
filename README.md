@@ -18,6 +18,10 @@ We welcome [contributions](./CONTRIBUTING.md) in the form of issues, pull reques
 
 We believe in open source and want to give credit where it's due. We used the amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting a solid foundation using flask, docker, and (eventually) node and react. From this tutorial, we began to build and iterate.
 
+## Prerequisites
+
+* Docker
+
 ## Usage - Local
 
 ### Create Local Docker Machine
@@ -33,6 +37,7 @@ Setup your environment variables:
 ```bash
 cp ./services/github/.env_sample ./services/github/.env
 cp ./services/looker/.env_sample ./services/looker/.env
+cp ./services/hacktoberfest/.env_sample ./services/hacktoberfest/.env
 ```
 
 Install:
