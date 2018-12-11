@@ -39,10 +39,12 @@ def get_issues(repo):
 total_bugs = 0
 for repo in all_repos:
     issues = get_issues(repo)
-    total_bugs = total_bugs + len(issues)
     for issue in issues:
-        text = "{}, {}".format(issue['url'], issue['createdAt'])
-        print(text)
+        # Github GraphQL v4 does not support the AND operator, so we have to do this ourselves
+        if "status: help wanted" in issue['labels']:
+            text = "{}, {}".format(issue['url'], issue['createdAt'])
+            print(text)
+            total_bugs = total_bugs + 1
 
-print("There are a total of {} open bugs across all repos".format(total_bugs))
+print("There are a total of {} open bugs needing assistance across all repos".format(total_bugs))
         
