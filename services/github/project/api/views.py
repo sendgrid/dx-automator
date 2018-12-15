@@ -140,6 +140,13 @@ def get_prs():
                                 }}
                             }}
                         }}
+                        comments(last: 1) {{
+                                nodes {{
+                                    author {{
+                                        login
+                                    }}
+                                }}
+                            }}
                         }}
                         pageInfo {{
                             endCursor
@@ -155,6 +162,8 @@ def get_prs():
         elif result:
             result = result.get('organization').get('repository').get('pullRequests')
             for r in result.get('nodes'):
+                for comment in r.get('comments').get('nodes'):
+                    login = comment.get('author').get('login')
                 pr = dict()
                 pr['url'] = r.get('url')
                 pr['createdAt'] = r.get('createdAt')
@@ -162,6 +171,7 @@ def get_prs():
                 pr['points'] = get_points(r.get('labels').get('edges'))
                 pr['reviewers'] = get_reviewers(r.get('reviews').get('nodes'), pr['author'])
                 pr['reviewer_points'] = len(pr['reviewers']) * (pr['points'] / 2)
+                pr['last_comment_author'] = login
                 prs.append(pr)
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
@@ -210,6 +220,13 @@ def get_issues():
                                     }}
                                 }}
                             }}
+                            comments(last: 1) {{
+                                nodes {{
+                                    author {{
+                                        login
+                                    }}
+                                }}
+                            }}
                             }}
                             pageInfo {{
                                 endCursor
@@ -239,6 +256,13 @@ def get_issues():
                                     }}
                                 }}
                             }}
+                            comments(last: 1) {{
+                                nodes {{
+                                    author {{
+                                        login
+                                    }}
+                                }}
+                            }}
                             }}
                             pageInfo {{
                                 endCursor
@@ -254,12 +278,16 @@ def get_issues():
         elif result:
             result = result.get('organization').get('repository').get('issues')
             for r in result.get('nodes'):
+                login = None
+                for comment in r.get('comments').get('nodes'):
+                    login = comment.get('author').get('login')
                 if not labels:
                     if not r.get('labels').get('edges'):
                         issue = dict()
                         issue['url'] = r.get('url')
                         issue['createdAt'] = r.get('createdAt')
                         issue['labels'] = labels
+                        issue['last_comment_author'] = login
                         issues.append(issue)
                 else:
                     issue = dict()
@@ -269,6 +297,7 @@ def get_issues():
                     for label in r.get('labels').get('edges'):
                         issue_labels.append(label.get('node').get('name'))
                     issue['labels'] = issue_labels
+                    issue['last_comment_author'] = login
                     issues.append(issue)
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:

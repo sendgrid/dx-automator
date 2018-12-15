@@ -102,6 +102,12 @@ python ./examples/unlabled_issues.py
 python ./examples/open_bugs.py
 ```
 
+#### Retrieve all open issues that need a follow up response
+
+```bash
+python ./examples/follow_up.py
+```
+
 ## Usage - Cloud
 
 ### Create AWS Docker Machine
