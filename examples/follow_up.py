@@ -37,7 +37,11 @@ list_of_maintainers = [
 
 def get_prs(repo):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-    query_params = {"repo":repo, "labels":"status: waiting for feedback"}
+    query_params = {
+        "repo":repo,
+        "labels":"status: waiting for feedback",
+        "states":"OPEN",
+        }
     response = client.github.prs.get(query_params=query_params)
     issues = json.loads(response.body)
     return issues

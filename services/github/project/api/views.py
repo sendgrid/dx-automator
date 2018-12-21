@@ -102,14 +102,25 @@ def get_prs():
     """Get all of the PRs with a given list of labels from a particular repo"""
     prs = list()
     labels = list()
+    states = list()
     repo = request.args.get('repo', type = str)
     list_of_labels = request.args.getlist('labels', type = str)
     for label in list_of_labels:
-        print(label, file=sys.stderr)
         try:
             labels.append(label)
         except:
             continue
+    list_of_states = request.args.getlist('states', type = str)
+    for state in list_of_states:
+        try:
+            states.append(state)
+        except:
+            continue
+    if not states:
+        states.append('OPEN')
+        states.append('MERGED')
+        states.append('CLOSED')
+    
     end_cursor = ''
     has_next_page = True
     github_org = current_app.config['GITHUB_ORG']
@@ -118,7 +129,7 @@ def get_prs():
         query = f"""query{{
             organization(login: "{github_org}") {{
                 repository(name: {repo}) {{
-                pullRequests(first: 100, states: [OPEN, MERGED, CLOSED], labels: {json.dumps(labels)}, after: {end_cursor}) {{
+                pullRequests(first: 100, states: {json.dumps(states).replace('"', '')}, labels: {json.dumps(labels)}, after: {end_cursor}) {{
                     nodes {{
                         url
                         state
@@ -156,6 +167,7 @@ def get_prs():
                 }}
             }}
         }}"""
+        print(query, file=sys.stderr)
         result, status = run_query(query)
         if not status:
             return "GITHUB_TOKEN may not be valid", 400
