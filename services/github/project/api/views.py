@@ -167,7 +167,6 @@ def get_prs():
                 }}
             }}
         }}"""
-        print(query, file=sys.stderr)
         result, status = run_query(query)
         if not status:
             return "GITHUB_TOKEN may not be valid", 400
