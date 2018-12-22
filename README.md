@@ -73,6 +73,18 @@ echo $DX_IP
 
 And now paste that IP into your browser and you should see a task list.
 
+### Stop Local Containers and the Docker Machine
+
+```bash
+source ./stop.sh
+```
+
+### Stop Local Containers and Delete Images and the Docker Machine
+
+```bash
+source ./kill.sh
+```
+
 ### Connect to Local DB
 
 ```bash
