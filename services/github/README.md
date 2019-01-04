@@ -1,6 +1,6 @@
 # Local Development Installation
 
-### Create Docker Machine
+### Create the Docker Machine
 
 ```bash
 docker-machine create -d virtualbox dx-automator-github-dev
@@ -18,7 +18,7 @@ eval "$(docker-machine env dx-automator-github-dev)"
 mv .env_sample .env
 ```
 
-Update the variables in `.env`.
+### Update the variables in `.env`.
 
 ```bash
 source .env
@@ -30,7 +30,7 @@ source .env
 docker-compose -f docker-compose-dev.yml up -d --build
 ```
 
-### Run Tests
+### Run the tests
 
 Update the `test_users` in `project\tests\test_github.py`.
 
@@ -47,13 +47,13 @@ GITHUB_IP="$(docker-machine ip dx-automator-github-dev)"
 
 # Deploy Production to Amazon
 
-### Create Docker Machine
+### Create the Docker Machine
 
 ```bash
 docker-machine create --driver amazonec2 dx-automator-github-prod
 ```
 
-### Activate Deploy Machine
+### Activate the Deploy Machine
 
 ```bash
 docker-machine env dx-automator-github-prod
@@ -66,19 +66,19 @@ eval $(docker-machine env dx-automator-github-prod)
 mv .env_sample .env
 ```
 
-Update the variables in `.env`.
+### Update the variables in `.env`.
 
 ```bash
 source .env
 ```
 
-### Deploy
+### Deploy Production
 
 ```bash
 docker-compose -f docker-compose-prod.yml up -d --build
 ```
 
-### Run Tests
+### Run the tests
 
 Update the `test_users` in `project\tests\test_github.py`.
 
@@ -89,13 +89,13 @@ docker-compose -f docker-compose-prod.yml run github-service python manage.py te
 
 # Reference
 
-### Kill All Running Docker Instances
+### Kill All the Running Docker Instances
 
 ```bash
 docker stop $(docker ps -a -q)
 ```
 
-### Check Environment on Server
+### Check the Environment on the Server
 
 ```bash
 docker-compose -f docker-compose-prod.yml run github-service env
@@ -104,7 +104,7 @@ docker-compose -f docker-compose-prod.yml run github-service env
 
 # Usage
 
-Check if a GitHub username belongs to the organization set in the `.env` file
+Check if a GitHub username belongs to the organization which is set in the `.env` file
 
 ```bash
 curl http://$GITHUB_IP:5001/is_member/<github-username>

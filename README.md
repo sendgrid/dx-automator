@@ -12,11 +12,10 @@ We will deploy the code to pypi once the MVP is ready. Thank you for your suppor
 
 Everyone who participates in our repo is expected to comply with our [Code of Conduct](./CODE_OF_CONDUCT).
 
-We welcome [contributions](./CONTRIBUTING.md) in the form of issues, pull requests and code reviews. Or you can simply shoot us an [email](mailto:dx@sendgrid.com).
+We welcome [contributions](./CONTRIBUTING.md) in the form of issues, pull requests and code reviews, or you can simply shoot us an [email](mailto:dx@sendgrid.com).
 
 ## Attributions
-
-We believe in open source and want to give credit where it's due. We used the amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting a solid foundation using flask, docker, and (eventually) node and react. From this tutorial, we began to build and iterate.
+We believe in open source and want to give credit where it's due. We used an amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting up a solid foundation using flask, docker, and (eventually) node and react. This tutorial helped us build and iterate this project successfully!
 
 ## Prerequisites
 
@@ -85,7 +84,7 @@ source ./stop.sh
 source ./kill.sh
 ```
 
-### Connect to Local DB
+### Connect to the Local DB
 
 ```bash
 docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
