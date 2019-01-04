@@ -27,11 +27,17 @@ DXLookerService
 
 **To Run**  
 - 
-**Create ~/services/looker/.env file with Looker API credentials**
+**Create services/looker/.env file with Looker API credentials**
 ```
 LOOKER_CLIENT_ID=client_id_goes_here
 LOOKER_CLIENT_SECRET=client_secret_goes_here
 LOOKER_ENDPOINT=looker_endpoint_goes_here (e.g. https://yourdomain.looker.com:port)
+```
+Then export the variables:
+
+```
+$ cd services/looker/
+$ export $(grep -v '^#' .env | xargs)
 ```
 
 **Build and Run Docker Containers** 

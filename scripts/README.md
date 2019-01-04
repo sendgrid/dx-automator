@@ -10,14 +10,17 @@
 Run from the root directory
 
 ```bash
-./scripts/run-local-react-client
-```
-OR
-```bash
-./scripts/stop-local-react-client
-```
-OR
-```bash
-./scripts/setup-local-db
+source ./scripts/run-local-react-client
 ```
 
+```bash
+source ./scripts/stop-local-react-client
+```
+
+```bash
+source ./scripts/setup-local-db
+```
+
+```bash
+source ./scripts/setup-local-db
+```
