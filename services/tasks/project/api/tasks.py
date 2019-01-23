@@ -6,7 +6,6 @@ from project import db
 from sqlalchemy import exc
 from project.api.models import Task
 
-
 tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 
 

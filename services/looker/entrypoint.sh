@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
 echo "Waiting for postgres..."
 
 while ! nc -z looker-db 5432; do
@@ -7,4 +8,4 @@ done
 
 echo "PostgresSQL started"
 
-python main.py run -h 0.0.0.0
+python main.py runserver -h 0.0.0.0

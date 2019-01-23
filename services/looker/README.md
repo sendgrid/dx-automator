@@ -7,31 +7,37 @@ API to read/write data to and from Looker.
 -
 
 SendsByLibrary / InvoicingByLibrary
-- inherits schema from DXLooker, with appropriate table name
+- Inherits the schema from DXLooker, with appropriate table name
 
 LookerAPIHandler  
-- handles authentication of Looker API
-- uses credentials to pull latest look data from Looker 
+- Handles the authentication of the Looker API
+- Uses the credentials to pull the latest look data from Looker 
 
 DBCache
-- queries database to store all rows locally for faster access
+- Queries database to store all the rows locally for faster access
 
 Look
 - Stores Looker look id and LookerApiHandler instance
 
 JsonCleaner
-- cleans JSON objects to fit DB model schema
+- Cleans JSON objects to fit the DB model schema
 
 DXLookerService
-- container to hold objects necessary for DX Looker API
+- Container to hold the objects necessary for DX Looker API
 
 **To Run**  
 - 
-**Create ~/services/looker/.env file with Looker API credentials**
+**Create services/looker/.env file with Looker API credentials**
 ```
 LOOKER_CLIENT_ID=client_id_goes_here
 LOOKER_CLIENT_SECRET=client_secret_goes_here
 LOOKER_ENDPOINT=looker_endpoint_goes_here (e.g. https://yourdomain.looker.com:port)
+```
+Then export the variables:
+
+```
+$ cd services/looker/
+$ export $(grep -v '^#' .env | xargs)
 ```
 
 **Build and Run Docker Containers** 
@@ -57,6 +63,5 @@ The data will be available at `http://localhost:5001/dx_looker/<look_id>`
 
 **To Do**
 -
-- make table names configurable
-- build API routes (basic calls in place, but not configurable, 
-see project/api/routes.py)
+- Make table names configurable
+- Build the API routes (Basic calls in place but not configurable and see project/api/routes.py)

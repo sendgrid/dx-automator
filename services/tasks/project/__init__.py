@@ -6,14 +6,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_cors import CORS
 
-
 # instantiate the db
 db = SQLAlchemy()
 toolbar = DebugToolbarExtension()
 
 
-def create_app():
 
+def create_app():
     # instantiate the app
     app = Flask(__name__)
 
