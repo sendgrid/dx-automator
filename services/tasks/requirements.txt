@@ -13,4 +13,4 @@ pyjwt==1.5.3
 flask-debugtoolbar==0.10.1
 pyflakes==2.0.0
 pylint==2.1.1
-pep8==1.7.1
+pycodestyle==2.3.1
