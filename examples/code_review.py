@@ -35,22 +35,18 @@ def get_prs(repo):
     query_params = {
         "repo":repo,
         "labels":"status: code review request",
-        "states":"OPEN",
+        "states":"OPEN"
         }
-    response = client.github.prs.get(query_params=query_params, limit=100)
-    issues = json.loads(response.body)
-    return issues
+    response = client.github.prs.get(query_params=query_params)
+    prs = json.loads(response.body)
+    return prs
 
-total_to_review = 0
-# count = 0
+total_prs_to_review = 0
 for repo in all_repos:
     prs = get_prs(repo)
     for pr in prs:
         text = "{}, {}".format(pr['url'], pr['createdAt'])
         print(text)
-        total_to_review += 1
-    # count += 1
-    # if count % 5 == 0:
-    #     time.sleep(60)
+        total_prs_to_review += 1
 
-print("There are a total of {} open bugs needing assistance across all repos".format(total_bugs))
+print("There are a total of {} open prs needing a code review across all repos".format(total_prs_to_review))

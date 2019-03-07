@@ -119,6 +119,11 @@ python ./examples/open_bugs.py
 python ./examples/follow_up.py
 ```
 
+#### Retrieve all open prs that need a code review
+```bash
+python ./examples/code_review.py
+```
+
 ## Usage - Cloud
 
 ### Create AWS Docker Machine

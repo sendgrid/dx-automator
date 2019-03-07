@@ -96,7 +96,7 @@ def get_all_members():
     return jsonify(members), 200
 
 # labels must be a list of strings
-# TODO: should be able to select from a data range
+# TODO: should be able to select from a date range
 @github_blueprint.route('/github/prs', methods=['GET'])
 def get_prs():
     """Get all of the PRs with a given list of labels from a particular repo"""
@@ -173,6 +173,7 @@ def get_prs():
         elif result:
             result = result.get('organization').get('repository').get('pullRequests')
             for r in result.get('nodes'):
+                login = None
                 for comment in r.get('comments').get('nodes'):
                     login = comment.get('author').get('login')
                 pr = dict()
