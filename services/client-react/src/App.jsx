@@ -8,14 +8,64 @@ import Header from "./components/Header";
 import UnlabeledIssueList from "./components/UnlabeledIssueList"
 import BugsList from "./components/BugsList"
 import { timingSafeEqual } from "crypto";
+// import update from 'immutability-helper';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       tasks: [],
-      unlabeled_issues: [],
-      bugs: [],
+      unlabeled_issues: {
+      'sendgrid-nodejs':[],
+      'sendgrid-csharp':[],
+      'sendgrid-php':[],
+      'sendgrid-python':[],
+      'sendgrid-java':[],
+      'sendgrid-go':[],
+      'sendgrid-ruby':[],
+      'smtpapi-nodejs':[],
+      'smtpapi-go':[],
+      'smtpapi-python':[],
+      'smtpapi-php':[],
+      'smtpapi-csharp':[],
+      'smtpapi-java':[],
+      'smtpapi-ruby':[],
+      'sendgrid-oai':[],
+      'open-source-library-data-collector':[],
+      'python-http-client':[],
+      'php-http-client':[],
+      'csharp-http-client':[],
+      'java-http-client':[],
+      'ruby-http-client':[],
+      'rest':[],
+      'nodejs-http-client':[],
+      'dx-automator':[]},
+      bugs: {
+        'sendgrid-nodejs':[],
+        'sendgrid-csharp':[],
+        'sendgrid-php':[],
+        'sendgrid-python':[],
+        'sendgrid-java':[],
+        'sendgrid-go':[],
+        'sendgrid-ruby':[],
+        'smtpapi-nodejs':[],
+        'smtpapi-go':[],
+        'smtpapi-python':[],
+        'smtpapi-php':[],
+        'smtpapi-csharp':[],
+        'smtpapi-java':[],
+        'smtpapi-ruby':[],
+        'sendgrid-oai':[],
+        'open-source-library-data-collector':[],
+        'python-http-client':[],
+        'php-http-client':[],
+        'csharp-http-client':[],
+        'java-http-client':[],
+        'ruby-http-client':[],
+        'rest':[],
+        'nodejs-http-client':[],
+        'dx-automator':[]
+      },
     };
     this.Triage = this.Triage.bind(this)
   }
@@ -31,19 +81,56 @@ class App extends Component {
   }
   
   Triage() {
+    const all_repos = [
+      'sendgrid-nodejs',
+      'sendgrid-csharp',
+      'sendgrid-php',
+      'sendgrid-python',
+      'sendgrid-java',
+      'sendgrid-go',
+      'sendgrid-ruby',
+      'smtpapi-nodejs',
+      'smtpapi-go',
+      'smtpapi-python',
+      'smtpapi-php',
+      'smtpapi-csharp',
+      'smtpapi-java',
+      'smtpapi-ruby',
+      'sendgrid-oai',
+      'open-source-library-data-collector',
+      'python-http-client',
+      'php-http-client',
+      'csharp-http-client',
+      'java-http-client',
+      'ruby-http-client',
+      'rest',
+      'nodejs-http-client',
+      'dx-automator'
+  ]
+    const items = [];
+    for (const [index, value] of all_repos.entries()) {
+      console.log(this.state.unlabeled_issues[value])
+      items.push(
+        <div>
+        <h2>Unlabeled Issues - {value}</h2>
+        <div className="Body">
+          <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/>
+        </div>
+        <h2>Bugs - {value}</h2>
+        <div className="Body">
+          <BugsList bugs={this.state.bugs[value]}/>
+        </div>
+        </div>
+      )
+    }
+
     return (<div>
               <h1>Triage</h1>
-              <h2>Unlabled Issues - PHP</h2>
-              <div className="Body">
-                <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues}/>
-              </div>
-              <h2>Bugs - PHP</h2>
-              <div className="Body">
-                <BugsList bugs={this.state.bugs}/>
-              </div>
+              {items}
             </div>)
   }
 
+  
   // Adds a task to the db
   addTask = (creator, link) => {
     return axios.post(`${process.env.REACT_APP_TASKS_SERVICE_URL}`,
@@ -59,30 +146,86 @@ class App extends Component {
   };
 
   getUnlabeledIssues(){
-    axios.get('http://192.168.99.100/github/issues',{
-      params: {
-        repo: 'sendgrid-php'
-    }})
-    .then((res) => {
-        this.setState({unlabeled_issues: res.data});
-    })
-    .catch((err) => { 
-        console.log(err); 
-    });
+    const all_repos = [
+      'sendgrid-nodejs',
+      'sendgrid-csharp',
+      'sendgrid-php',
+      'sendgrid-python',
+      'sendgrid-java',
+      'sendgrid-go',
+      'sendgrid-ruby',
+      'smtpapi-nodejs',
+      'smtpapi-go',
+      'smtpapi-python',
+      'smtpapi-php',
+      'smtpapi-csharp',
+      'smtpapi-java',
+      'smtpapi-ruby',
+      'sendgrid-oai',
+      'open-source-library-data-collector',
+      'python-http-client',
+      'php-http-client',
+      'csharp-http-client',
+      'java-http-client',
+      'ruby-http-client',
+      'rest',
+      'nodejs-http-client',
+      'dx-automator']
+    for (const [index, value] of all_repos.entries()) {
+      axios.get('http://192.168.99.100/github/issues',{
+        params: {
+          repo: value
+      }})
+      .then((res) => {
+          // this.setState({unlabeled_issues: update(this.state.unlabeled_issues, {value: res.data})});
+          this.setState({unlabeled_issues: res.data});
+      })
+      .catch((err) => { 
+          console.log(err); 
+      });
+    }
   }
 
   getBugs(){
-    axios.get('http://192.168.99.100/github/issues',{
-      params: {
-        repo: 'sendgrid-php',
-        labels: 'type: bug'
-    }})
-    .then((res) => {
-        this.setState({bugs: res.data});
-    })
-    .catch((err) => { 
-        console.log(err); 
-    });
+    const all_repos = [
+      'sendgrid-nodejs',
+      'sendgrid-csharp',
+      'sendgrid-php',
+      'sendgrid-python',
+      'sendgrid-java',
+      'sendgrid-go',
+      'sendgrid-ruby',
+      'smtpapi-nodejs',
+      'smtpapi-go',
+      'smtpapi-python',
+      'smtpapi-php',
+      'smtpapi-csharp',
+      'smtpapi-java',
+      'smtpapi-ruby',
+      'sendgrid-oai',
+      'open-source-library-data-collector',
+      'python-http-client',
+      'php-http-client',
+      'csharp-http-client',
+      'java-http-client',
+      'ruby-http-client',
+      'rest',
+      'nodejs-http-client',
+      'dx-automator']
+    for (const [index, value] of all_repos.entries()) {
+      axios.get('http://192.168.99.100/github/issues',{
+        params: {
+          repo: value,
+          labels: 'type: bug'
+      }})
+      .then((res) => {
+        // this.setState({bugs: update(this.state.bugs, {value: res.data})});
+        this.setState({unlabeled_issues: res.data});
+      })
+      .catch((err) => { 
+          console.log(err); 
+      });
+    }
   }
 
   render() {
