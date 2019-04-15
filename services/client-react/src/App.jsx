@@ -15,57 +15,59 @@ class App extends Component {
     super();
     this.state = {
       tasks: [],
-      unlabeled_issues: {
-      'sendgrid-nodejs':[],
-      'sendgrid-csharp':[],
-      'sendgrid-php':[],
-      'sendgrid-python':[],
-      'sendgrid-java':[],
-      'sendgrid-go':[],
-      'sendgrid-ruby':[],
-      'smtpapi-nodejs':[],
-      'smtpapi-go':[],
-      'smtpapi-python':[],
-      'smtpapi-php':[],
-      'smtpapi-csharp':[],
-      'smtpapi-java':[],
-      'smtpapi-ruby':[],
-      'sendgrid-oai':[],
-      'open-source-library-data-collector':[],
-      'python-http-client':[],
-      'php-http-client':[],
-      'csharp-http-client':[],
-      'java-http-client':[],
-      'ruby-http-client':[],
-      'rest':[],
-      'nodejs-http-client':[],
-      'dx-automator':[]},
-      bugs: {
-        'sendgrid-nodejs':[],
-        'sendgrid-csharp':[],
-        'sendgrid-php':[],
-        'sendgrid-python':[],
-        'sendgrid-java':[],
-        'sendgrid-go':[],
-        'sendgrid-ruby':[],
-        'smtpapi-nodejs':[],
-        'smtpapi-go':[],
-        'smtpapi-python':[],
-        'smtpapi-php':[],
-        'smtpapi-csharp':[],
-        'smtpapi-java':[],
-        'smtpapi-ruby':[],
-        'sendgrid-oai':[],
-        'open-source-library-data-collector':[],
-        'python-http-client':[],
-        'php-http-client':[],
-        'csharp-http-client':[],
-        'java-http-client':[],
-        'ruby-http-client':[],
-        'rest':[],
-        'nodejs-http-client':[],
-        'dx-automator':[]
-      },
+      unlabeled_issues: [],
+      // {
+      // 'sendgrid-nodejs':[],
+      // 'sendgrid-csharp':[],
+      // 'sendgrid-php':[],
+      // 'sendgrid-python':[],
+      // 'sendgrid-java':[],
+      // 'sendgrid-go':[],
+      // 'sendgrid-ruby':[],
+      // 'smtpapi-nodejs':[],
+      // 'smtpapi-go':[],
+      // 'smtpapi-python':[],
+      // 'smtpapi-php':[],
+      // 'smtpapi-csharp':[],
+      // 'smtpapi-java':[],
+      // 'smtpapi-ruby':[],
+      // 'sendgrid-oai':[],
+      // 'open-source-library-data-collector':[],
+      // 'python-http-client':[],
+      // 'php-http-client':[],
+      // 'csharp-http-client':[],
+      // 'java-http-client':[],
+      // 'ruby-http-client':[],
+      // 'rest':[],
+      // 'nodejs-http-client':[],
+      // 'dx-automator':[]},
+      bugs: []
+      // {
+      //   'sendgrid-nodejs':[],
+      //   'sendgrid-csharp':[],
+      //   'sendgrid-php':[],
+      //   'sendgrid-python':[],
+      //   'sendgrid-java':[],
+      //   'sendgrid-go':[],
+      //   'sendgrid-ruby':[],
+      //   'smtpapi-nodejs':[],
+      //   'smtpapi-go':[],
+      //   'smtpapi-python':[],
+      //   'smtpapi-php':[],
+      //   'smtpapi-csharp':[],
+      //   'smtpapi-java':[],
+      //   'smtpapi-ruby':[],
+      //   'sendgrid-oai':[],
+      //   'open-source-library-data-collector':[],
+      //   'python-http-client':[],
+      //   'php-http-client':[],
+      //   'csharp-http-client':[],
+      //   'java-http-client':[],
+      //   'ruby-http-client':[],
+      //   'rest':[],
+      //   'nodejs-http-client':[],
+      //   'dx-automator':[]
+      // },
     };
     this.Triage = this.Triage.bind(this)
   }
@@ -114,11 +116,13 @@ class App extends Component {
         <div>
         <h2>Unlabeled Issues - {value}</h2>
         <div className="Body">
-          <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/>
+          {/* <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/> */}
+          <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues}/>
         </div>
         <h2>Bugs - {value}</h2>
         <div className="Body">
-          <BugsList bugs={this.state.bugs[value]}/>
+          {/* <BugsList bugs={this.state.bugs[value]}/> */}
+          <BugsList bugs={this.state.bugs}/>
         </div>
         </div>
       )
