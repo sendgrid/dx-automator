@@ -1,5 +1,6 @@
-export REACT_APP_TASKS_SERVICE_URL=http://localhost
 docker-compose -f docker-compose-dev.yml run tasks python manage.py recreate_db
 docker-compose -f docker-compose-dev.yml run tasks python manage.py seed_db
 docker-compose -f docker-compose-dev.yml run users python manage.py recreate_db
 docker-compose -f docker-compose-dev.yml run users python manage.py seed_db
+docker-compose -f docker-compose-dev.yml run looker python main.py recreate_db -l 4404
+docker-compose -f docker-compose-dev.yml run looker python main.py pull_looks -l 4404

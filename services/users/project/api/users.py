@@ -2,6 +2,7 @@ from sqlalchemy import exc
 from flask import Blueprint, jsonify, request, render_template
 
 from project.api.models import User
+from project.api.utils.response import response_json_bad_request, response_json_not_found, response_json_ok, response_json_created
 from project import db
 
 
@@ -35,7 +36,7 @@ def add_user():
         'message': 'Invalid payload.'
     }
     if not post_data:
-        return jsonify(response_object), 400
+        return response_json_bad_request(jsonify(response_object))
     username = post_data.get('username')
     email = post_data.get('email')
     try:
@@ -45,13 +46,13 @@ def add_user():
             db.session.commit()
             response_object['status'] = 'success'
             response_object['message'] = f'{email} was added!'
-            return jsonify(response_object), 201
+            return response_json_created(jsonify(response_object))
         else:
             response_object['message'] = 'Sorry. That email already exists.'
-            return jsonify(response_object), 400
+            return response_json_bad_request(jsonify(response_object))
     except exc.IntegrityError as e:
         db.session.rollback()
-        return jsonify(response_object), 400
+        return response_json_bad_request(jsonify(response_object))
 
 
 @users_blueprint.route('/users/<user_id>', methods=['GET'])
@@ -64,7 +65,7 @@ def get_single_user(user_id):
     try:
         user = User.query.filter_by(id=int(user_id)).first()
         if not user:
-            return jsonify(response_object), 404
+            return response_json_not_found(jsonify(response_object))
         else:
             response_object = {
                 'status': 'success',
@@ -75,9 +76,9 @@ def get_single_user(user_id):
                     'active': user.active
                 }
             }
-            return jsonify(response_object), 200
+            return response_json_ok(jsonify(response_object))
     except ValueError:
-        return jsonify(response_object), 404
+        return response_json_not_found(jsonify(response_object))
 
 
 @users_blueprint.route('/users', methods=['GET'])
@@ -89,4 +90,4 @@ def get_all_users():
             'users': [user.to_json() for user in User.query.all()]
         }
     }
-    return jsonify(response_object), 200
+    return response_json_ok(jsonify(response_object))
