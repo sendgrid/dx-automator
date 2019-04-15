@@ -1,14 +1,19 @@
 Hello! Thank you for choosing to help contribute to one of the SendGrid open source libraries. There are many ways you can contribute and help is always welcome.  We simply ask that you follow the following contribution policies.
 
-- [CLAs and CCLAs](#cla)
-- [Roadmap & Milestones](#roadmap)
+- [CLAs and CCLAs](#clas-and-cclas)
 - [Feature Request](#feature-request)
 - [Submit a Bug Report](#submit-a-bug-report)
+  - [Please use our Bug Report Template](#please-use-our-bug-report-template)
 - [Improvements to the Codebase](#improvements-to-the-codebase)
-- [Understanding the Code Base](#understanding-the-codebase)
-- [Testing](#testing)
-- [Style Guidelines & Naming Conventions](#style-guidelines-and-naming-conventions)
-- [Creating a Pull Request](#creating-a-pull-request)
+  - [How we use branches](#how-we-use-branches)
+  - [Development Environment](#development-environment)
+    - [Using Docker](#using-docker)
+    - [Install and Run Locally](#install-and-run-locally)
+      - [Prerequisites](#prerequisites)
+      - [Initial setup:](#initial-setup)
+    - [Install and Execute:](#install-and-execute)
+- [Style Guidelines & Naming Conventions](#style-guidelines--naming-conventions)
+- [Creating a Pull Request<a name="creating-a-pull-request"></a>](#creating-a-pull-requesta-name%22creating-a-pull-request%22a)
 - [Code Reviews](#code-reviews)
 
 <a name="roadmap"></a>
@@ -60,7 +65,7 @@ In order to make the process easier, we've included a [sample bug report templat
 We welcome direct contributions to the dx-automator code base. Thank you!
 
 ### How we use branches
-All PRs and changes will be made to the `develop` branch. Once we have that branch stable, we will make merges to `master` and update the package managers.
+All PRs and changes will be made to the `development` branch. Once we have that branch stable, we will make merges to `master` and update the package managers.
 
 ### Development Environment ###
 
@@ -118,8 +123,8 @@ Please run your code through:
 2. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
-   git checkout develop
-   git pull upstream develop
+   git checkout development
+   git pull upstream development
    ```
 
 3. Create a new topic branch (off the main project development branch) to

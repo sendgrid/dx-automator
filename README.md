@@ -1,6 +1,6 @@
 # The Developer Experience (DX) Automator
 
-This tool is intended to help make managing multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams. 
+This tool is intended to help make managing multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams.
 
 We will deploy the code to pypi once the MVP is ready. Thank you for your support!
 
@@ -9,10 +9,9 @@ We will deploy the code to pypi once the MVP is ready. Thank you for your suppor
 **NEW:** If you're a software engineer who is passionate about #DeveloperExperience and/or #OpenSource, [this is an incredible opportunity to join our #DX team](https://sendgrid.com/careers/role/1421152/?gh_jid=1421152) as a Developer Experience Engineer and work with [@thinkingserious](https://github.com/thinkingserious) and [@aroach](https://github.com/aroach)! Tell your friends :)
 
 ## Contributing
+Everyone who participates in our repo is expected to comply with our [Code of Conduct](https://github.com/sendgrid/dx-automator/blob/development/CODE_OF_CONDUCT.md).
 
-Everyone who participates in our repo is expected to comply with our [Code of Conduct](./CODE_OF_CONDUCT).
-
-We welcome [contributions](./CONTRIBUTING.md) in the form of issues, pull requests and code reviews, or you can simply shoot us an [email](mailto:dx@sendgrid.com).
+We welcome [contributions](https://github.com/sendgrid/dx-automator/blob/development/CONTRIBUTING.md) in the form of issues, pull requests and code reviews. Or you can simply shoot us an [email](mailto:dx@sendgrid.com).
 
 ## Attributions
 We believe in open source and want to give credit where it's due. We used an amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting up a solid foundation using flask, docker, and (eventually) node and react. This tutorial helped us build and iterate this project successfully!
