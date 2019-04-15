@@ -1,7 +1,7 @@
 # services/tasks/project/__init__.py
 
 import os
-from flask import Flask, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_cors import CORS
@@ -9,6 +9,7 @@ from flask_cors import CORS
 # instantiate the db
 db = SQLAlchemy()
 toolbar = DebugToolbarExtension()
+
 
 
 def create_app():

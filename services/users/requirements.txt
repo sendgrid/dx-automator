@@ -4,3 +4,6 @@ Flask-SQLAlchemy==2.3.2
 psycopg2-binary==2.7.5
 Flask-Testing==0.6.2
 gunicorn==19.7.1
+pyflakes==2.0.0
+pylint==2.1.1
+pycodestyle==2.3.1

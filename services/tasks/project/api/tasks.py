@@ -12,7 +12,8 @@ tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 @tasks_blueprint.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        db.session.add(Task(creator=request.form['creator'], link=request.form['link']))
+        db.session.add(Task(creator=request.form['creator'],
+                       link=request.form['link']))
         db.session.commit()
     tasks = Task.query.all()
     return render_template('index.html', tasks=tasks)
