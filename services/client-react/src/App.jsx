@@ -181,11 +181,9 @@ class App extends Component {
           repo: value
       }})
       .then((res) => {
-        // var newIssues = this.state.unlabeled_issues[value]
-        // newIssues = res.data
-        // var newIssues = this.state.unlabeled_issues[value]
-          this.setState({unlabeled_issues: update(this.state.unlabeled_issues, {value: {$set: res.data}})});
-          // this.setState({unlabeled_issues: res.data});
+        var newIssues = this.state.unlabeled_issues
+        newIssues[value] = res.data
+        this.setState({unlabeled_issues: newIssues})
       })
       .catch((err) => { 
           console.log(err); 
@@ -227,14 +225,8 @@ class App extends Component {
       }})
       .then((res) => {
         var newBugs = this.state.bugs
-        console.log("before update: ")
-        console.log(newBugs[value])
         newBugs[value] = res.data
-        // this.setState({bugs: update(this.state.bugs, {value: {$set: newBugs}})});
         this.setState({bugs: newBugs})
-        console.log("after update: ")
-        console.log(this.state.bugs[value])
-        // this.setState({unlabeled_issues: res.data});
       })
       .catch((err) => { 
           console.log(err); 
