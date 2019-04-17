@@ -8,66 +8,66 @@ import Header from "./components/Header";
 import UnlabeledIssueList from "./components/UnlabeledIssueList"
 import BugsList from "./components/BugsList"
 import { timingSafeEqual } from "crypto";
-// import update from 'immutability-helper';
+import update from 'immutability-helper';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       tasks: [],
-      unlabeled_issues: [],
-      // {
-      // 'sendgrid-nodejs':[],
-      // 'sendgrid-csharp':[],
-      // 'sendgrid-php':[],
-      // 'sendgrid-python':[],
-      // 'sendgrid-java':[],
-      // 'sendgrid-go':[],
-      // 'sendgrid-ruby':[],
-      // 'smtpapi-nodejs':[],
-      // 'smtpapi-go':[],
-      // 'smtpapi-python':[],
-      // 'smtpapi-php':[],
-      // 'smtpapi-csharp':[],
-      // 'smtpapi-java':[],
-      // 'smtpapi-ruby':[],
-      // 'sendgrid-oai':[],
-      // 'open-source-library-data-collector':[],
-      // 'python-http-client':[],
-      // 'php-http-client':[],
-      // 'csharp-http-client':[],
-      // 'java-http-client':[],
-      // 'ruby-http-client':[],
-      // 'rest':[],
-      // 'nodejs-http-client':[],
-      // 'dx-automator':[]},
-      bugs: []
-      // {
-      //   'sendgrid-nodejs':[],
-      //   'sendgrid-csharp':[],
-      //   'sendgrid-php':[],
-      //   'sendgrid-python':[],
-      //   'sendgrid-java':[],
-      //   'sendgrid-go':[],
-      //   'sendgrid-ruby':[],
-      //   'smtpapi-nodejs':[],
-      //   'smtpapi-go':[],
-      //   'smtpapi-python':[],
-      //   'smtpapi-php':[],
-      //   'smtpapi-csharp':[],
-      //   'smtpapi-java':[],
-      //   'smtpapi-ruby':[],
-      //   'sendgrid-oai':[],
-      //   'open-source-library-data-collector':[],
-      //   'python-http-client':[],
-      //   'php-http-client':[],
-      //   'csharp-http-client':[],
-      //   'java-http-client':[],
-      //   'ruby-http-client':[],
-      //   'rest':[],
-      //   'nodejs-http-client':[],
-      //   'dx-automator':[]
-      // },
+      unlabeled_issues: //[],
+      {
+      'sendgrid-nodejs':[],
+      'sendgrid-csharp':[],
+      'sendgrid-php':[],
+      'sendgrid-python':[],
+      'sendgrid-java':[],
+      'sendgrid-go':[],
+      'sendgrid-ruby':[],
+      'smtpapi-nodejs':[],
+      'smtpapi-go':[],
+      'smtpapi-python':[],
+      'smtpapi-php':[],
+      'smtpapi-csharp':[],
+      'smtpapi-java':[],
+      'smtpapi-ruby':[],
+      'sendgrid-oai':[],
+      'open-source-library-data-collector':[],
+      'python-http-client':[],
+      'php-http-client':[],
+      'csharp-http-client':[],
+      'java-http-client':[],
+      'ruby-http-client':[],
+      'rest':[],
+      'nodejs-http-client':[],
+      'dx-automator':[]},
+      bugs: //[]
+      {
+        'sendgrid-nodejs':[],
+        'sendgrid-csharp':[],
+        'sendgrid-php':[],
+        'sendgrid-python':[],
+        'sendgrid-java':[],
+        'sendgrid-go':[],
+        'sendgrid-ruby':[],
+        'smtpapi-nodejs':[],
+        'smtpapi-go':[],
+        'smtpapi-python':[],
+        'smtpapi-php':[],
+        'smtpapi-csharp':[],
+        'smtpapi-java':[],
+        'smtpapi-ruby':[],
+        'sendgrid-oai':[],
+        'open-source-library-data-collector':[],
+        'python-http-client':[],
+        'php-http-client':[],
+        'csharp-http-client':[],
+        'java-http-client':[],
+        'ruby-http-client':[],
+        'rest':[],
+        'nodejs-http-client':[],
+        'dx-automator':[]
+      },
     };
     this.Triage = this.Triage.bind(this)
   }
@@ -111,18 +111,18 @@ class App extends Component {
   ]
     const items = [];
     for (const [index, value] of all_repos.entries()) {
-      console.log(this.state.unlabeled_issues[value])
+      // console.log(this.state.unlabeled_issues[value])
       items.push(
-        <div>
+        <div key={index}>
         <h2>Unlabeled Issues - {value}</h2>
-        <div className="Body">
-          {/* <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/> */}
-          <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues}/>
+        <div className="Body" key={index*index + index + 2*all_repos.length}>
+          <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/>
+          {/* <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues}/> */}
         </div>
         <h2>Bugs - {value}</h2>
-        <div className="Body">
-          {/* <BugsList bugs={this.state.bugs[value]}/> */}
-          <BugsList bugs={this.state.bugs}/>
+        <div className="Body" key={index*index + 2*index + 3*all_repos.length}>
+          <BugsList bugs={this.state.bugs[value]}/>
+          {/* <BugsList bugs={this.state.bugs}/> */}
         </div>
         </div>
       )
@@ -181,8 +181,11 @@ class App extends Component {
           repo: value
       }})
       .then((res) => {
-          // this.setState({unlabeled_issues: update(this.state.unlabeled_issues, {value: res.data})});
-          this.setState({unlabeled_issues: res.data});
+        // var newIssues = this.state.unlabeled_issues[value]
+        // newIssues = res.data
+        // var newIssues = this.state.unlabeled_issues[value]
+          this.setState({unlabeled_issues: update(this.state.unlabeled_issues, {value: {$set: res.data}})});
+          // this.setState({unlabeled_issues: res.data});
       })
       .catch((err) => { 
           console.log(err); 
@@ -223,8 +226,15 @@ class App extends Component {
           labels: 'type: bug'
       }})
       .then((res) => {
-        // this.setState({bugs: update(this.state.bugs, {value: res.data})});
-        this.setState({unlabeled_issues: res.data});
+        var newBugs = this.state.bugs
+        console.log("before update: ")
+        console.log(newBugs[value])
+        newBugs[value] = res.data
+        // this.setState({bugs: update(this.state.bugs, {value: {$set: newBugs}})});
+        this.setState({bugs: newBugs})
+        console.log("after update: ")
+        console.log(this.state.bugs[value])
+        // this.setState({unlabeled_issues: res.data});
       })
       .catch((err) => { 
           console.log(err); 
