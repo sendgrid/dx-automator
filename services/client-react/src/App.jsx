@@ -156,16 +156,15 @@ class App extends Component {
     }
 
     return (<div>
-              <center><h1>Triage</h1></center>
+              <h1>Triage</h1>
               <Divider></Divider>
               <h1>Summary</h1>
+              <div id="summary">
               <div id="bugs">
               <div>Open Bugs: {num_bugs}</div>
               <br></br>
               {bug_repos}
-              <br></br>
               </div>
-              <br></br>
 
               <div id="unlabeled-issues">
               <div>Unlabeled Issues: {num_unlabeled}</div>
@@ -173,7 +172,7 @@ class App extends Component {
               {unlabeled_repos}
               <br></br>
               </div>
-              <br></br>
+              </div>
               <Divider></Divider>
               {items}
             </div>)

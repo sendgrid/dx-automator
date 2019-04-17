@@ -36,10 +36,18 @@ body {
   position: relative;
 }
 
+#summary {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
 #unlabeled-issues {
   float: right;
+  flex: 1;
 }
 
 #bugs {
   float: left;
+  flex: 1;
 }
