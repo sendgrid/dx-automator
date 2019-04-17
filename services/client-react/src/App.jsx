@@ -114,35 +114,64 @@ class App extends Component {
     const items = [];
     var num_unlabeled = 0
     var num_bugs = 0
+    const unlabeled_repos = []
+    const bug_repos = []
+
     for (const [index, value] of all_repos.entries()) {
       // console.log(this.state.unlabeled_issues[value])
       num_unlabeled += this.state.unlabeled_issues[value].length
       num_bugs += this.state.bugs[value].length
-      items.push(
-        <div key={index}>
-        <h2>Unlabeled Issues - {value}</h2>
-        <div className="Body" key={index*index + index + 2*all_repos.length}>
-          <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/>
-          {/* <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues}/> */}
-        </div>
-        <h2>Bugs - {value}</h2>
-        <div className="Body" key={index*index + 2*index + 3*all_repos.length}>
-          <BugsList bugs={this.state.bugs[value]}/>
-          {/* <BugsList bugs={this.state.bugs}/> */}
-        </div>
-        </div>
-      )
+
+      if (this.state.unlabeled_issues[value].length != 0) {
+        unlabeled_repos.push(
+          <div key={index}>
+          <h3>{value}: {this.state.unlabeled_issues[value].length}</h3>
+          </div>
+        )
+        items.push(
+          <div key={index}>
+          <h2>Unlabeled Issues - {value}</h2>
+          <div className="Body" key={index*index + index + 2*all_repos.length}>
+            <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/>
+          </div>
+          </div>
+        )
+      }
+      if (this.state.bugs[value].length != 0) {
+        bug_repos.push(
+          <div key={index}>
+          <h3>{value}: {this.state.bugs[value].length}</h3>
+          </div>
+        )
+        items.push(
+          <div key={index*index + 3*index + 4*all_repos.length}>
+          <h2>Bugs - {value}</h2>
+          <div className="Body" key={index*index + 2*index + 3*all_repos.length}>
+            <BugsList bugs={this.state.bugs[value]}/>
+          </div>
+          </div>
+        )
+
+      }
     }
 
     return (<div>
               <center><h1>Triage</h1></center>
               <Divider></Divider>
               <h1>Summary</h1>
-              <div id="unlabeled-issues">
-              Unlabeled Issues: {num_unlabeled}
-              </div>
               <div id="bugs">
-              Bugs: {num_bugs}
+              <div>Open Bugs: {num_bugs}</div>
+              <br></br>
+              {bug_repos}
+              <br></br>
+              </div>
+              <br></br>
+
+              <div id="unlabeled-issues">
+              <div>Unlabeled Issues: {num_unlabeled}</div>
+              <br></br>
+              {unlabeled_repos}
+              <br></br>
               </div>
               <br></br>
               <Divider></Divider>

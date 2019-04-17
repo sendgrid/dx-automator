@@ -37,9 +37,9 @@ body {
 }
 
 #unlabeled-issues {
-  float: left;
+  float: right;
 }
 
 #bugs {
-  float: right;
+  float: left;
 }
