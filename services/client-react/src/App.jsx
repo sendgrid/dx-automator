@@ -9,6 +9,7 @@ import UnlabeledIssueList from "./components/UnlabeledIssueList"
 import BugsList from "./components/BugsList"
 import { timingSafeEqual } from "crypto";
 import update from 'immutability-helper';
+import { Divider } from "@sendgrid/ui-components";
 
 class App extends Component {
   constructor() {
@@ -82,6 +83,7 @@ class App extends Component {
     return <h2>Home</h2>
   }
   
+
   Triage() {
     const all_repos = [
       'sendgrid-nodejs',
@@ -110,8 +112,12 @@ class App extends Component {
       'dx-automator'
   ]
     const items = [];
+    var num_unlabeled = 0
+    var num_bugs = 0
     for (const [index, value] of all_repos.entries()) {
       // console.log(this.state.unlabeled_issues[value])
+      num_unlabeled += this.state.unlabeled_issues[value].length
+      num_bugs += this.state.bugs[value].length
       items.push(
         <div key={index}>
         <h2>Unlabeled Issues - {value}</h2>
@@ -129,7 +135,17 @@ class App extends Component {
     }
 
     return (<div>
-              <h1>Triage</h1>
+              <center><h1>Triage</h1></center>
+              <Divider></Divider>
+              <h1>Summary</h1>
+              <div id="unlabeled-issues">
+              Unlabeled Issues: {num_unlabeled}
+              </div>
+              <div id="bugs">
+              Bugs: {num_bugs}
+              </div>
+              <br></br>
+              <Divider></Divider>
               {items}
             </div>)
   }

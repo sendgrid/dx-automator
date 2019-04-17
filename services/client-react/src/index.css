@@ -35,3 +35,11 @@ body {
   width: 10%;
   position: relative;
 }
+
+#unlabeled-issues {
+  float: left;
+}
+
+#bugs {
+  float: right;
+}
