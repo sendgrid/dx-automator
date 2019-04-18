@@ -121,6 +121,12 @@ python ./examples/unlabled_issues.py
 #### Retrieve all open issues that are bugs
 
 ```bash
+python ./examples/open_security_issues.py
+```
+
+#### Retrieve all open issues that are security related
+
+```bash
 python ./examples/open_bugs.py
 ```
 
