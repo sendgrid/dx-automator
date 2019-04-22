@@ -69,6 +69,33 @@ class App extends Component {
         'nodejs-http-client':[],
         'dx-automator':[]
       },
+      followups: 
+      {
+        'sendgrid-nodejs':[],
+        'sendgrid-csharp':[],
+        'sendgrid-php':[],
+        'sendgrid-python':[],
+        'sendgrid-java':[],
+        'sendgrid-go':[],
+        'sendgrid-ruby':[],
+        'smtpapi-nodejs':[],
+        'smtpapi-go':[],
+        'smtpapi-python':[],
+        'smtpapi-php':[],
+        'smtpapi-csharp':[],
+        'smtpapi-java':[],
+        'smtpapi-ruby':[],
+        'sendgrid-oai':[],
+        'open-source-library-data-collector':[],
+        'python-http-client':[],
+        'php-http-client':[],
+        'csharp-http-client':[],
+        'java-http-client':[],
+        'ruby-http-client':[],
+        'rest':[],
+        'nodejs-http-client':[],
+        'dx-automator':[]
+      },
     };
     this.Triage = this.Triage.bind(this)
   }
@@ -77,6 +104,7 @@ class App extends Component {
     this.getTasks();
     this.getUnlabeledIssues();
     this.getBugs();
+    this.getFollowUps();
   };
 
   Home() {
@@ -114,13 +142,16 @@ class App extends Component {
     const items = [];
     var num_unlabeled = 0
     var num_bugs = 0
+    var num_followups = 0
     const unlabeled_repos = []
     const bug_repos = []
+    const followup_repos = []
 
     for (const [index, value] of all_repos.entries()) {
       // console.log(this.state.unlabeled_issues[value])
       num_unlabeled += this.state.unlabeled_issues[value].length
       num_bugs += this.state.bugs[value].length
+      num_followups += this.state.followups[value].length
 
       if (this.state.unlabeled_issues[value].length != 0) {
         unlabeled_repos.push(
@@ -151,7 +182,22 @@ class App extends Component {
           </div>
           </div>
         )
+      }
 
+      if (this.state.followups[value].length != 0) {
+        followup_repos.push(
+          <div key={index}>
+          <h3>{value}: {this.state.followups[value].length}</h3>
+          </div>
+        )
+        items.push(
+          <div key={index*index + 4*index + 5*all_repos.length}>
+          <h2>Follow Ups - {value}</h2>
+          <div className="Body" key={index*index + 3*index + 4*all_repos.length}>
+            <BugsList bugs={this.state.followups[value]}/>
+          </div>
+          </div>
+        )
       }
     }
 
@@ -172,7 +218,15 @@ class App extends Component {
               {unlabeled_repos}
               <br></br>
               </div>
+
+              <div id = "follow-ups">
+              <div>Follow Ups: {num_followups}</div>
+              <br></br>
+              {followup_repos}
               </div>
+                
+              </div>
+
               <Divider></Divider>
               {items}
             </div>)
@@ -271,6 +325,50 @@ class App extends Component {
         var newBugs = this.state.bugs
         newBugs[value] = res.data
         this.setState({bugs: newBugs})
+      })
+      .catch((err) => { 
+          console.log(err); 
+      });
+    }
+  }
+
+  getFollowUps(){
+    const all_repos = [
+      'sendgrid-nodejs',
+      'sendgrid-csharp',
+      'sendgrid-php',
+      'sendgrid-python',
+      'sendgrid-java',
+      'sendgrid-go',
+      'sendgrid-ruby',
+      'smtpapi-nodejs',
+      'smtpapi-go',
+      'smtpapi-python',
+      'smtpapi-php',
+      'smtpapi-csharp',
+      'smtpapi-java',
+      'smtpapi-ruby',
+      'sendgrid-oai',
+      'open-source-library-data-collector',
+      'python-http-client',
+      'php-http-client',
+      'csharp-http-client',
+      'java-http-client',
+      'ruby-http-client',
+      'rest',
+      'nodejs-http-client',
+      'dx-automator']
+    for (const [index, value] of all_repos.entries()) {
+      axios.get('http://192.168.99.100/github/issues',{
+        params: {
+          repo: value,
+          labels: "status: waiting for feedback",
+          states: "OPEN"
+      }})
+      .then((res) => {
+        var newFollowUps = this.state.followups
+        newFollowUps[value] = res.data
+        this.setState({followups: newFollowUps})
       })
       .catch((err) => { 
           console.log(err); 
