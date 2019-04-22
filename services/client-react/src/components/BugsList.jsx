@@ -13,7 +13,7 @@ const BugsList = (props) => {
         { props.bugs.map((bug) =>{
           return(
             <TableRow>
-              <TableCell className="url">{bug.url}</TableCell>
+              <TableCell className="url"><a href={bug.url}>{bug.url}</a></TableCell>
             </TableRow>
           )
         })}

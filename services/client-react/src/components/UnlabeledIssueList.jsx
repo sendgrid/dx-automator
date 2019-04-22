@@ -13,7 +13,7 @@ const UnlabeledIssueList = (props) => {
         { props.unlabeled_issues.map((unlabeled_issue) =>{
           return(
             <TableRow>
-              <TableCell className="url">{unlabeled_issue.url}</TableCell>
+              <TableCell className="url"><a href={unlabeled_issue.url}>{unlabeled_issue.url}</a></TableCell>
             </TableRow>
           )
         })}

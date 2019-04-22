@@ -101,7 +101,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.getTasks();
+    //this.getTasks();
     this.getUnlabeledIssues();
     this.getBugs();
     this.getFollowUps();
