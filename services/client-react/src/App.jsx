@@ -333,6 +333,11 @@ class App extends Component {
   }
 
   getFollowUps(){
+    const list_of_maintainers = [
+      'aroach',
+      'thinkingserious',
+      'kylearoberts'
+    ]
     const all_repos = [
       'sendgrid-nodejs',
       'sendgrid-csharp',
@@ -368,11 +373,44 @@ class App extends Component {
       .then((res) => {
         var newFollowUps = this.state.followups
         newFollowUps[value] = res.data
+        var temp = []
+        for (const [index2, value2] of newFollowUps[value].entries()){
+          if (!list_of_maintainers.includes(value2['last_comment_author'])){
+            temp.push(value2)
+          }
+        }
+        newFollowUps[value] = temp
         this.setState({followups: newFollowUps})
       })
       .catch((err) => { 
           console.log(err); 
       });
+      console.log("followups 1")
+      console.log(this.state.followups)
+
+      axios.get('http://192.168.99.100/github/issues',{
+        params: {
+          repo: value,
+          labels: "status: waiting for feedback",
+      }})
+      .then((res) => {
+        var newFollowUps = this.state.followups
+        var temp1 = {0: []}
+        temp1[0] = res.data
+        var temp = []
+        for (const [index2, value2] of temp1[0].entries()){
+          if (!list_of_maintainers.includes(value2['last_comment_author'])){
+            temp.push(value2)
+          }
+        }
+        newFollowUps[value].concat(temp)
+        this.setState({followups: newFollowUps})
+      })
+      .catch((err) => { 
+          console.log(err); 
+      });
+      console.log("followups 2")
+      console.log(this.state.followups)
     }
   }
 
