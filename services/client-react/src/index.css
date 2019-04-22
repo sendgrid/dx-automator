@@ -52,3 +52,7 @@ body {
   /* float: left;
   flex: 1; */
 }
+
+#a.link:hover {
+  color: rgb(98, 154, 218);;
+}

@@ -14,6 +14,7 @@ import { Divider } from "@sendgrid/ui-components";
 class App extends Component {
   constructor() {
     super();
+    // this.main = React.createRef();
     this.state = {
       tasks: [],
       unlabeled_issues: //[],
@@ -101,7 +102,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    //this.getTasks();
+    this.getTasks();
     this.getUnlabeledIssues();
     this.getBugs();
     this.getFollowUps();
@@ -154,30 +155,35 @@ class App extends Component {
       num_followups += this.state.followups[value].length
 
       if (this.state.unlabeled_issues[value].length != 0) {
+        var unlab = "unlabeled-".concat(value)
         unlabeled_repos.push(
-          <div key={index}>
-          <h3>{value}: {this.state.unlabeled_issues[value].length}</h3>
-          </div>
+          <a key={index} className="link" href={"#".concat(unlab)}>
+          {value}: {this.state.unlabeled_issues[value].length}
+          <br></br>
+          </a>
         )
         items.push(
           <div key={index}>
           <h2>Unlabeled Issues - {value}</h2>
-          <div className="Body" key={index*index + index + 2*all_repos.length}>
+          <div id={unlab}className="Body" key={index*index + index + 2*all_repos.length}>
             <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/>
           </div>
           </div>
         )
       }
+
       if (this.state.bugs[value].length != 0) {
+        var bugid = "bugs-".concat(value)
         bug_repos.push(
-          <div key={index}>
-          <h3>{value}: {this.state.bugs[value].length}</h3>
-          </div>
+          <a key={index} className="link" href={"#".concat(bugid)}>
+          {value}: {this.state.bugs[value].length}
+          <br></br>
+          </a>
         )
         items.push(
           <div key={index*index + 3*index + 4*all_repos.length}>
           <h2>Bugs - {value}</h2>
-          <div className="Body" key={index*index + 2*index + 3*all_repos.length}>
+          <div id={bugid} className="Body" key={index*index + 2*index + 3*all_repos.length}>
             <BugsList bugs={this.state.bugs[value]}/>
           </div>
           </div>
@@ -185,15 +191,17 @@ class App extends Component {
       }
 
       if (this.state.followups[value].length != 0) {
+        var follow = "followup-".concat(value)
         followup_repos.push(
-          <div key={index}>
-          <h3>{value}: {this.state.followups[value].length}</h3>
-          </div>
+          <a key={index} className="link" href={"#".concat(follow)}>
+          {value}: {this.state.followups[value].length}
+          <br></br>
+          </a>
         )
         items.push(
           <div key={index*index + 4*index + 5*all_repos.length}>
           <h2>Follow Ups - {value}</h2>
-          <div className="Body" key={index*index + 3*index + 4*all_repos.length}>
+          <div id={follow} className="Body" key={index*index + 3*index + 4*all_repos.length}>
             <BugsList bugs={this.state.followups[value]}/>
           </div>
           </div>
