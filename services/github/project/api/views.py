@@ -291,8 +291,11 @@ def get_issues():
             result = result.get('organization').get('repository').get('issues')
             for r in result.get('nodes'):
                 login = None
-                for comment in r.get('comments').get('nodes'):
-                    login = comment.get('author').get('login')
+                try:
+                    for comment in r.get('comments').get('nodes'):
+                        login = comment.get('author').get('login')
+                except:
+                    login = None
                 if not labels:
                     if not r.get('labels').get('edges'):
                         issue = dict()
