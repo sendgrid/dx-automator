@@ -385,8 +385,6 @@ class App extends Component {
       .catch((err) => { 
           console.log(err); 
       });
-      console.log("followups 1")
-      console.log(this.state.followups)
 
       axios.get('http://192.168.99.100/github/issues',{
         params: {
@@ -409,8 +407,6 @@ class App extends Component {
       .catch((err) => { 
           console.log(err); 
       });
-      console.log("followups 2")
-      console.log(this.state.followups)
     }
   }
 
