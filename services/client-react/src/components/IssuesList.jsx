@@ -1,7 +1,7 @@
 import React from 'react';
 import {TableBody, TableCell, Table, TableHeader, TableRow, HeaderCell} from "@sendgrid/ui-components"
 
-const BugsList = (props) => {
+const IssuesList = (props) => {
   return (
     <Table>
       <TableHeader>
@@ -23,4 +23,4 @@ const BugsList = (props) => {
   )
 };
 
-export default BugsList;
+export default IssuesList;

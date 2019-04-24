@@ -6,7 +6,7 @@ import TasksList from "./components/TasksList";
 import AddTask from "./components/AddTask";
 import Header from "./components/Header";
 import UnlabeledIssueList from "./components/UnlabeledIssueList"
-import BugsList from "./components/BugsList"
+import IssuesList from "./components/IssuesList"
 import { timingSafeEqual } from "crypto";
 import update from 'immutability-helper';
 import { Divider } from "@sendgrid/ui-components";
@@ -184,7 +184,7 @@ class App extends Component {
           <div key={index*index + 3*index + 4*all_repos.length}>
           <h2>Bugs - {value}</h2>
           <div id={bugid} className="Body" key={index*index + 2*index + 3*all_repos.length}>
-            <BugsList bugs={this.state.bugs[value]}/>
+            <IssuesList bugs={this.state.bugs[value]}/>
           </div>
           </div>
         )
@@ -202,7 +202,7 @@ class App extends Component {
           <div key={index*index + 4*index + 5*all_repos.length}>
           <h2>Follow Ups - {value}</h2>
           <div id={follow} className="Body" key={index*index + 3*index + 4*all_repos.length}>
-            <BugsList bugs={this.state.followups[value]}/>
+            <IssuesList bugs={this.state.followups[value]}/>
           </div>
           </div>
         )
