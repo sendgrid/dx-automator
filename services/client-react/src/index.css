@@ -35,3 +35,24 @@ body {
   width: 10%;
   position: relative;
 }
+
+#summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  /* flex-direction: row;
+  justify-content: left; */
+}
+
+#unlabeled-issues {
+  /* float: right;
+  flex: 1; */
+}
+
+#bugs {
+  /* float: left;
+  flex: 1; */
+}
+
+#a.link:hover {
+  color: rgb(98, 154, 218);;
+}

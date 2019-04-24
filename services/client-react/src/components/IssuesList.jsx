@@ -1,0 +1,26 @@
+import React from 'react';
+import {TableBody, TableCell, Table, TableHeader, TableRow, HeaderCell} from "@sendgrid/ui-components"
+
+const IssuesList = (props) => {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <HeaderCell>URL</HeaderCell>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        { props.issues.map((issue) =>{
+          return(
+            <TableRow>
+              <TableCell className="url"><a href={issue.url}>{issue.url}</a></TableCell>
+            </TableRow>
+          )
+        })}
+      </TableBody>
+    </Table>
+
+  )
+};
+
+export default IssuesList;
