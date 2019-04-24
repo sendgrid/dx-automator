@@ -5,7 +5,6 @@ import ContentClassTabs from "./components/ContentClassTabs";
 import TasksList from "./components/TasksList";
 import AddTask from "./components/AddTask";
 import Header from "./components/Header";
-import UnlabeledIssueList from "./components/UnlabeledIssueList"
 import IssuesList from "./components/IssuesList"
 import { timingSafeEqual } from "crypto";
 import update from 'immutability-helper';
@@ -166,7 +165,7 @@ class App extends Component {
           <div key={index}>
           <h2>Unlabeled Issues - {value}</h2>
           <div id={unlab}className="Body" key={index*index + index + 2*all_repos.length}>
-            <UnlabeledIssueList unlabeled_issues={this.state.unlabeled_issues[value]}/>
+            <IssuesList unlabeled_issues={this.state.unlabeled_issues[value]}/>
           </div>
           </div>
         )
