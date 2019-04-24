@@ -10,10 +10,10 @@ const IssuesList = (props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        { props.bugs.map((bug) =>{
+        { props.issues.map((issue) =>{
           return(
             <TableRow>
-              <TableCell className="url"><a href={bug.url}>{bug.url}</a></TableCell>
+              <TableCell className="url"><a href={issue.url}>{issue.url}</a></TableCell>
             </TableRow>
           )
         })}

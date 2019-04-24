@@ -91,7 +91,7 @@ class App extends Component {
           <div key={index}>
           <h2>Unlabeled Issues - {value}</h2>
           <div id={unlab}className="Body" key={index*index + index + 2*all_repos.length}>
-            <IssuesList unlabeled_issues={this.state.unlabeled_issues[value]}/>
+            <IssuesList issues={this.state.unlabeled_issues[value]}/>
           </div>
           </div>
         )
@@ -109,7 +109,7 @@ class App extends Component {
           <div key={index*index + 3*index + 4*all_repos.length}>
           <h2>Bugs - {value}</h2>
           <div id={bugid} className="Body" key={index*index + 2*index + 3*all_repos.length}>
-            <IssuesList bugs={this.state.bugs[value]}/>
+            <IssuesList issues={this.state.bugs[value]}/>
           </div>
           </div>
         )
@@ -127,7 +127,7 @@ class App extends Component {
           <div key={index*index + 4*index + 5*all_repos.length}>
           <h2>Follow Ups - {value}</h2>
           <div id={follow} className="Body" key={index*index + 3*index + 4*all_repos.length}>
-            <IssuesList bugs={this.state.followups[value]}/>
+            <IssuesList issues={this.state.followups[value]}/>
           </div>
           </div>
         )
