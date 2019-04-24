@@ -1,108 +1,61 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import axios from "axios";
-import ContentClassTabs from "./components/ContentClassTabs";
-import TasksList from "./components/TasksList";
-import AddTask from "./components/AddTask";
+// import ContentClassTabs from "./components/ContentClassTabs";
+// import TasksList from "./components/TasksList";
+// import AddTask from "./components/AddTask";
 import Header from "./components/Header";
 import UnlabeledIssueList from "./components/UnlabeledIssueList"
 import IssuesList from "./components/IssuesList"
-import { timingSafeEqual } from "crypto";
-import update from 'immutability-helper';
+// import { timingSafeEqual } from "crypto";
+// import update from 'immutability-helper';
 import { Divider } from "@sendgrid/ui-components";
+
+const all_repos = [
+  'sendgrid-nodejs',
+  'sendgrid-csharp',
+  'sendgrid-php',
+  'sendgrid-python',
+  'sendgrid-java',
+  'sendgrid-go',
+  'sendgrid-ruby',
+  'smtpapi-nodejs',
+  'smtpapi-go',
+  'smtpapi-python',
+  'smtpapi-php',
+  'smtpapi-csharp',
+  'smtpapi-java',
+  'smtpapi-ruby',
+  'sendgrid-oai',
+  'open-source-library-data-collector',
+  'python-http-client',
+  'php-http-client',
+  'csharp-http-client',
+  'java-http-client',
+  'ruby-http-client',
+  'rest',
+  'nodejs-http-client',
+  'dx-automator'
+]
 
 class App extends Component {
   constructor() {
     super();
     // this.main = React.createRef();
+    var unlabled_issues_dict = this.createDictofReposWithEmptyArrays(all_repos);
+    var bugs_dict = this.createDictofReposWithEmptyArrays(all_repos);
+    var follow_ups_dict = this.createDictofReposWithEmptyArrays(all_repos);
     this.state = {
-      tasks: [],
-      unlabeled_issues: //[],
-      {
-      'sendgrid-nodejs':[],
-      'sendgrid-csharp':[],
-      'sendgrid-php':[],
-      'sendgrid-python':[],
-      'sendgrid-java':[],
-      'sendgrid-go':[],
-      'sendgrid-ruby':[],
-      'smtpapi-nodejs':[],
-      'smtpapi-go':[],
-      'smtpapi-python':[],
-      'smtpapi-php':[],
-      'smtpapi-csharp':[],
-      'smtpapi-java':[],
-      'smtpapi-ruby':[],
-      'sendgrid-oai':[],
-      'open-source-library-data-collector':[],
-      'python-http-client':[],
-      'php-http-client':[],
-      'csharp-http-client':[],
-      'java-http-client':[],
-      'ruby-http-client':[],
-      'rest':[],
-      'nodejs-http-client':[],
-      'dx-automator':[]},
-      bugs: //[]
-      {
-        'sendgrid-nodejs':[],
-        'sendgrid-csharp':[],
-        'sendgrid-php':[],
-        'sendgrid-python':[],
-        'sendgrid-java':[],
-        'sendgrid-go':[],
-        'sendgrid-ruby':[],
-        'smtpapi-nodejs':[],
-        'smtpapi-go':[],
-        'smtpapi-python':[],
-        'smtpapi-php':[],
-        'smtpapi-csharp':[],
-        'smtpapi-java':[],
-        'smtpapi-ruby':[],
-        'sendgrid-oai':[],
-        'open-source-library-data-collector':[],
-        'python-http-client':[],
-        'php-http-client':[],
-        'csharp-http-client':[],
-        'java-http-client':[],
-        'ruby-http-client':[],
-        'rest':[],
-        'nodejs-http-client':[],
-        'dx-automator':[]
-      },
-      followups: 
-      {
-        'sendgrid-nodejs':[],
-        'sendgrid-csharp':[],
-        'sendgrid-php':[],
-        'sendgrid-python':[],
-        'sendgrid-java':[],
-        'sendgrid-go':[],
-        'sendgrid-ruby':[],
-        'smtpapi-nodejs':[],
-        'smtpapi-go':[],
-        'smtpapi-python':[],
-        'smtpapi-php':[],
-        'smtpapi-csharp':[],
-        'smtpapi-java':[],
-        'smtpapi-ruby':[],
-        'sendgrid-oai':[],
-        'open-source-library-data-collector':[],
-        'python-http-client':[],
-        'php-http-client':[],
-        'csharp-http-client':[],
-        'java-http-client':[],
-        'ruby-http-client':[],
-        'rest':[],
-        'nodejs-http-client':[],
-        'dx-automator':[]
-      },
+      // tasks: [],
+      unlabeled_issues: unlabled_issues_dict,
+      bugs: bugs_dict,
+      followups: follow_ups_dict,
     };
     this.Triage = this.Triage.bind(this)
   }
 
   componentWillMount() {
-    this.getTasks();
+    // this.getTasks();
     this.getUnlabeledIssues();
     this.getBugs();
     this.getFollowUps();
@@ -114,32 +67,6 @@ class App extends Component {
   
 
   Triage() {
-    const all_repos = [
-      'sendgrid-nodejs',
-      'sendgrid-csharp',
-      'sendgrid-php',
-      'sendgrid-python',
-      'sendgrid-java',
-      'sendgrid-go',
-      'sendgrid-ruby',
-      'smtpapi-nodejs',
-      'smtpapi-go',
-      'smtpapi-python',
-      'smtpapi-php',
-      'smtpapi-csharp',
-      'smtpapi-java',
-      'smtpapi-ruby',
-      'sendgrid-oai',
-      'open-source-library-data-collector',
-      'python-http-client',
-      'php-http-client',
-      'csharp-http-client',
-      'java-http-client',
-      'ruby-http-client',
-      'rest',
-      'nodejs-http-client',
-      'dx-automator'
-  ]
     const items = [];
     var num_unlabeled = 0
     var num_bugs = 0
@@ -149,12 +76,11 @@ class App extends Component {
     const followup_repos = []
 
     for (const [index, value] of all_repos.entries()) {
-      // console.log(this.state.unlabeled_issues[value])
       num_unlabeled += this.state.unlabeled_issues[value].length
       num_bugs += this.state.bugs[value].length
       num_followups += this.state.followups[value].length
 
-      if (this.state.unlabeled_issues[value].length != 0) {
+      if (this.state.unlabeled_issues[value].length !== 0) {
         var unlab = "unlabeled-".concat(value)
         unlabeled_repos.push(
           <a key={index} className="link" href={"#".concat(unlab)}>
@@ -172,7 +98,7 @@ class App extends Component {
         )
       }
 
-      if (this.state.bugs[value].length != 0) {
+      if (this.state.bugs[value].length !== 0) {
         var bugid = "bugs-".concat(value)
         bug_repos.push(
           <a key={index} className="link" href={"#".concat(bugid)}>
@@ -190,7 +116,7 @@ class App extends Component {
         )
       }
 
-      if (this.state.followups[value].length != 0) {
+      if (this.state.followups[value].length !== 0) {
         var follow = "followup-".concat(value)
         followup_repos.push(
           <a key={index} className="link" href={"#".concat(follow)}>
@@ -241,46 +167,21 @@ class App extends Component {
   }
 
   
-  // Adds a task to the db
-  addTask = (creator, link) => {
-    return axios.post(`${process.env.REACT_APP_TASKS_SERVICE_URL}`,
-      {creator, link}).then((res) => {this.getTasks()})
-      .catch((err) => { console.log(err); });
-  };
+  // // Adds a task to the db
+  // addTask = (creator, link) => {
+  //   return axios.post(`${process.env.REACT_APP_TASKS_SERVICE_URL}`,
+  //     {creator, link}).then((res) => {this.getTasks()})
+  //     .catch((err) => { console.log(err); });
+  // };
 
-  // Gets all the tasks in the db
-  getTasks(){
-    return axios.get(`${process.env.REACT_APP_TASKS_SERVICE_URL}`)
-    .then((res) => {this.setState({tasks: res.data.data.tasks});})
-    .catch((err) => { console.log(err); });
-  };
+  // // Gets all the tasks in the db
+  // getTasks(){
+  //   return axios.get(`${process.env.REACT_APP_TASKS_SERVICE_URL}`)
+  //   .then((res) => {this.setState({tasks: res.data.data.tasks});})
+  //   .catch((err) => { console.log(err); });
+  // };
 
   getUnlabeledIssues(){
-    const all_repos = [
-      'sendgrid-nodejs',
-      'sendgrid-csharp',
-      'sendgrid-php',
-      'sendgrid-python',
-      'sendgrid-java',
-      'sendgrid-go',
-      'sendgrid-ruby',
-      'smtpapi-nodejs',
-      'smtpapi-go',
-      'smtpapi-python',
-      'smtpapi-php',
-      'smtpapi-csharp',
-      'smtpapi-java',
-      'smtpapi-ruby',
-      'sendgrid-oai',
-      'open-source-library-data-collector',
-      'python-http-client',
-      'php-http-client',
-      'csharp-http-client',
-      'java-http-client',
-      'ruby-http-client',
-      'rest',
-      'nodejs-http-client',
-      'dx-automator']
     for (const [index, value] of all_repos.entries()) {
       axios.get('http://192.168.99.100/github/issues',{
         params: {
@@ -298,31 +199,6 @@ class App extends Component {
   }
 
   getBugs(){
-    const all_repos = [
-      'sendgrid-nodejs',
-      'sendgrid-csharp',
-      'sendgrid-php',
-      'sendgrid-python',
-      'sendgrid-java',
-      'sendgrid-go',
-      'sendgrid-ruby',
-      'smtpapi-nodejs',
-      'smtpapi-go',
-      'smtpapi-python',
-      'smtpapi-php',
-      'smtpapi-csharp',
-      'smtpapi-java',
-      'smtpapi-ruby',
-      'sendgrid-oai',
-      'open-source-library-data-collector',
-      'python-http-client',
-      'php-http-client',
-      'csharp-http-client',
-      'java-http-client',
-      'ruby-http-client',
-      'rest',
-      'nodejs-http-client',
-      'dx-automator']
     for (const [index, value] of all_repos.entries()) {
       axios.get('http://192.168.99.100/github/issues',{
         params: {
@@ -344,33 +220,9 @@ class App extends Component {
     const list_of_maintainers = [
       'aroach',
       'thinkingserious',
-      'kylearoberts'
+      'kylearoberts',
+      'childish-sambino'
     ]
-    const all_repos = [
-      'sendgrid-nodejs',
-      'sendgrid-csharp',
-      'sendgrid-php',
-      'sendgrid-python',
-      'sendgrid-java',
-      'sendgrid-go',
-      'sendgrid-ruby',
-      'smtpapi-nodejs',
-      'smtpapi-go',
-      'smtpapi-python',
-      'smtpapi-php',
-      'smtpapi-csharp',
-      'smtpapi-java',
-      'smtpapi-ruby',
-      'sendgrid-oai',
-      'open-source-library-data-collector',
-      'python-http-client',
-      'php-http-client',
-      'csharp-http-client',
-      'java-http-client',
-      'ruby-http-client',
-      'rest',
-      'nodejs-http-client',
-      'dx-automator']
     for (const [index, value] of all_repos.entries()) {
       axios.get('http://192.168.99.100/github/issues',{
         params: {
@@ -416,6 +268,14 @@ class App extends Component {
           console.log(err); 
       });
     }
+  }
+
+  createDictofReposWithEmptyArrays(all_repos){
+    var dict_of_repos = {}
+    all_repos.forEach(function(repo) {
+      dict_of_repos[repo] = [];
+    });
+    return dict_of_repos;
   }
 
   render() {
