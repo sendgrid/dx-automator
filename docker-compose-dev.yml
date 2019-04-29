@@ -16,6 +16,7 @@ services:
       - APP_SETTINGS=project.config.DevelopmentConfig
       - DATABASE_URL=postgres://postgres:postgres@tasks-db:5432/tasks_dev
       - DATABASE_TEST_URL=postgres://postgres:postgres@tasks-db:5432/tasks_test
+      - DX_IP=${DX_IP}
     depends_on:
       - tasks-db
     links:

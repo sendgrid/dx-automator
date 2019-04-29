@@ -139,12 +139,14 @@ def populate_db():
     # response_object = {'status' : 'success'}
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
 
+
     for repo in all_repos:
         query_params = {"repo":repo, "states":"OPEN"}
         response = client.github.issues.get(query_params=query_params)
         issues = json.loads(response.body)
         response_object[repo] = issues
-    return jsonify(response_object), 401
+
+    return jsonify(response_object), 201
 
     # post payload to /tasks/init
 
