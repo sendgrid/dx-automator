@@ -127,10 +127,7 @@ def populate_db():
         'dx-automator'
     ]
 
-    response_object = {
-        'status': 'success',
-        'message': 'No open issues right now.'
-    }
+    response_object = dict()
 
     # make get request to DX_IP
     # we will have a list of issues for each repo and we will add that to the json response object
@@ -146,28 +143,33 @@ def populate_db():
         issues = json.loads(response.body)
         response_object[repo] = issues
 
-    return jsonify(response_object), 201
+    
 
     # post payload to /tasks/init
-
-    # post_data = request.get_json()
+    for repo in response_object:
+        if len(response_object[repo]) != 0:
+            for issue in response_object[repo]:
+                
 
     # TODO: Add the other optional parameters here
-    # creator = post_data.get('creator')
-    # link = post_data.get('link')
-    # try:
-    #     task = Task.query.filter_by(link=link).first()
-    #     if not task:
-    #         db.session.add(Task(creator=creator, link=link))
-    #         db.session.commit()
-    #         response_object = {
-    #             'status': 'success',
-    #             'message': f'{link} was added!'
-    #         }
-    #         return jsonify(response_object), 201
-    #     else:
-    #         response_object['message'] = 'Sorry. That link already exists.'
-    #         return jsonify(response_object), 400
-    # except exc.IntegrityError:
-    #     db.session.rollback()
-    #     return jsonify(response_object), 400
+                creator = issue["last_comment_author"]
+                link = issue["url"]
+                if creator != None:
+                    try:
+                        task = Task.query.filter_by(link=link).first()
+                        if not task:
+                            db.session.add(Task(creator=creator, link=link))
+                            db.session.commit()
+                            # response_object = {
+                            #     'status': 'success',
+                            #     'message': f'{link} was added!'
+                            # }
+                            # return jsonify(response_object), 201
+                        # else:
+                            # response_object['message'] = 'Sorry. That link already exists.'
+                            # return jsonify(response_object), 400
+                    except exc.IntegrityError:
+                        db.session.rollback()
+                        return jsonify(response_object), 400
+
+    return jsonify(response_object), 201
