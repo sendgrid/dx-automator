@@ -148,16 +148,21 @@ def get_prs():
                             edges {{
                                 node {{
                                     name
+                                    id
                                 }}
                             }}
                         }}
                         comments(last: 1) {{
-                                nodes {{
-                                    author {{
-                                        login
-                                    }}
+                            totalCount
+                            nodes {{
+                                author {{
+                                    login
                                 }}
                             }}
+                        }}
+                        reactions(last:10) {{
+                            totalCount
+                        }}
                         }}
                         pageInfo {{
                             endCursor
@@ -182,8 +187,12 @@ def get_prs():
                 pr['author'] = r.get('author').get('login')
                 pr['points'] = get_points(r.get('labels').get('edges'))
                 pr['reviewers'] = get_reviewers(r.get('reviews').get('nodes'), pr['author'])
+                pr['num_reviewers'] = len(pr['reviewers'])
                 pr['reviewer_points'] = len(pr['reviewers']) * (pr['points'] / 2)
                 pr['last_comment_author'] = login
+                pr['reactions'] = r.get('reactions').get('totalCount')
+                pr['comments'] = r.get('comments').get('totalCount')
+                pr['labels'] = get_labels(r.get('labels').get('edges'))
                 prs.append(pr)
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
@@ -230,16 +239,22 @@ def get_issues():
                                 edges {{
                                     node {{
                                         name
+                                        id
                                     }}
                                 }}
                             }}
                             comments(last: 1) {{
+                                totalCount
                                 nodes {{
                                     author {{
                                         login
                                     }}
                                 }}
                             }}
+                            reactions(last:10) {{
+                                totalCount
+                            }}
+
                             }}
                             pageInfo {{
                                 endCursor
@@ -266,16 +281,22 @@ def get_issues():
                                 edges {{
                                     node {{
                                         name
+                                        id
                                     }}
                                 }}
                             }}
                             comments(last: 1) {{
+                                totalCount
                                 nodes {{
                                     author {{
                                         login
                                     }}
                                 }}
                             }}
+                            reactions(last:10) {{
+                                totalCount
+                            }}
+
                             }}
                             pageInfo {{
                                 endCursor
@@ -304,6 +325,8 @@ def get_issues():
                         issue['createdAt'] = r.get('createdAt')
                         issue['labels'] = labels
                         issue['last_comment_author'] = login
+                        issue['reactions'] = r.get('reactions').get('totalCount')
+                        issue['comments'] = r.get('comments').get('totalCount')
                         issues.append(issue)
                 else:
                     issue = dict()
@@ -314,6 +337,8 @@ def get_issues():
                         issue_labels.append(label.get('node').get('name'))
                     issue['labels'] = issue_labels
                     issue['last_comment_author'] = login
+                    issue['reactions'] = r.get('reactions').get('totalCount')
+                    issue['comments'] = r.get('comments').get('totalCount')
                     issues.append(issue)
                 
             has_next_page = result.get('pageInfo').get('hasNextPage')
@@ -334,6 +359,12 @@ def get_points(labels):
         if label.get('node').get('name')  == 'difficulty: very hard':
             return 15 
     return 0
+
+def get_labels(labels):
+    l = []
+    for label in labels:
+        l.append(label.get('node').get('id'))
+    return l
 
 def get_reviewers(reviewers, author):
     logins = list()

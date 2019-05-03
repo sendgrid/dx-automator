@@ -28,6 +28,7 @@ class Task(db.Model):
     reach = db.Column(db.Integer, nullable=False)
     effort = db.Column(db.String(128), nullable=True)
     date_multiplier = db.Column(db.Integer, nullable=False)
+    labels = db.Column(db.ARRAY(db.String(128)), nullable=True)
 
     def __init__(self, creator, link, title="", due_date=None, task_type="", category="",
                  maintainer=None, language=None, customers_count=1, estimated_customer_points=None,
