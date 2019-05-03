@@ -21,7 +21,7 @@ class Task(db.Model):
     maintainer = db.Column(db.String(128), nullable=True)
     language = db.Column(db.String(128), nullable=True)
     customers_count = db.Column(db.Integer, nullable=False)
-    estimated_custmomer_points = db.Column(db.Integer, nullable=True)
+    estimated_customer_points = db.Column(db.Integer, nullable=True)
     estimated_points = db.Column(db.Integer, nullable=True)
     impact = db.Column(db.Integer, nullable=True)
     confidence = db.Column(db.String(128), nullable=False)
@@ -30,7 +30,7 @@ class Task(db.Model):
     date_multiplier = db.Column(db.Integer, nullable=False)
 
     def __init__(self, creator, link, title="", due_date=None, task_type="", category="",
-                 maintainer=None, language=None, customers_count=1, estimated_custmomer_points=None,
+                 maintainer=None, language=None, customers_count=1, estimated_customer_points=None,
                  estimated_points=None, impact=None, reach=1, effort=None, confidence="",
                  date_multiplier=1):
         self.creator = creator
@@ -44,7 +44,7 @@ class Task(db.Model):
         self.maintainer = maintainer
         self.language = language
         self.customers_count = customers_count
-        self.estimated_custmomer_points = estimated_custmomer_points
+        self.estimated_customer_points = estimated_customer_points
         self.estimated_points = estimated_points
         self.impact = impact
         self.confidence = confidence
