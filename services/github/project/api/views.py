@@ -332,10 +332,7 @@ def get_issues():
                     issue = dict()
                     issue['url'] = r.get('url')
                     issue['createdAt'] = r.get('createdAt')
-                    issue_labels = list()
-                    for label in r.get('labels').get('edges'):
-                        issue_labels.append(label.get('node').get('name'))
-                    issue['labels'] = issue_labels
+                    issue['labels'] = get_labels(r.get('labels').get('edges'))
                     issue['last_comment_author'] = login
                     issue['reactions'] = r.get('reactions').get('totalCount')
                     issue['comments'] = r.get('comments').get('totalCount')
