@@ -197,11 +197,12 @@ def get_prs():
 @github_blueprint.route('/github/issues', methods=['GET'])
 def get_issues():
     """Get all of the open issues with a given list of labels from a particular repo, if no labels
-       are given, you will receive a list of unlabeled issues"""
+       are given, you will receive a list of all unlabeled issues"""
     issues = list()
     labels = list()
     repo = request.args.get('repo', type = str)
     list_of_labels = request.args.getlist('labels', type = str)
+    filter = request.args.get('filter', type = str)
     for label in list_of_labels:
         #print(label, file=sys.stderr)
         try:
@@ -213,7 +214,7 @@ def get_issues():
     github_org = current_app.config['GITHUB_ORG']
     repo = '"' + repo + '"'
     while has_next_page:
-        if labels:
+        if labels: 
             query = f"""query{{
                 organization(login: "{github_org}") {{
                     repository(name: {repo}) {{
@@ -261,7 +262,7 @@ def get_issues():
                             author {{
                                 login
                             }}
-                            labels(first: 1) {{
+                            labels(first: 20) {{
                                 edges {{
                                     node {{
                                         name
@@ -296,7 +297,7 @@ def get_issues():
                         login = comment.get('author').get('login')
                 except:
                     login = None
-                if not labels:
+                if (not labels) and (filter != 'all'):
                     if not r.get('labels').get('edges'):
                         issue = dict()
                         issue['url'] = r.get('url')
@@ -314,6 +315,7 @@ def get_issues():
                     issue['labels'] = issue_labels
                     issue['last_comment_author'] = login
                     issues.append(issue)
+                
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
                 end_cursor = f'"{result["pageInfo"]["endCursor"]}"'

@@ -135,23 +135,21 @@ def populate_db():
     # issues = {status: success, repo1: [list of issues 1], repo2: [list of issues 2], ...}
     # response_object = {'status' : 'success'}
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-
-
     for repo in all_repos:
-        query_params = {"repo":repo, "states":"OPEN"}
+        query_params = {
+            "repo":repo,
+            "states":"OPEN",
+            "filter":"all"
+        }
         response = client.github.issues.get(query_params=query_params)
         issues = json.loads(response.body)
         response_object[repo] = issues
-
-    
 
     # post payload to /tasks/init
     for repo in response_object:
         if len(response_object[repo]) != 0:
             for issue in response_object[repo]:
-                
-
-    # TODO: Add the other optional parameters here
+                # TODO: Add the other optional parameters here
                 creator = issue["last_comment_author"]
                 link = issue["url"]
                 if creator != None:

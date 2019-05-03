@@ -106,8 +106,20 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 
 ### Admin Commands
 
+#### Update the Hacktoberfest leaderboard
+
 ```bash
 curl http://$DX_IP/hacktoberfest/leaders/update
+```
+
+#### Populate the local DB with all open GitHub issues and PRs
+
+```bash
+curl http://$DX_IP/tasks/init/db
+docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
+# \c tasks_dev
+# select * from tasks;
+# \q
 ```
 
 ### Examples
