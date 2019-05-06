@@ -126,7 +126,7 @@ docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
 
 ### Examples
 
-#### Retrieve all open and unlabed issues
+#### Retrieve all open and unlabeled issues
 
 ```bash
 python ./examples/unlabled_issues.py
