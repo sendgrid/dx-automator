@@ -126,47 +126,102 @@ def get_prs():
     github_org = current_app.config['GITHUB_ORG']
     repo = '"' + repo + '"'
     while has_next_page:
-        query = f"""query{{
-            organization(login: "{github_org}") {{
-                repository(name: {repo}) {{
-                pullRequests(first: 100, states: {json.dumps(states).replace('"', '')}, labels: {json.dumps(labels)}, after: {end_cursor}) {{
-                    nodes {{
-                        url
-                        state
-                        createdAt
-                        reviews(first: 10) {{
-                            nodes {{
-                                author {{
-                                    login
-                                }}
-                            }}
-                        }}
-                        author {{
-                            login
-                        }}
-                        labels(first: 10) {{
-                            edges {{
-                                node {{
-                                    name
-                                }}
-                            }}
-                        }}
-                        comments(last: 1) {{
+        if labels:
+            query = f"""query{{
+                organization(login: "{github_org}") {{
+                    repository(name: {repo}) {{
+                    pullRequests(first: 100, states: {json.dumps(states).replace('"', '')}, labels: {json.dumps(labels)}, after: {end_cursor}) {{
+                        nodes {{
+                            url
+                            state
+                            title
+                            createdAt
+                            reviews(first: 10) {{
                                 nodes {{
                                     author {{
                                         login
                                     }}
                                 }}
                             }}
-                        }}
-                        pageInfo {{
-                            endCursor
-                            hasNextPage
+                            author {{
+                                login
+                            }}
+                            labels(first: 10) {{
+                                edges {{
+                                    node {{
+                                        name
+                                        id
+                                    }}
+                                }}
+                            }}
+                            comments(last: 1) {{
+                                totalCount
+                                nodes {{
+                                    author {{
+                                        login
+                                    }}
+                                }}
+                            }}
+                            reactions(last:10) {{
+                                totalCount
+                            }}
+                            }}
+                            pageInfo {{
+                                endCursor
+                                hasNextPage
+                            }}
                         }}
                     }}
                 }}
-            }}
-        }}"""
+            }}"""
+        else:
+            query = f"""query{{
+                organization(login: "{github_org}") {{
+                    repository(name: {repo}) {{
+                    pullRequests(first: 100, states: {json.dumps(states).replace('"', '')}, after: {end_cursor}) {{
+                        nodes {{
+                            url
+                            state
+                            title
+                            createdAt
+                            reviews(first: 10) {{
+                                nodes {{
+                                    author {{
+                                        login
+                                    }}
+                                }}
+                            }}
+                            author {{
+                                login
+                            }}
+                            labels(first: 10) {{
+                                edges {{
+                                    node {{
+                                        name
+                                        id
+                                    }}
+                                }}
+                            }}
+                            comments(last: 1) {{
+                                totalCount
+                                nodes {{
+                                    author {{
+                                        login
+                                    }}
+                                }}
+                            }}
+                            reactions(last:10) {{
+                                totalCount
+                            }}
+                            }}
+                            pageInfo {{
+                                endCursor
+                                hasNextPage
+                            }}
+                        }}
+                    }}
+                }}
+            }}"""
         result, status = run_query(query)
         if not status:
             return "GITHUB_TOKEN may not be valid", 400
@@ -182,8 +237,13 @@ def get_prs():
                 pr['author'] = r.get('author').get('login')
                 pr['points'] = get_points(r.get('labels').get('edges'))
                 pr['reviewers'] = get_reviewers(r.get('reviews').get('nodes'), pr['author'])
+                pr['num_reviewers'] = len(pr['reviewers'])
                 pr['reviewer_points'] = len(pr['reviewers']) * (pr['points'] / 2)
                 pr['last_comment_author'] = login
+                pr['reactions'] = r.get('reactions').get('totalCount')
+                pr['comments'] = r.get('comments').get('totalCount')
+                pr['labels'] = get_labels(r.get('labels').get('edges'))
+                pr['title'] = r.get('title')
                 prs.append(pr)
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
@@ -197,11 +257,12 @@ def get_prs():
 @github_blueprint.route('/github/issues', methods=['GET'])
 def get_issues():
     """Get all of the open issues with a given list of labels from a particular repo, if no labels
-       are given, you will receive a list of unlabeled issues"""
+       are given, you will receive a list of all unlabeled issues"""
     issues = list()
     labels = list()
     repo = request.args.get('repo', type = str)
     list_of_labels = request.args.getlist('labels', type = str)
+    filter = request.args.get('filter', type = str)
     for label in list_of_labels:
         #print(label, file=sys.stderr)
         try:
@@ -213,7 +274,7 @@ def get_issues():
     github_org = current_app.config['GITHUB_ORG']
     repo = '"' + repo + '"'
     while has_next_page:
-        if labels:
+        if labels: 
             query = f"""query{{
                 organization(login: "{github_org}") {{
                     repository(name: {repo}) {{
@@ -221,6 +282,7 @@ def get_issues():
                         nodes {{
                             url
                             state
+                            title
                             createdAt
                             author {{
                                 login
@@ -229,16 +291,22 @@ def get_issues():
                                 edges {{
                                     node {{
                                         name
+                                        id
                                     }}
                                 }}
                             }}
                             comments(last: 1) {{
+                                totalCount
                                 nodes {{
                                     author {{
                                         login
                                     }}
                                 }}
                             }}
+                            reactions(last:10) {{
+                                totalCount
+                            }}
+
                             }}
                             pageInfo {{
                                 endCursor
@@ -257,24 +325,31 @@ def get_issues():
                         nodes {{
                             url
                             state
+                            title
                             createdAt
                             author {{
                                 login
                             }}
-                            labels(first: 1) {{
+                            labels(first: 20) {{
                                 edges {{
                                     node {{
                                         name
+                                        id
                                     }}
                                 }}
                             }}
                             comments(last: 1) {{
+                                totalCount
                                 nodes {{
                                     author {{
                                         login
                                     }}
                                 }}
                             }}
+                            reactions(last:10) {{
+                                totalCount
+                            }}
+
                             }}
                             pageInfo {{
                                 endCursor
@@ -296,24 +371,30 @@ def get_issues():
                         login = comment.get('author').get('login')
                 except:
                     login = None
-                if not labels:
+                if (not labels) and (filter != 'all'):
                     if not r.get('labels').get('edges'):
                         issue = dict()
+                        issue['author'] = r.get('author').get('login')
                         issue['url'] = r.get('url')
+                        issue['title'] = r.get('title')
                         issue['createdAt'] = r.get('createdAt')
                         issue['labels'] = labels
                         issue['last_comment_author'] = login
+                        issue['reactions'] = r.get('reactions').get('totalCount')
+                        issue['comments'] = r.get('comments').get('totalCount')
                         issues.append(issue)
                 else:
                     issue = dict()
+                    issue['author'] = r.get('author').get('login')
                     issue['url'] = r.get('url')
+                    issue['title'] = r.get('title')
                     issue['createdAt'] = r.get('createdAt')
-                    issue_labels = list()
-                    for label in r.get('labels').get('edges'):
-                        issue_labels.append(label.get('node').get('name'))
-                    issue['labels'] = issue_labels
+                    issue['labels'] = get_labels(r.get('labels').get('edges'))
                     issue['last_comment_author'] = login
+                    issue['reactions'] = r.get('reactions').get('totalCount')
+                    issue['comments'] = r.get('comments').get('totalCount')
                     issues.append(issue)
+                
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
                 end_cursor = f'"{result["pageInfo"]["endCursor"]}"'
@@ -332,6 +413,12 @@ def get_points(labels):
         if label.get('node').get('name')  == 'difficulty: very hard':
             return 15 
     return 0
+
+def get_labels(labels):
+    l = []
+    for label in labels:
+        l.append(label.get('node').get('id'))
+    return l
 
 def get_reviewers(reviewers, author):
     logins = list()

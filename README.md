@@ -106,13 +106,27 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 
 ### Admin Commands
 
+#### Update the Hacktoberfest leaderboard
+
 ```bash
 curl http://$DX_IP/hacktoberfest/leaders/update
 ```
 
+#### Populate the local DB with all open GitHub issues and PRs
+
+Note that by running this script a backup will be created with a file format of `tasks-db-backup.[current time stamp]`.
+
+```bash
+./scripts/setup-local-db
+docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
+# \c tasks_dev
+# select * from tasks;
+# \q
+```
+
 ### Examples
 
-#### Retrieve all open and unlabed issues
+#### Retrieve all open and unlabeled issues
 
 ```bash
 python ./examples/unlabled_issues.py

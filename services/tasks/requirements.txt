@@ -14,3 +14,4 @@ flask-debugtoolbar==0.10.1
 pyflakes==2.0.0
 pylint==2.1.1
 pycodestyle==2.3.1
+python_http_client==3.1.0

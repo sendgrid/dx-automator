@@ -1,6 +1,4 @@
 # services/tasks/manage.py
-
-
 import unittest
 import coverage
 from datetime import datetime
@@ -60,18 +58,19 @@ def recreate_db():
     db.create_all()
     db.session.commit()
 
-
 @manager.command
 def seed_db():
     """Seeds the database."""
     db.session.add(Task(
+        created_at=datetime.utcnow(),
         creator="af4ro",
-        link="https://github.com/sendgrid",
+        url="https://github.com/sendgrid",
         title="First test issue"
     ))
     db.session.add(Task(
+        created_at=datetime.utcnow(),
         creator="anshul",
-        link="anshulsinghal.me",
+        url="anshulsinghal.me",
         title="Second test issue",
         due_date=datetime(2018, 3, 20)
     ))

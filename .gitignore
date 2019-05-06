@@ -98,3 +98,5 @@ awscli-bundle*
 .vscode
 
 node_modules
+alchemydumps
+tasks-db-backup.*
