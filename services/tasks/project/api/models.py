@@ -13,36 +13,39 @@ class Task(db.Model):
     creator = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False, onupdate=datetime.now)
-    link = db.Column(db.String(128), nullable=False)
-    title = db.Column(db.String(128), nullable=False)
+    url = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(255), nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)
-    task_type = db.Column(db.String(128), nullable=False)
-    category = db.Column(db.String(128), nullable=False)
+    task_type = db.Column(db.String(128), nullable=True)
+    category = db.Column(db.String(128), nullable=True)
     maintainer = db.Column(db.String(128), nullable=True)
     language = db.Column(db.String(128), nullable=True)
-    customers_count = db.Column(db.Integer, nullable=False)
+    customers_count = db.Column(db.Integer, nullable=True)
     estimated_customer_points = db.Column(db.Integer, nullable=True)
     estimated_points = db.Column(db.Integer, nullable=True)
     impact = db.Column(db.Integer, nullable=True)
-    confidence = db.Column(db.String(128), nullable=False)
-    reach = db.Column(db.Integer, nullable=False)
+    confidence = db.Column(db.String(128), nullable=True)
+    reach = db.Column(db.Integer, nullable=True)
     effort = db.Column(db.String(128), nullable=True)
-    date_multiplier = db.Column(db.Integer, nullable=False)
+    date_multiplier = db.Column(db.Integer, nullable=True)
     labels = db.Column(db.ARRAY(db.String(128)), nullable=True)
+    num_of_comments = db.Column(db.Integer, nullable=True)
+    num_of_reactions = db.Column(db.Integer, nullable=True)
 
-    def __init__(self, creator, link, title="", due_date=None, task_type="", category="",
+    def __init__(self, creator, url, created_at, title="", due_date=None, task_type="", category="",
                  maintainer=None, language=None, customers_count=1, estimated_customer_points=None,
-                 estimated_points=None, impact=None, reach=1, effort=None, confidence="",
-                 date_multiplier=1):
+                 estimated_points=None, impact=None, reach=1, effort=None, confidence="", labels=None,
+                 date_multiplier=1, num_of_comments=0, num_of_reactions=0, rice_total=0):
         self.creator = creator
-        self.link = link
+        self.url = url
         self.title = title
-        self.created_at = datetime.utcnow()
+        self.created_at = created_at
         self.updated_at = datetime.utcnow()
         self.due_date = due_date
         self.task_type = task_type
         self.category = category
         self.maintainer = maintainer
+        self.labels = labels
         self.language = language
         self.customers_count = customers_count
         self.estimated_customer_points = estimated_customer_points
@@ -53,7 +56,9 @@ class Task(db.Model):
         self.effort = effort
         self.days_to_due = self.calculateDaysToDue(due_date)
         self.date_multiplier = date_multiplier
-        self.rice_total = 0
+        self.rice_total = rice_total
+        self.num_of_comments = num_of_comments
+        self.num_of_reactions = num_of_reactions
 
     # Get the number of days to due date
     def calculateDaysToDue(self, due_date):
@@ -65,7 +70,27 @@ class Task(db.Model):
     def to_json(self):
         return {
             'id': self.id,
-            'link': self.link,
+            'category': self.category,
+            'confidence': self.confidence,
             'creator': self.creator,
-            'due_date': self.due_date
+            'created_at': self.created_at,
+            'customer_count': self.customer_count,
+            'date_multiplier': self.date_multiplier,
+            'days_to_due': self.calculateDaysToDue(self.due_date),
+            'due_date': self.due_date,
+            'effor': self.effort,
+            'estimated_customer_points': self.estimated_customer_points,
+            'estimated_points': self.estimated_points,
+            'impact': self.impact,
+            'labels': self.labels,
+            'language': self.language,
+            'maintainer': self.maintainer,
+            'num_of_comments': self.num_of_comments,
+            'num_of_reactions': self.num_of_reactions,
+            'reach': self.reach,
+            'rice_total': self.rice_total,
+            'task_type': self.task_type,
+            'title': self.title,
+            'updated_at': self.updated_at,
+            'url': self.url
         }

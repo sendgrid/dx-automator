@@ -114,8 +114,10 @@ curl http://$DX_IP/hacktoberfest/leaders/update
 
 #### Populate the local DB with all open GitHub issues and PRs
 
+Note that by running this script a backup will be created with a file format of `tasks-db-backup.[current time stamp]`.
+
 ```bash
-curl http://$DX_IP/tasks/init/db
+./scripts/setup-local-db
 docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
 # \c tasks_dev
 # select * from tasks;

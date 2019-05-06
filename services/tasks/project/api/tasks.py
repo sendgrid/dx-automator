@@ -12,7 +12,6 @@ import time
 
 tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 
-
 @tasks_blueprint.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -141,31 +140,44 @@ def populate_db():
             "states":"OPEN",
             "filter":"all"
         }
-        response = client.github.issues.get(query_params=query_params)
-        issues = json.loads(response.body)
-        response_object[repo] = issues
+        #TODO: Get the PRs too
+        try:
+            response_issues = client.github.issues.get(query_params=query_params)
+            response_prs = client.github.prs.get(query_params=query_params)
+            issues = json.loads(response_issues.body)
+            prs = json.loads(response_prs.body)
+            issues_and_prs = issues + prs
+            response_object[repo] = issues_and_prs
+        except Exception as e:
+            print(e)
 
     # post payload to /tasks/init
     for repo in response_object:
         if len(response_object[repo]) != 0:
             for issue in response_object[repo]:
-                # TODO: Add the other optional parameters here
-                creator = issue["last_comment_author"]
-                link = issue["url"]
-                if creator != None:
+                if issue != None:
+                    creator = issue['author']
+                    url = issue['url']
+                    created_at = issue['createdAt']
+                    labels = issue['labels']
+                    num_of_comments = issue['comments']
+                    num_of_reactions = issue['reactions']
+                    title = issue['title']
+                    language = repo[9:]
                     try:
-                        task = Task.query.filter_by(link=link).first()
-                        if not task:
-                            db.session.add(Task(creator=creator, link=link))
-                            db.session.commit()
-                            # response_object = {
-                            #     'status': 'success',
-                            #     'message': f'{link} was added!'
-                            # }
-                            # return jsonify(response_object), 201
-                        # else:
-                            # response_object['message'] = 'Sorry. That link already exists.'
-                            # return jsonify(response_object), 400
+                        db.session.add(
+                            Task(
+                                created_at=created_at,
+                                creator=creator,
+                                labels=labels,
+                                language=language,
+                                num_of_comments=num_of_comments,
+                                num_of_reactions=num_of_reactions,
+                                title=title,
+                                url=url
+                            )
+                        )
+                        db.session.commit()
                     except exc.IntegrityError:
                         db.session.rollback()
                         return jsonify(response_object), 400
