@@ -48,7 +48,7 @@ def get_prs(repo):
 
 def get_issues(repo):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-    query_params = {"repo":repo, "labels":"status: waiting for feedback"}
+    query_params = {"repo":repo}
     response = client.github.issues.get(query_params=query_params)
     issues = json.loads(response.body)
     return issues
