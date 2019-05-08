@@ -39,6 +39,7 @@ body {
 #summary {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   /* flex-direction: row;
   justify-content: left; */
 }
@@ -51,6 +52,10 @@ body {
 #bugs {
   /* float: left;
   flex: 1; */
+}
+
+#code-reviews {
+
 }
 
 #a.link:hover {

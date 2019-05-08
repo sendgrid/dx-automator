@@ -44,11 +44,13 @@ class App extends Component {
     var unlabled_issues_dict = this.createDictofReposWithEmptyArrays(all_repos);
     var bugs_dict = this.createDictofReposWithEmptyArrays(all_repos);
     var follow_ups_dict = this.createDictofReposWithEmptyArrays(all_repos);
+    var code_reviews_dict = this.createDictofReposWithEmptyArrays(all_repos);
     this.state = {
       // tasks: [],
       unlabeled_issues: unlabled_issues_dict,
       bugs: bugs_dict,
       followups: follow_ups_dict,
+      codereviews: code_reviews_dict,
     };
     this.Triage = this.Triage.bind(this)
   }
@@ -58,6 +60,7 @@ class App extends Component {
     this.getUnlabeledIssues();
     this.getBugs();
     this.getFollowUps();
+    this.getCodeReviewed();
   };
 
   Home() {
@@ -70,14 +73,17 @@ class App extends Component {
     var num_unlabeled = 0
     var num_bugs = 0
     var num_followups = 0
+    var num_codereviews = 0
     const unlabeled_repos = []
     const bug_repos = []
     const followup_repos = []
+    const code_review_repos = []
 
     for (const [index, value] of all_repos.entries()) {
       num_unlabeled += this.state.unlabeled_issues[value].length
       num_bugs += this.state.bugs[value].length
       num_followups += this.state.followups[value].length
+      num_codereviews += this.state.codereviews[value].length
 
       if (this.state.unlabeled_issues[value].length !== 0) {
         var unlab = "unlabeled-".concat(value)
@@ -132,6 +138,25 @@ class App extends Component {
           </div>
         )
       }
+
+      if (this.state.codereviews[value].length !== 0) {
+        var follow = "followup-".concat(value)
+        code_review_repos.push(
+          <a key={index} className="link" href={"#".concat(follow)}>
+          {value}: {this.state.codereviews[value].length}
+          <br></br>
+          </a>
+        )
+        items.push(
+          <div key={index*index + 5*index + 6*all_repos.length}>
+          <h2>Code Review Needed - {value}</h2>
+          <div id={follow} className="Body" key={index*index + 3*index + 4*all_repos.length}>
+            <IssuesList issues={this.state.codereviews[value]}/>
+          </div>
+          </div>
+        )
+      }
+
     }
 
     return (<div>
@@ -156,6 +181,12 @@ class App extends Component {
               <div>Follow Ups: {num_followups}</div>
               <br></br>
               {followup_repos}
+              </div>
+
+              <div id = "code-reviews">
+              <div>Code Reviews: {num_codereviews}</div>
+              <br></br>
+              {code_review_repos}
               </div>
                 
               </div>
@@ -262,6 +293,25 @@ class App extends Component {
         }
         newFollowUps[value].concat(temp)
         this.setState({followups: newFollowUps})
+      })
+      .catch((err) => { 
+          console.log(err); 
+      });
+    }
+  }
+
+  getCodeReviewed() {
+    for (const [index, value] of all_repos.entries()) {
+      axios.get('http://192.168.99.100/github/prs',{
+        params: {
+          repo: value,
+          labels: "status: code review request",
+          states:"OPEN"
+      }})
+      .then((res) => {
+        var newIssues = this.state.codereviews
+        newIssues[value] = res.data
+        this.setState({codereviews: newIssues})
       })
       .catch((err) => { 
           console.log(err); 
