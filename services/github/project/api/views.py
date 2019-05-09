@@ -228,9 +228,12 @@ def get_prs():
         elif result:
             result = result.get('organization').get('repository').get('pullRequests')
             for r in result.get('nodes'):
-                login = None
-                for comment in r.get('comments').get('nodes'):
-                    login = comment.get('author').get('login')
+                last_comment_author = None
+                try:
+                    for comment in r.get('comments').get('nodes'):
+                        last_comment_author = comment.get('author').get('login')
+                except:
+                    last_comment_author = None
                 pr = dict()
                 pr['url'] = r.get('url')
                 pr['createdAt'] = r.get('createdAt')
@@ -239,7 +242,7 @@ def get_prs():
                 pr['reviewers'] = get_reviewers(r.get('reviews').get('nodes'), pr['author'])
                 pr['num_reviewers'] = len(pr['reviewers'])
                 pr['reviewer_points'] = len(pr['reviewers']) * (pr['points'] / 2)
-                pr['last_comment_author'] = login
+                pr['last_comment_author'] = last_comment_author
                 pr['reactions'] = r.get('reactions').get('totalCount')
                 pr['comments'] = r.get('comments').get('totalCount')
                 pr['labels'] = get_labels(r.get('labels').get('edges'))
@@ -365,32 +368,38 @@ def get_issues():
         elif result:
             result = result.get('organization').get('repository').get('issues')
             for r in result.get('nodes'):
-                login = None
+                last_comment_author = None
                 try:
                     for comment in r.get('comments').get('nodes'):
-                        login = comment.get('author').get('login')
+                        last_comment_author = comment.get('author').get('login')
                 except:
-                    login = None
+                    last_comment_author = None
                 if (not labels) and (filter != 'all'):
                     if not r.get('labels').get('edges'):
                         issue = dict()
-                        issue['author'] = r.get('author').get('login')
+                        if(r.get('author') != None):
+                            issue['author'] = r.get('author').get('login')
+                        else:
+                            issue['author'] = None
                         issue['url'] = r.get('url')
                         issue['title'] = r.get('title')
                         issue['createdAt'] = r.get('createdAt')
                         issue['labels'] = labels
-                        issue['last_comment_author'] = login
+                        issue['last_comment_author'] = last_comment_author
                         issue['reactions'] = r.get('reactions').get('totalCount')
                         issue['comments'] = r.get('comments').get('totalCount')
                         issues.append(issue)
                 else:
                     issue = dict()
-                    issue['author'] = r.get('author').get('login')
+                    if(r.get('author') != None):
+                        issue['author'] = r.get('author').get('login')
+                    else:
+                        issue['author'] = None
                     issue['url'] = r.get('url')
                     issue['title'] = r.get('title')
                     issue['createdAt'] = r.get('createdAt')
                     issue['labels'] = get_labels(r.get('labels').get('edges'))
-                    issue['last_comment_author'] = login
+                    issue['last_comment_author'] = last_comment_author
                     issue['reactions'] = r.get('reactions').get('totalCount')
                     issue['comments'] = r.get('comments').get('totalCount')
                     issues.append(issue)
