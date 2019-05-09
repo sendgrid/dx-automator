@@ -1,6 +1,4 @@
-# services/tasks/manage.py
-
-
+#!/usr/bin/env python3
 import unittest
 import coverage
 from datetime import datetime

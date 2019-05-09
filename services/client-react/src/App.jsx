@@ -62,7 +62,7 @@ class App extends Component {
     this.getUnlabeledIssues();
     this.getBugs();
     this.getFollowUps();
-    this.getCodeReviewed();
+    this.getCodeReviews();
     this.getSecurityIssues();
   };
 
@@ -328,7 +328,7 @@ class App extends Component {
     }
   }
 
-  getCodeReviewed() {
+  getCodeReviews() {
     for (const [index, value] of all_repos.entries()) {
       axios.get('http://192.168.99.100/github/prs',{
         params: {
