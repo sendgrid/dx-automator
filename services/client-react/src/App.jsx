@@ -287,7 +287,8 @@ class App extends Component {
       axios.get('http://192.168.99.100/github/issues',{
         params: {
           repo: value,
-          states: "OPEN"
+          states: "OPEN",
+          filter: "all",
       }})
       .then((res) => {
         var newFollowUps = this.state.followups

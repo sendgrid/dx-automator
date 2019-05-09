@@ -40,6 +40,7 @@ def get_prs(repo):
     query_params = {
         "repo":repo,
         "states":"OPEN",
+        "filter":"all",
         }
     response = client.github.prs.get(query_params=query_params)
     issues = json.loads(response.body)
@@ -48,7 +49,10 @@ def get_prs(repo):
 
 def get_issues(repo):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-    query_params = {"repo":repo}
+    query_params = {
+        "repo":repo,
+        "filter":"all",
+        }
     response = client.github.issues.get(query_params=query_params)
     issues = json.loads(response.body)
     return issues
