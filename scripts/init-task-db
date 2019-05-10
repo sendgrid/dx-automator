@@ -1,3 +1,4 @@
+set -e
 current_time=$(date "+%Y.%m.%d-%H.%M.%S")
 pg_dump -h $DX_IP -p 5435 -U postgres tasks_dev | gzip > tasks-db-backup.$current_time.gz
 docker-compose -f docker-compose-dev.yml run tasks python manage.py recreate_db

@@ -105,7 +105,7 @@ curl http://$DX_IP/hacktoberfest/leaders/update
 Note that by running this script a backup will be created with a file format of `tasks-db-backup.[current time stamp]`.
 
 ```bash
-./scripts/setup-local-db
+./scripts/init-task-db
 docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
 # \c tasks_dev
 # select * from tasks;
