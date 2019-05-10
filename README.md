@@ -38,18 +38,6 @@ cp ./services/looker/.env_sample ./services/looker/.env
 cp ./services/hacktoberfest/.env_sample ./services/hacktoberfest/.env
 ```
 
-Install:
-
-```bash
-source ./source_the_things.sh
-docker-machine start dx-automator-dev
-docker-machine env dx-automator-dev
-eval $(docker-machine env dx-automator-dev)
-docker-compose -f docker-compose-dev.yml up -d --build
-export DX_IP="$(docker-machine ip dx-automator-dev)"
-./scripts/setup-local-db
-```
-
 Start:
 
 ```bash
@@ -59,7 +47,7 @@ source ./init.sh
 Run these commands to test if everything is working correctly.
 
 ```bash
-curl http://$DX_IP/tasks/ping
+curl http://$DX_IP/tasks/ping/pong
 curl http://$DX_IP/tasks
 curl http://$DX_IP/users/ping
 curl http://$DX_IP/users
