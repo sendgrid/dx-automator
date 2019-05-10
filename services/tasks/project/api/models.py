@@ -20,7 +20,7 @@ class Task(db.Model):
     category = db.Column(db.String(128), nullable=True)
     maintainer = db.Column(db.String(128), nullable=True)
     language = db.Column(db.String(128), nullable=True)
-    customers_count = db.Column(db.Integer, nullable=True)
+    customer_count = db.Column(db.Integer, nullable=True)
     estimated_customer_points = db.Column(db.Integer, nullable=True)
     estimated_points = db.Column(db.Integer, nullable=True)
     impact = db.Column(db.Integer, nullable=True)
@@ -28,12 +28,13 @@ class Task(db.Model):
     reach = db.Column(db.Integer, nullable=True)
     effort = db.Column(db.String(128), nullable=True)
     date_multiplier = db.Column(db.Integer, nullable=True)
+    rice_total = db.Column(db.Integer, nullable=True)
     labels = db.Column(db.ARRAY(db.String(128)), nullable=True)
     num_of_comments = db.Column(db.Integer, nullable=True)
     num_of_reactions = db.Column(db.Integer, nullable=True)
 
     def __init__(self, creator, url, created_at, title="", due_date=None, task_type="", category="",
-                 maintainer=None, language=None, customers_count=1, estimated_customer_points=None,
+                 maintainer=None, language=None, customer_count=1, estimated_customer_points=None,
                  estimated_points=None, impact=None, reach=1, effort=None, confidence="", labels=None,
                  date_multiplier=1, num_of_comments=0, num_of_reactions=0, rice_total=0):
         self.creator = creator
@@ -47,7 +48,7 @@ class Task(db.Model):
         self.maintainer = maintainer
         self.labels = labels
         self.language = language
-        self.customers_count = customers_count
+        self.customer_count = customer_count
         self.estimated_customer_points = estimated_customer_points
         self.estimated_points = estimated_points
         self.impact = impact
@@ -64,7 +65,7 @@ class Task(db.Model):
     def calculateDaysToDue(self, due_date):
         ''' The Due date should be in the format MM/DD/YYYY '''
         if due_date and isinstance(due_date, datetime):
-            return due_date - datetime.today()
+            return (due_date - datetime.today()).days
         return None
 
     def to_json(self):
@@ -78,7 +79,7 @@ class Task(db.Model):
             'date_multiplier': self.date_multiplier,
             'days_to_due': self.calculateDaysToDue(self.due_date),
             'due_date': self.due_date,
-            'effor': self.effort,
+            'effort': self.effort,
             'estimated_customer_points': self.estimated_customer_points,
             'estimated_points': self.estimated_points,
             'impact': self.impact,
