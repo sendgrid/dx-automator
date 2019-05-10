@@ -4,9 +4,9 @@ Flask-SQLAlchemy==2.3.2
 psycopg2-binary==2.7.5
 Flask-Testing==0.7.1
 coverage==4.5.1
-flake8==3.5.0
+flake8==3.7.7
 flask-debugtoolbar==0.10.1
-pyflakes==2.0.0
+pyflakes==2.1.1
 pylint==2.1.1
-pycodestyle==2.3.1
+pycodestyle==2.5.0
 requests>=2.20.0
