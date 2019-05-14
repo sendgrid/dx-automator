@@ -21,7 +21,7 @@ class TestTaskService(BaseTestCase):
 
     def test_tasks(self):
         """Ensure the /ping route behaves correctly."""
-        response = self.client.get('/tasks/ping')
+        response = self.client.get('/tasks/ping/pong')
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
         self.assertIn('pong!', data['message'])
