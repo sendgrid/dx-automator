@@ -56,10 +56,9 @@ for repo in all_repos:
     prs = get_prs(repo)
     for pr in prs:
         text = "{} by {} is worth {} points".format(pr['url'], pr['author'], pr['points'])
-        num_reviewers = pr['reviewers'] or 0
-        if num_reviewers > 0:
+        if pr['num_reviewers'] > 0:
             reviewers = ', '.join(str(x) for x in pr['reviewers'])
-            print("{}, there were {} reviewers ({}) on this PR, worth {} points".format(text, num_reviewers, reviewers, pr['reviewer_points']))
+            print("{}, there were {} reviewers ({}) on this PR, worth {} points".format(text, pr['num_reviewers'], reviewers, pr['reviewer_points']))
             for reviewer in pr['reviewers']:
                 points_earned[reviewer] += pr['points'] / 2
                 total_contributors.append(reviewer)

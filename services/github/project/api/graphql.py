@@ -35,8 +35,17 @@ class GraphQL(object):
         self.limit = limit
         self.end_cursor = end_cursor
 
-        if self.github_type == 'pull_request':
+        if github_type == 'pull_requests':
             self.github_type = 'pullRequests'
+            self.review = f"""reviews(first: 10) {{
+                                nodes {{
+                                    author {{
+                                        login
+                                    }}
+                                }}
+                            }}"""
+        else:
+            self.review = ''
 
         if self.limit:
             self.limit = '{}: {}, '.format(self.limit[0], str(self.limit[1]))
@@ -67,6 +76,7 @@ class GraphQL(object):
                             state
                             title
                             createdAt
+                            {self.review}
                             author {{
                                 login
                             }}
@@ -89,16 +99,15 @@ class GraphQL(object):
                             reactions(last:100) {{
                                 totalCount
                             }}
-
-                            }}
-                            pageInfo {{
-                                endCursor
-                                hasNextPage
-                            }}
+                        }}
+                        pageInfo {{
+                            endCursor
+                            hasNextPage
                         }}
                     }}
                 }}
-            }}"""
+            }}
+        }}"""
     
     @classmethod
     def run_query(self, query):

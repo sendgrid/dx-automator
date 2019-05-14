@@ -45,7 +45,7 @@ total_unlabeled_issues = 0
 for repo in all_repos:
     issues = get_issues(repo)
     for issue in issues:
-        if len(issue['labels']) == 0:
+        if issue['num_labels'] == 0:
             text = "{} , {}".format(issue['url'], issue['createdAt'])
             print(text)
             total_unlabeled_issues = total_unlabeled_issues + 1

@@ -120,21 +120,15 @@ def get_items():
     limit = list()
     list_of_limits = request.args.getlist('limit[]', type = str)
     for limits in list_of_limits:
-        try:
+        if limits:
             limit.append(limits)
-        except Exception:
-            continue
     limit = (limit[0], int(limit[1]))
     item_type = request.args.get('item_type', type = str)
-    if item_type == 'pull_requests':
-       item_type = 'pullRequests'
     repo = request.args.get('repo', type = str)
     list_of_labels = request.args.getlist('labels[]', type = str)
     for label in list_of_labels:
-        try:
+        if label:
             labels.append(label)
-        except Exception:
-            continue
     list_of_states = request.args.getlist('states[]', type = str)
     for state in list_of_states:
         try:
@@ -143,8 +137,7 @@ def get_items():
             continue
     if not states:
         states.append('OPEN')
-        #states.append('MERGED')
-        #states.append('CLOSED')
+        states.append('CLOSED')
     end_cursor = ''
     has_next_page = True
     github_org = current_app.config['GITHUB_ORG']
@@ -158,48 +151,53 @@ def get_items():
             limit=limit,
             end_cursor=end_cursor
         )
-        print(query.__str__())
         result, status = GraphQL.run_query(query.__str__())
         if not status:
             return "GITHUB_TOKEN may not be valid", 400
         elif result:
-            result = result.get('organization').get('repository').get(item_type)
+            if item_type == 'pull_requests':
+                github_type = 'pullRequests'
+            else:
+                github_type = item_type
+            result = result.get('organization').get('repository').get(github_type)
             for r in result.get('nodes'):
                 item = dict()
-                last_comment_author = None
-                try:
-                    for comment in r.get('comments').get('nodes'):
-                        last_comment_author = comment.get('author').get('login')
-                    item['comments'] = r.get('comments').get('totalCount')
-                except:
+                if r.get('comments'):
                     last_comment_author = None
+                    for comment in r.get('comments').get('nodes'):
+                        if comment.get('author'):
+                            last_comment_author = comment.get('author').get('login')
+                        else:
+                            last_comment_author = None
+                    item['comments'] = r.get('comments').get('totalCount') or 0
+                    item['last_comment_author'] = last_comment_author
+                else:
                     item['comments'] = 0
+                    item['last_comment_author'] = None
                 item['url'] = r.get('url')
                 item['createdAt'] = r.get('createdAt')
-                try:
+                if r.get('author'):
                     item['author'] = r.get('author').get('login')
-                except Exception:
+                else:
                     item['author'] = 'unknown'
-                try:
+                if r.get('labels'):
                     item['labels'] = get_labels(r.get('labels').get('edges'))
+                    item['num_labels'] = len(item['labels'])
                     item['points'] = get_points(r.get('labels').get('edges'))
-                except Exception:
+                else:
                     item['labels'] = None
+                    item['num_labels'] = 0
                     item['points'] = 0
-                try:
+                if r.get('reviews'):
                     reviews = r.get('reviews').get('nodes')
-                    item['reviewers'] = get_reviewers(reviews, pr['author'])
-                    item['num_reviewers'] = len(pr['reviewers'])
-                    item['reviewer_points'] = len(pr['reviewers']) * (pr['points'] / 2)
-                except Exception:
+                    item['reviewers'] = get_reviewers(reviews, item['author'])
+                    item['num_reviewers'] = len(item['reviewers'])
+                    item['reviewer_points'] = len(item['reviewers']) * (item['points'] / 2)
+                else:
                     item['reviewers'] = None
                     item['num_reviewers'] = 0
                     item['reviewer_points'] = 0
-                try:
-                    item['reactions'] = r.get('reactions').get('totalCount')
-                except Exception:
-                    item['reactions'] = 0
-                item['last_comment_author'] = last_comment_author
+                item['reactions'] = r.get('reactions').get('totalCount') or 0
                 item['title'] = r.get('title')
                 items.append(item)
             has_next_page = result.get('pageInfo').get('hasNextPage')
