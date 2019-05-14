@@ -12,8 +12,7 @@ class TestGraphQL(BaseTestCase):
         graphql = GraphQL(
             organization='twilio',
             github_type='pull_request',
-            repo='twilio-php',
-            limit=['first', 100]
+            repo='twilio-php'
         )
         test_string = '''query{
             organization(login: "twilio") {

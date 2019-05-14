@@ -56,10 +56,7 @@ for repo in all_repos:
     prs = get_prs(repo)
     for pr in prs:
         text = "{} by {} is worth {} points".format(pr['url'], pr['author'], pr['points'])
-        try:
-            num_reviewers = len(pr['reviewers'])
-        except Exception:
-            num_reviewers = 0
+        num_reviewers = pr['reviewers'] or 0
         if num_reviewers > 0:
             reviewers = ', '.join(str(x) for x in pr['reviewers'])
             print("{}, there were {} reviewers ({}) on this PR, worth {} points".format(text, num_reviewers, reviewers, pr['reviewer_points']))

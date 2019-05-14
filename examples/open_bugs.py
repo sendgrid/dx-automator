@@ -45,13 +45,10 @@ def get_items(repo, item_type):
 total_bugs = 0
 for repo in all_repos:
     issues = get_items(repo, 'issues')
-    for issue in issues:
-        text = "{} , {}".format(issue['url'], issue['createdAt'])
-        print(text)
-        total_bugs = total_bugs + 1
     prs = get_items(repo, 'pull_requests')
-    for pr in prs:
-        text = "{} , {}".format(pr['url'], pr['createdAt'])
+    items = issues + prs
+    for item in items:
+        text = "{} , {}".format(item['url'], item['createdAt'])
         print(text)
         total_bugs = total_bugs + 1
 

@@ -10,7 +10,7 @@ class GraphQL(object):
         repo,
         states=None,
         labels=None,
-        limit=None,
+        limit=['first', 100],
         end_cursor=None):
         """Create a GitHub GraphQL v4 Query
 

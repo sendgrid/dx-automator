@@ -54,7 +54,7 @@ curl http://$DX_IP/users
 curl http://$DX_IP/github/ping
 curl http://$DX_IP/github/members // must have the proper authorization
 curl http://$DX_IP/github/is_member/<github_username> // check if a paricular GitHub username is part of your GitHub organization
-curl --globoff "http://$DX_IP/github/items?repo=<repo_name>?issue_type=<issues or pull_requests>?labels[]=<label 1>?labels[]=<label 2>?states[]=<state 1>?states[]=<state 2>?limits[]=first?limits[]=100"
+curl --globoff "http://$DX_IP/github/items?repo=<repo_name>&issue_type=<issues or pull_requests>&labels[]=<label 1>?labels[]=<label 2>&states[]=<state 1>&states[]=<state 2>&limits[]=first?limits[]=100"
 curl http://$DX_IP/looker/ping
 curl http://$DX_IP/looker/4404
 curl http://$DX_IP/hacktoberfest/ping
