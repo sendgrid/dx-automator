@@ -33,7 +33,7 @@ class Task(db.Model):
     num_of_comments = db.Column(db.Integer, nullable=True)
     num_of_reactions = db.Column(db.Integer, nullable=True)
 
-    def __init__(self, creator, url, created_at, title="", due_date=None, task_type="", category="",
+    def __init__(self, creator, url, created_at=datetime.utcnow(), title="", due_date=None, task_type="", category="",
                  maintainer=None, language=None, customer_count=1, estimated_customer_points=None,
                  estimated_points=None, impact=None, reach=1, effort=None, confidence="", labels=None,
                  date_multiplier=1, num_of_comments=0, num_of_reactions=0, rice_total=0):
