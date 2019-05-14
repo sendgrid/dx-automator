@@ -37,47 +37,34 @@ list_of_maintainers = [
     'codecov'
 ]
 
-def get_prs(repo):
+def get_items(repo, item_type):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
     query_params = {
         "repo":repo,
-        "states":"OPEN"
+        "item_type":item_type,
+        "states[]":['OPEN'],
+        "limit[]":['first', '100']
         }
-    response = client.github.prs.get(query_params=query_params)
-    issues = json.loads(response.body)
-    return issues
-
-
-def get_issues(repo):
-    client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-    query_params = {
-        "repo":repo,
-        "filter":"all"
-        }
-    response = client.github.issues.get(query_params=query_params)
-    issues = json.loads(response.body)
-    return issues
+    response = client.github.items.get(query_params=query_params)
+    items = json.loads(response.body)
+    return items  
 
 total_issues = 0
 total_prs = 0
 for repo in all_repos:
-    prs = get_prs(repo)
+    prs = get_items(repo, 'pull_requests')
     for pr in prs:
-        if pr['last_comment_author'] not in list_of_maintainers:
-            print(pr['last_comment_author'])
-            text = "{}, {}".format(pr['url'], pr['createdAt'])
+        if pr['last_comment_author'] and (pr['last_comment_author'] not in list_of_maintainers):
+            text = "{} , {}".format(pr['url'], pr['createdAt'])
             print(text)
             total_prs = total_prs + 1
-    issues = get_issues(repo)
+    issues = get_items(repo, 'issues')
     for issue in issues:
-        if issue['last_comment_author'] not in list_of_maintainers:
-            print(pr['last_comment_author'])
-            text = "{}, {}".format(issue['url'], issue['createdAt'])
+        if issue['last_comment_author'] and (issue['last_comment_author']not in list_of_maintainers):
+            text = "{} , {}".format(issue['url'], issue['createdAt'])
             print(text)
             total_issues = total_issues + 1
 
 print("There are a total of {} prs needing a response across all repos".format(total_prs))
 print("There are a total of {} issues needing a response across all repos".format(total_issues))
 print("There are a total of {} issues + prs needing a response across all repos".format(total_prs + total_issues))
-
-        

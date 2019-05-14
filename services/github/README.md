@@ -38,6 +38,12 @@ Update the `test_users` in `project\tests\test_github.py`.
 docker-compose -f docker-compose-dev.yml run github-service python manage.py test
 ```
 
+An example of running an individual test.
+
+```bash
+docker-compose -f docker-compose-dev.yml run github-service python3 -m unittest project.tests.test_graphql.TestGraphQL.test_init
+```
+
 ### Get the IP of the Docker Machine
 
 ```bash

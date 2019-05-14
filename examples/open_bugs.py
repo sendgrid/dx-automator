@@ -29,22 +29,32 @@ all_repos = [
     'dx-automator'
 ]
 
-def get_issues(repo):
+def get_items(repo, item_type):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-    query_params = {"repo":repo, "labels":"type: bug"}
-    response = client.github.issues.get(query_params=query_params)
-    issues = json.loads(response.body)
-    return issues
+    query_params = {
+        "repo":repo,
+        "item_type":item_type,
+        "labels[]":['type: bug'],
+        "states[]":['OPEN'],
+        "limit[]":['first', '100']
+
+    }
+    response = client.github.items.get(query_params=query_params)
+    items = json.loads(response.body)
+    return items
 
 total_bugs = 0
 for repo in all_repos:
-    issues = get_issues(repo)
+    issues = get_items(repo, 'issues')
     for issue in issues:
-        # Github GraphQL v4 does not support the AND operator, so we have to do this ourselves
-        if "status: help wanted" in issue['labels']:
-            text = "{}, {}".format(issue['url'], issue['createdAt'])
-            print(text)
-            total_bugs = total_bugs + 1
+        text = "{} , {}".format(issue['url'], issue['createdAt'])
+        print(text)
+        total_bugs = total_bugs + 1
+    prs = get_items(repo, 'pull_requests')
+    for pr in prs:
+        text = "{} , {}".format(pr['url'], pr['createdAt'])
+        print(text)
+        total_bugs = total_bugs + 1
 
 print("There are a total of {} open bugs needing assistance across all repos".format(total_bugs))
         
