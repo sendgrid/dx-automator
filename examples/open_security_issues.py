@@ -29,21 +29,27 @@ all_repos = [
     'dx-automator'
 ]
 
-def get_issues(repo):
+def get_items(repo, item_type):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-    query_params = {"repo":repo, "labels":"type: security"}
-    response = client.github.issues.get(query_params=query_params)
-    issues = json.loads(response.body)
-    return issues
+    query_params = {
+        "repo":repo,
+        "item_type":item_type,
+        "labels[]":['type: security'],
+        "states[]":['OPEN'],
+        "limit[]":['first', '100']
+    }
+    response = client.github.items.get(query_params=query_params)
+    items = json.loads(response.body)
+    return items
 
 total_security_issues = 0
 for repo in all_repos:
-    issues = get_issues(repo)
-    for issue in issues:
-        # Github GraphQL v4 does not support the AND operator, so we have to do this ourselves
-        if "status: help wanted" in issue['labels']:
-            text = "{}, {}".format(issue['url'], issue['createdAt'])
-            print(text)
-            total_security_issues = total_security_issues + 1
+    issues = get_items(repo, 'issues')
+    prs = get_items(repo, 'pull_requests')
+    items = prs + issues
+    for item in items:
+        text = "{} , {}".format(item['url'], item['createdAt'])
+        print(text)
+        total_security_issues = total_security_issues + 1
 
 print("There are a total of {} open security issues needing attention across all repos".format(total_security_issues))

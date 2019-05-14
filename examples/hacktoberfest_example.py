@@ -35,8 +35,13 @@ all_repos = [
 
 def get_prs(repo):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
-    query_params = {"repo":repo, "labels":"status: hacktoberfest approved"}
-    response = client.github.prs.get(query_params=query_params)
+    query_params = {
+        "repo":repo,
+        "item_type":'pull_requests',
+        "labels[]":['status: hacktoberfest approved'],
+        "limit[]":['first', '100']
+    }
+    response = client.github.items.get(query_params=query_params)
     prs = json.loads(response.body)
     return prs
 
@@ -51,10 +56,9 @@ for repo in all_repos:
     prs = get_prs(repo)
     for pr in prs:
         text = "{} by {} is worth {} points".format(pr['url'], pr['author'], pr['points'])
-        num_reviewers = len(pr['reviewers'])
-        if num_reviewers > 0:
+        if pr['num_reviewers'] > 0:
             reviewers = ', '.join(str(x) for x in pr['reviewers'])
-            print("{}, there were {} reviewers ({}) on this PR, worth {} points".format(text, num_reviewers, reviewers, pr['reviewer_points']))
+            print("{}, there were {} reviewers ({}) on this PR, worth {} points".format(text, pr['num_reviewers'], reviewers, pr['reviewer_points']))
             for reviewer in pr['reviewers']:
                 points_earned[reviewer] += pr['points'] / 2
                 total_contributors.append(reviewer)

@@ -34,10 +34,12 @@ def get_prs(repo):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
     query_params = {
         "repo":repo,
-        "labels":"status: code review request",
-        "states":"OPEN"
-        }
-    response = client.github.prs.get(query_params=query_params)
+        "item_type":'pull_requests',
+        "labels[]":['status: code review request'],
+        "states[]":['OPEN'],
+        "limit[]":['first', '100']
+    }
+    response = client.github.items.get(query_params=query_params)
     prs = json.loads(response.body)
     return prs
 
@@ -45,7 +47,7 @@ total_prs_to_review = 0
 for repo in all_repos:
     prs = get_prs(repo)
     for pr in prs:
-        text = "{}, {}".format(pr['url'], pr['createdAt'])
+        text = "{} , {}".format(pr['url'], pr['createdAt'])
         print(text)
         total_prs_to_review += 1
 

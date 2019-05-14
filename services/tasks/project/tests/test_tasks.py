@@ -9,8 +9,8 @@ from project.api.models import Task
 from project.tests.base import BaseTestCase
 
 
-def add_task(creator, link):
-    task = Task(creator=creator, link=link)
+def add_task(creator, url):
+    task = Task(creator=creator, url=url)
     db.session.add(task)
     db.session.commit()
     return task
@@ -21,7 +21,7 @@ class TestTaskService(BaseTestCase):
 
     def test_tasks(self):
         """Ensure the /ping route behaves correctly."""
-        response = self.client.get('/tasks/ping')
+        response = self.client.get('/tasks/ping/pong')
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
         self.assertIn('pong!', data['message'])
@@ -34,7 +34,7 @@ class TestTaskService(BaseTestCase):
                 '/tasks',
                 data=json.dumps({
                     'creator': 'anshul',
-                    'link': 'anshulsinghal.me'
+                    'url': 'anshulsinghal.me'
                 }),
                 content_type='application/json',
             )
@@ -98,13 +98,13 @@ class TestTaskService(BaseTestCase):
 
     def test_single_task(self):
         """Ensure get single task behaves correctly."""
-        task = add_task(creator='anshul', link='anshulsinghal.me')
+        task = add_task(creator='anshul', url='anshulsinghal.me')
         with self.client:
             response = self.client.get(f'/tasks/{task.id}')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertIn('anshul', data['data']['creator'])
-            self.assertIn('anshulsinghal.me', data['data']['link'])
+            self.assertIn('anshulsinghal.me', data['data']['url'])
             self.assertIn('success', data['status'])
 
     def test_single_task_no_id(self):
@@ -127,10 +127,10 @@ class TestTaskService(BaseTestCase):
             self.assertEqual(len(data['data']['tasks']), 2)
             self.assertIn('anshul', data['data']['tasks'][0]['creator'])
             self.assertIn(
-                'anshulsinghal.me', data['data']['tasks'][0]['link'])
+                'anshulsinghal.me', data['data']['tasks'][0]['url'])
             self.assertIn('another', data['data']['tasks'][1]['creator'])
             self.assertIn(
-                'another.com', data['data']['tasks'][1]['link'])
+                'another.com', data['data']['tasks'][1]['url'])
             self.assertIn('success', data['status'])
 
 

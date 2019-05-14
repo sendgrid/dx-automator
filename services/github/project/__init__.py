@@ -11,7 +11,7 @@ def create_app():
     app.config.from_object(app_settings)
 
     # register blueprints
-    from project.api.views import github_blueprint
+    from project.api.routes import github_blueprint
     app.register_blueprint(github_blueprint)
 
     return app
