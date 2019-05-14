@@ -101,12 +101,13 @@ def get_all_members():
         if not status:
             return "GITHUB_TOKEN may not be valid", 400
         elif result:
+            console.log(result)
             result = result.get('organization').get('members')
             for member in result.get('nodes'):
                 members.append(member.get('login'))
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
-                end_cursor = f'"{result["pageInfo"]["endCursor"]}"'
+                end_cursor = result.get('pageInfo').get('endCursor')
         else:
             break
     return jsonify(members), 200

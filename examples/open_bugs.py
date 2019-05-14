@@ -37,7 +37,6 @@ def get_items(repo, item_type):
         "labels[]":['type: bug'],
         "states[]":['OPEN'],
         "limit[]":['first', '100']
-
     }
     response = client.github.items.get(query_params=query_params)
     items = json.loads(response.body)
