@@ -12,6 +12,18 @@ import time
 
 tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 
+def get_items(repo, item_type):
+    client = Client(host="http://{}".format(os.environ.get('DX_IP')))
+    query_params = {
+        "repo":repo,
+        "item_type":item_type,
+        "states[]":['OPEN'],
+        "limit[]":['first', '100']
+        }
+    response = client.github.items.get(query_params=query_params)
+    items = json.loads(response.body)
+    return items  
+
 @tasks_blueprint.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -127,32 +139,15 @@ def populate_db():
     ]
 
     response_object = dict()
-
-    # make get request to DX_IP
-    # we will have a list of issues for each repo and we will add that to the json response object
-    # which is a dictionary
-    # issues = {status: success, repo1: [list of issues 1], repo2: [list of issues 2], ...}
-    # response_object = {'status' : 'success'}
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
     for repo in all_repos:
-        query_params = {
-            "repo":repo,
-            "states":"OPEN",
-            "filter":"all"
-        }
-        #TODO: Get the PRs too
-        try:
-            response_issues = client.github.issues.get(query_params=query_params)
-            response_prs = client.github.prs.get(query_params=query_params)
-            issues = json.loads(response_issues.body)
-            prs = json.loads(response_prs.body)
-            issues_and_prs = issues + prs
-            response_object[repo] = issues_and_prs
-        except Exception as e:
-            print(e)
+        prs = get_items(repo, 'pull_requests')
+        issues = get_items(repo, 'issues')
+        items = issues + prs
+        response_object[repo] = items
 
     # post payload to /tasks/init
-    for repo in response_object:
+    for repo in all_repos:
         if len(response_object[repo]) != 0:
             for issue in response_object[repo]:
                 if issue != None:
