@@ -1,7 +1,7 @@
 # services/tasks/project/api/tasks.py
 
 
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, jsonify, request, render_template, current_app
 from project import db
 from sqlalchemy import exc
 from project.api.models import Task
@@ -111,45 +111,18 @@ def get_all_tasks():
 
 @tasks_blueprint.route('/tasks/init/db', methods=['GET'])
 def populate_db():
-    all_repos = [
-        'sendgrid-nodejs',
-        'sendgrid-csharp',
-        'sendgrid-php',
-        'sendgrid-python',
-        'sendgrid-java',
-        'sendgrid-go',
-        'sendgrid-ruby',
-        'smtpapi-nodejs',
-        'smtpapi-go',
-        'smtpapi-python',
-        'smtpapi-php',
-        'smtpapi-csharp',
-        'smtpapi-java',
-        'smtpapi-ruby',
-        'sendgrid-oai',
-        'open-source-library-data-collector',
-        'python-http-client',
-        'php-http-client',
-        'csharp-http-client',
-        'java-http-client',
-        'ruby-http-client',
-        'rest',
-        'nodejs-http-client',
-        'dx-automator'
-    ]
+    all_repos = current_app.config['REPOS']
 
     response_object = dict()
-    client = Client(host="http://{}".format(os.environ.get('DX_IP')))
     for repo in all_repos:
-        prs = get_items(repo, 'pull_requests')
-        issues = get_items(repo, 'issues')
+        prs = get_items(repo['name'], 'pull_requests')
+        issues = get_items(repo['name'], 'issues')
         items = issues + prs
-        response_object[repo] = items
+        response_object[repo['name']] = items
 
-    # post payload to /tasks/init
     for repo in all_repos:
-        if len(response_object[repo]) != 0:
-            for issue in response_object[repo]:
+        if len(response_object[repo['name']]) != 0:
+            for issue in response_object[repo['name']]:
                 if issue != None:
                     creator = issue['author']
                     url = issue['url']
@@ -158,7 +131,7 @@ def populate_db():
                     num_of_comments = issue['comments']
                     num_of_reactions = issue['reactions']
                     title = issue['title']
-                    language = repo[9:]
+                    language = repo['programming_language']
                     try:
                         db.session.add(
                             Task(
