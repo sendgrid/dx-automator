@@ -30,7 +30,7 @@ def create_app():
     # register blueprints
     # from project.api.views.items import items_blueprint
     # from project.api.views.items_statuses import items_statuses_blueprint
-    from project.api.tasks import tasks_blueprint
+    from project.api.routes import tasks_blueprint
     # app.register_blueprint(items_blueprint)
     # app.register_blueprint(items_statuses_blueprint)
     app.register_blueprint(tasks_blueprint)
