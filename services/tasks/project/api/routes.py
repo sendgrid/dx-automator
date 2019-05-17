@@ -6,6 +6,7 @@ from project import db
 from sqlalchemy import exc
 from project.api.models import Task
 from python_http_client import Client
+from .priority import Priority
 import os
 import json
 import time
@@ -77,7 +78,7 @@ def add_single_task():
 def get_single_task(task_id):
     response_object = {
         'status': 'fail',
-        'message': 'task does not exist'
+        'message': f'task_id {task_id} does not exist'
     }
     try:
         task = Task.query.filter_by(id=int(task_id)).first()
@@ -89,7 +90,14 @@ def get_single_task(task_id):
                 'data': {
                     'id': task.id,
                     'url': task.url,
-                    'creator': task.creator
+                    'creator': task.creator,
+                    'labels': task.labels,
+                    'language': task.language,
+                    'num_of_comments': task.num_of_comments,
+                    'num_of_reactions': task.num_of_reactions,
+                    'updated_at': task.updated_at,
+                    'updated_locally_at': task.updated_locally_at,
+                    'task_type': task.task_type
                 }
             }
             return jsonify(response_object), 200
@@ -124,9 +132,14 @@ def populate_db():
         if len(response_object[repo['name']]) != 0:
             for issue in response_object[repo['name']]:
                 if issue != None:
+                    if 'pull' in issue['url']:
+                        task_type = 'pr'
+                    else:
+                        task_type = 'issue'
                     creator = issue['author']
                     url = issue['url']
                     created_at = issue['createdAt']
+                    updated_at = issue['updatedAt']
                     labels = issue['labels']
                     num_of_comments = issue['comments']
                     num_of_reactions = issue['reactions']
@@ -136,18 +149,55 @@ def populate_db():
                         db.session.add(
                             Task(
                                 created_at=created_at,
+                                updated_at=updated_at,
                                 creator=creator,
                                 labels=labels,
                                 language=language,
                                 num_of_comments=num_of_comments,
                                 num_of_reactions=num_of_reactions,
                                 title=title,
-                                url=url
+                                url=url,
+                                task_type=task_type
                             )
                         )
                         db.session.commit()
                     except exc.IntegrityError:
                         db.session.rollback()
                         return jsonify(response_object), 400
-
     return jsonify(response_object), 201
+
+@tasks_blueprint.route('/tasks/rice/<task_id>', methods=['GET'])
+def calculate_rice_score(task_id):
+    response_object = {
+        'status': 'fail',
+        'message': f'task_id {task_id} does not exist'
+    }
+    task = Task.query.filter_by(id=int(task_id)).first()
+    if not task:
+        return jsonify(response_object), 404
+    else:
+        priority = Priority()
+        elements = {
+            'reach': request.args.get('reach', type = float),
+            'impact': request.args.get('impact', type = float),
+            'confidence': request.args.get('confidence', type = float),
+            'effort': request.args.get('effort', type = float),
+        }
+        rice_score = priority.calculate_priority(elements)
+        try:
+            task.rice_total = rice_score
+            db.session.commit()
+        except exc.IntegrityError:
+            db.session.rollback()
+            return jsonify(response_object), 400
+        response_object = {
+            'status': 'success',
+            'data': {
+                'id': task.id,
+                'url': task.url,
+                'creator': task.creator,
+                'rice_total': task.rice_total
+            }
+        }
+        return jsonify(response_object), 200
+    

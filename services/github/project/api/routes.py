@@ -29,7 +29,7 @@ def get_points(labels):
 def get_labels(labels):
     l = []
     for label in labels:
-        l.append(label.get('node').get('id'))
+        l.append(label.get('node').get('name'))
     return l
 
 def get_reviewers(reviewers, author):
@@ -176,6 +176,7 @@ def get_items():
                     item['last_comment_author'] = None
                 item['url'] = r.get('url')
                 item['createdAt'] = r.get('createdAt')
+                item['updatedAt'] = r.get('updatedAt')
                 if r.get('author'):
                     item['author'] = r.get('author').get('login')
                 else:

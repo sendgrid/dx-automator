@@ -9,8 +9,26 @@ from project.api.models import Task
 from project.tests.base import BaseTestCase
 
 
-def add_task(creator, url):
-    task = Task(creator=creator, url=url)
+def add_task(creator,
+             url,
+             created_at='2019-05-17 00:58:56.285241',
+             updated_at='2019-05-17 00:58:56.285241',
+             updated_locally_at='2019-05-17 00:58:56.285241',
+             language=None,
+             labels=None,
+             num_of_comments=None,
+             num_or_reactions=None
+             ):
+    task = Task(creator=creator,
+                url=url,
+                created_at=created_at,
+                updated_at=updated_at,
+                updated_locally_at=updated_locally_at,
+                language=language,
+                labels=labels,
+                num_of_comments=num_of_comments,
+                num_of_reactions=num_or_reactions
+                )
     db.session.add(task)
     db.session.commit()
     return task
@@ -113,7 +131,7 @@ class TestTaskService(BaseTestCase):
             response = self.client.get('/tasks/blah')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 404)
-            self.assertIn('task does not exist', data['message'])
+            self.assertIn('task_id blah does not exist', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_all_tasks(self):
@@ -133,6 +151,29 @@ class TestTaskService(BaseTestCase):
                 'another.com', data['data']['tasks'][1]['url'])
             self.assertIn('success', data['status'])
 
+    def test_calculate_rice_score(self):
+        task = add_task(
+            'thinkingserious',
+            'http://twilio.com',
+            '2019-05-17 00:58:56.285241',
+            '2019-05-17 00:58:56.285241',
+            '2019-05-17 00:58:56.285241',
+            'python',
+            '{"difficulty: medium","status: work in progress","type: community enhancement"}',
+            11,
+            5
+        )
+        with self.client:
+            query_params = {
+                "reach": 2,
+                "impact": 2,
+                "confidence": 2,
+                "effort": 4
+            }
+            response = self.client.get(f'/tasks/rice/{task.id}', query_string=query_params)
+            response = json.loads(response.data.decode())
+            task = response['data']
+            self.assertEqual(task['rice_total'], 2.0)
 
 if __name__ == '__main__':
     unittest.main()
