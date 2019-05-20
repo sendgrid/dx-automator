@@ -7,6 +7,7 @@ class BaseConfig:
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'my_precious'
+    ERROR_DB_WRITE_FAILURE = 'There was an error writing to the DB, this commit has been rolled back. Please check your DB logs.'
 
 
 class DevelopmentConfig(BaseConfig):

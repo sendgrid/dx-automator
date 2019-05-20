@@ -7,28 +7,49 @@ from email.utils import parsedate_tz, mktime_tz
 
 client = Client(host="http://{}".format(os.environ.get('DX_IP')))
 
+def get_repo_name(url):
+    split = url.rsplit('/',3)
+    return split[1]
+
 def calculate_rice_reach(task):
     # Last updated May 2019
     # https://docs.google.com/spreadsheets/d/1wNImudaEewPijd9EcgsHiEXbermh4amyug-2tTfyOWQ/edit#gid=2047355119
-    rice_reach = 0
-    if task['language'] == 'python':
-        rice_reach = 7744
-    if task['language'] == 'php':
-        rice_reach = 68589
-    if task['language'] == 'csharp':
-        rice_reach = 41890
-    if task['language'] == 'java':
-        rice_reach = 11963
-    if task['language'] == 'nodejs':
-        rice_reach = 19225
-    if task['language'] == 'ruby':
-        rice_reach = 16417
-    if task['language'] == 'go':
-        rice_reach = 1835
-    if task['language'] == 'openapi':
+    rice_reach = os.getenv('DEFAULT_REACH')
+    if 'sendgrid-python' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_PYTHON_REACH')
+    if 'python-http-client' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_PYTHON_REACH')
+    if 'sendgrid-php' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_PHP_REACH')
+    if 'php-http-client' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_PHP_REACH')
+    if 'sendgrid-csharp' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_CSHARP_REACH')
+    if 'csharp-http-client' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_CSHARP_REACH')
+    if 'sendgrid-java' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_JAVA_REACH')
+    if 'java-http-client' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_JAVA_REACH')
+    if 'sendgrid-nodejs' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_NODEJS_REACH')
+    if 'nodejs-http-client' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_NODEJS_REACH')
+    if 'sendgrid-ruby' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_RUBY_REACH')
+    if 'ruby-http-client' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_RUBY_REACH')
+    if 'sendgrid-go' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_GO_REACH')
+    if 'rest' == get_repo_name(task['url']):
+        rice_reach = os.getenv('TWILIO_SENDGRID_GO_REACH')
+    if 'sendgrid-oai' == get_repo_name(task['url']):
         # Setting to largest number because this effects all libs
-        rice_reach = 68589
-    return rice_reach + task['num_of_comments'] + task['num_of_reactions']
+        rice_reach = os.getenv('MAXIMUM_REACH')
+    if 'dx-automator' == get_repo_name(task['url']):
+        # Setting to largest number because this effects all libs
+        rice_reach = os.getenv('MAXIMUM_REACH')
+    return float(rice_reach) + task['num_of_comments'] + task['num_of_reactions']
 
 def calculate_rice_impact(task):
     if task['labels']:
@@ -89,6 +110,8 @@ def http_timestamp_to_datetime(http_timestamp):
 
 def needs_updating(task_id):
     task = get_task(task_id)
+    if not task['updated_locally_at']:
+        return True
     updated_at = http_timestamp_to_datetime(task['updated_at'])
     updated_locally_at = http_timestamp_to_datetime(task['updated_locally_at'])
     if updated_at > updated_locally_at:
@@ -121,6 +144,3 @@ if result:
     print(f'The RICE score for task_id:{task_id} is {result["data"]["rice_total"]}')
 else:
     print('No update needed.')
-
-
-

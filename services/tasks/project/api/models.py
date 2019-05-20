@@ -13,7 +13,7 @@ class Task(db.Model):
     creator = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, nullable=False)
-    updated_locally_at = db.Column(db.DateTime, nullable=False, onupdate=datetime.now)
+    updated_locally_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.now)
     url = db.Column(db.String(128), nullable=False)
     title = db.Column(db.String(255), nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)
@@ -39,7 +39,7 @@ class Task(db.Model):
                  url,
                  created_at=datetime.utcnow(),
                  updated_at=datetime.utcnow(),
-                 updated_locally_at=datetime.utcnow(),
+                 updated_locally_at=None,
                  title="",
                  due_date=None, 
                  task_type="",

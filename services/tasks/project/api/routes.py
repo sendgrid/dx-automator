@@ -14,7 +14,7 @@ import time
 tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 
 def get_items(repo, item_type):
-    client = Client(host="http://{}".format(os.environ.get('DX_IP')))
+    client = Client(host=current_app.config['LOCALHOST'])
     query_params = {
         "repo":repo,
         "item_type":item_type,
@@ -70,6 +70,10 @@ def add_single_task():
             response_object['message'] = 'Sorry. That url already exists.'
             return jsonify(response_object), 400
     except exc.IntegrityError:
+        response_object = {
+            'status': 'fail',
+            'message': current_app.config['ERROR_DB_WRITE_FAILURE']
+        }
         db.session.rollback()
         return jsonify(response_object), 400
 
@@ -162,6 +166,10 @@ def populate_db():
                         )
                         db.session.commit()
                     except exc.IntegrityError:
+                        response_object = {
+                            'status': 'fail',
+                            'message': current_app.config['ERROR_DB_WRITE_FAILURE']
+                        }
                         db.session.rollback()
                         return jsonify(response_object), 400
     return jsonify(response_object), 201
@@ -189,6 +197,10 @@ def calculate_rice_score(task_id):
             db.session.commit()
         except exc.IntegrityError:
             db.session.rollback()
+            response_object = {
+                'status': 'fail',
+                'message': current_app.config['ERROR_DB_WRITE_FAILURE']
+            }
             return jsonify(response_object), 400
         response_object = {
             'status': 'success',
