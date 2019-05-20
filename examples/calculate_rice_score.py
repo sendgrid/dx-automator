@@ -15,40 +15,21 @@ def calculate_rice_reach(task):
     repo_to_reach_env_var = {
         'sendgrid-python': 'TWILIO_SENDGRID_PYTHON_REACH',
         'python-http-client': 'TWILIO_SENDGRID_PYTHON_REACH',
+        'sendgrid-php': 'TWILIO_SENDGRID_PHP_REACH',
+        'php-http-client': 'TWILIO_SENDGRID_PHP_REACH',
+        'sendgrid-csharp': 'TWILIO_SENDGRID_CSHARP_REACH',
+        'csharp-http-client': 'TWILIO_SENDGRID_CSHARP_REACH',
+        'sendgrid-java': 'TWILIO_SENDGRID_JAVA_REACH',
+        'java-http-client': 'TWILIO_SENDGRID_JAVA_REACH',
+        'sendgrid-nodejs': 'TWILIO_SENDGRID_NODEJS_REACH',
+        'nodejs-http-client': 'TWILIO_SENDGRID_NODEJS_REACH',
+        'sendgrid-ruby': 'TWILIO_SENDGRID_RUBY_REACH',
+        'ruby-http-client': 'TWILIO_SENDGRID_RUBY_REACH',
+        'sendgrid-go': 'TWILIO_SENDGRID_GO_REACH',
+        'rest': 'TWILIO_SENDGRID_GO_REACH'
     }
     reach_env_var = repo_to_reach_env_var.get(get_repo_name(task['url']), 'MAXIMUM_REACH')
     rice_reach = os.getenv(reach_env_var)
-
-    if 'sendgrid-php' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_PHP_REACH')
-    if 'php-http-client' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_PHP_REACH')
-    if 'sendgrid-csharp' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_CSHARP_REACH')
-    if 'csharp-http-client' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_CSHARP_REACH')
-    if 'sendgrid-java' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_JAVA_REACH')
-    if 'java-http-client' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_JAVA_REACH')
-    if 'sendgrid-nodejs' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_NODEJS_REACH')
-    if 'nodejs-http-client' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_NODEJS_REACH')
-    if 'sendgrid-ruby' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_RUBY_REACH')
-    if 'ruby-http-client' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_RUBY_REACH')
-    if 'sendgrid-go' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_GO_REACH')
-    if 'rest' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_GO_REACH')
-    if 'sendgrid-oai' == get_repo_name(task['url']):
-        # Setting to largest number because this effects all libs
-        rice_reach = os.getenv('MAXIMUM_REACH')
-    if 'dx-automator' == get_repo_name(task['url']):
-        # Setting to largest number because this effects all libs
-        rice_reach = os.getenv('MAXIMUM_REACH')
     return float(rice_reach) + task['num_of_comments'] + task['num_of_reactions']
 
 def calculate_rice_impact(task):
