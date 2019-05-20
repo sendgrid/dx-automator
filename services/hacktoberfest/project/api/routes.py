@@ -101,6 +101,6 @@ def hacktoberfest_leaders_update():
                 'status': 'fail',
                 'message': current_app.config['ERROR_DB_WRITE_FAILURE']
             }
-            return response_json_bad_request(jsonify(e))
+            return response_json_bad_request(jsonify(response_object))
     
     return jsonify(sorted_points_earned), 200

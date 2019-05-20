@@ -12,13 +12,13 @@ def get_repo_name(url):
     return split[1]
 
 def calculate_rice_reach(task):
-    # Last updated May 2019
-    # https://docs.google.com/spreadsheets/d/1wNImudaEewPijd9EcgsHiEXbermh4amyug-2tTfyOWQ/edit#gid=2047355119
-    rice_reach = os.getenv('DEFAULT_REACH')
-    if 'sendgrid-python' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_PYTHON_REACH')
-    if 'python-http-client' == get_repo_name(task['url']):
-        rice_reach = os.getenv('TWILIO_SENDGRID_PYTHON_REACH')
+    repo_to_reach_env_var = {
+        'sendgrid-python': 'TWILIO_SENDGRID_PYTHON_REACH',
+        'python-http-client': 'TWILIO_SENDGRID_PYTHON_REACH',
+    }
+    reach_env_var = repo_to_reach_env_var.get(get_repo_name(task['url']), 'MAXIMUM_REACH')
+    rice_reach = os.getenv(reach_env_var)
+
     if 'sendgrid-php' == get_repo_name(task['url']):
         rice_reach = os.getenv('TWILIO_SENDGRID_PHP_REACH')
     if 'php-http-client' == get_repo_name(task['url']):
