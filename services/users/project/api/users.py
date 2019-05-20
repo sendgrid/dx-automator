@@ -51,6 +51,10 @@ def add_user():
             response_object['message'] = 'Sorry. That email already exists.'
             return response_json_bad_request(jsonify(response_object))
     except exc.IntegrityError as e:
+        response_object = {
+            'status': 'fail',
+            'message': current_app.config['ERROR_DB_WRITE_FAILURE']
+        }
         db.session.rollback()
         return response_json_bad_request(jsonify(response_object))
 

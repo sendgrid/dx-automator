@@ -76,6 +76,7 @@ class GraphQL(object):
                             state
                             title
                             createdAt
+                            updatedAt
                             {self.review}
                             author {{
                                 login

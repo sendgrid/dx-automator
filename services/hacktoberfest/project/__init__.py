@@ -20,7 +20,7 @@ def create_app():
     db.init_app(app)
 
     # register blueprints
-    from project.api.hacktoberfest import hacktoberfest_blueprint
+    from project.api.routes import hacktoberfest_blueprint
     app.register_blueprint(hacktoberfest_blueprint)
 
     return app

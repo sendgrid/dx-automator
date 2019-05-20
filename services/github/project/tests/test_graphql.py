@@ -11,7 +11,7 @@ class TestGraphQL(BaseTestCase):
     def test_init(self):
         graphql = GraphQL(
             organization='twilio',
-            github_type='pull_request',
+            github_type='pull_requests',
             repo='twilio-php'
         )
         test_string = '''query{
@@ -23,6 +23,14 @@ class TestGraphQL(BaseTestCase):
                             state
                             title
                             createdAt
+                            updatedAt
+                            reviews(first:10) {
+                                nodes{
+                                    author{
+                                        login
+                                    }
+                                }
+                            }
                             author {
                                 login
                             }
@@ -60,6 +68,7 @@ class TestGraphQL(BaseTestCase):
 
         v1 = ''.join(graphql.__str__().split())
         v2 = ''.join(test_string.split())
+        self.maxDiff = None
         self.assertEqual(v1, v2)
 
     def test_multiple_states(self):
@@ -79,6 +88,7 @@ class TestGraphQL(BaseTestCase):
                             state
                             title
                             createdAt
+                            updatedAt
                             author {
                                 login
                             }
@@ -121,7 +131,7 @@ class TestGraphQL(BaseTestCase):
     def test_multiple_labels(self):
         graphql = GraphQL(
             organization='twilio',
-            github_type='pull_request',
+            github_type='pull_requests',
             repo='twilio-python',
             labels=['difficulty: easy', 'status: code review'],
             limit=['first', 100]
@@ -135,6 +145,14 @@ class TestGraphQL(BaseTestCase):
                             state
                             title
                             createdAt
+                            updatedAt
+                            reviews(first:10) {
+                                nodes{
+                                    author{
+                                        login
+                                    }
+                                }
+                            }
                             author {
                                 login
                             }
@@ -177,7 +195,7 @@ class TestGraphQL(BaseTestCase):
     def test_multiple_states_and_labels(self):
         graphql = GraphQL(
             organization='sendgrid',
-            github_type='pull_request',
+            github_type='pull_requests',
             repo='sendgrid-python',
             states=['OPEN','MERGED'],
             labels=['difficulty: easy', 'status: code review'],
@@ -192,6 +210,14 @@ class TestGraphQL(BaseTestCase):
                             state
                             title
                             createdAt
+                            updatedAt
+                            reviews(first:10) {
+                                nodes{
+                                    author{
+                                        login
+                                    }
+                                }
+                            }
                             author {
                                 login
                             }

@@ -97,6 +97,10 @@ def hacktoberfest_leaders_update():
                 leader.total_points = int(points)
                 leader.update()
         except exc.IntegrityError as e:
-            return response_json_bad_request(jsonify(e))
+            response_object = {
+                'status': 'fail',
+                'message': current_app.config['ERROR_DB_WRITE_FAILURE']
+            }
+            return response_json_bad_request(jsonify(response_object))
     
     return jsonify(sorted_points_earned), 200
