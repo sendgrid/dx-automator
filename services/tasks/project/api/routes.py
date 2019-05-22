@@ -126,7 +126,7 @@ def populate_db():
         if len(repos[repo['name']]) != 0:
             for item in repos[repo['name']]:
                 if item != None:
-                    task_type = 'pr' if 'pull' in item['url'] else 'issue'
+                    task_type = 'pr' if '/pull/' in item['url'] else 'issue'
                     try:
                         db.session.add(
                             Task(
@@ -135,8 +135,8 @@ def populate_db():
                                 creator=item['author'],
                                 labels=item['labels'],
                                 language=repo['programming_language'],
-                                num_of_comments=item['comments'],
-                                num_of_reactions=item['reactions'],
+                                num_of_comments=item['num_comments'],
+                                num_of_reactions=item['num_reactions'],
                                 title=item['title'],
                                 url=item['url'],
                                 task_type=task_type
