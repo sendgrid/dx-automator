@@ -169,10 +169,10 @@ def get_items():
                             last_comment_author = comment.get('author').get('login')
                         else:
                             last_comment_author = None
-                    item['comments'] = r.get('comments').get('totalCount') or 0
+                    item['num_comments'] = r.get('comments').get('totalCount') or 0
                     item['last_comment_author'] = last_comment_author
                 else:
-                    item['comments'] = 0
+                    item['num_comments'] = 0
                     item['last_comment_author'] = None
                 item['url'] = r.get('url')
                 item['createdAt'] = r.get('createdAt')
@@ -198,7 +198,7 @@ def get_items():
                     item['reviewers'] = None
                     item['num_reviewers'] = 0
                     item['reviewer_points'] = 0
-                item['reactions'] = r.get('reactions').get('totalCount') or 0
+                item['num_reactions'] = r.get('reactions').get('totalCount') or 0
                 item['title'] = r.get('title')
                 items.append(item)
             has_next_page = result.get('pageInfo').get('hasNextPage')

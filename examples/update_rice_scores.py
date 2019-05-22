@@ -29,12 +29,12 @@ def calculate_rice_reach(task):
         'rest': 'TWILIO_SENDGRID_GO_REACH'
     }
     reach_env_var = repo_to_reach_env_var.get(get_repo_name(task['url']), 'MAXIMUM_REACH')
-    rice_reach = os.getenv(reach_env_var)
+    rice_reach = os.getenv(reach_env_var) or 0
     return float(rice_reach) + task['num_of_comments'] + task['num_of_reactions']
 
 def calculate_rice_impact(task):
     if task['labels']:
-        rice_impact = 0
+        rice_impact = 1000
         if 'type: docs update' in task['labels']:
             rice_impact = 1
         if 'type: security' in task['labels']:
@@ -67,7 +67,7 @@ def calculate_rice_confidence(task):
 
 def calculate_rice_effort(task):
     if task['labels']:
-        rice_effort = 0
+        rice_effort = 0.0001
         if 'difficulty: easy' in task['labels']:
             rice_effort = 1
         if 'difficulty: medium' in task['labels']:
@@ -102,12 +102,15 @@ def needs_updating(task_id):
 def get_task(task_id):
     response = client.tasks._(task_id).get()
     task = json.loads(response.body)
-    task = task['data']
-    return task
+    return task['message']
 
-def get_rice_score(task_id):
+def get_tasks():
+    response = client.tasks.get()
+    tasks = json.loads(response.body)
+    return tasks['message']['tasks']
+
+def update_rice_score(task_id):
     if needs_updating(task_id):
-        task = get_task(task_id)
         query_params = {
             "reach": calculate_rice_reach(task),
             "impact": calculate_rice_impact(task),
@@ -119,9 +122,7 @@ def get_rice_score(task_id):
         return items
     return None
 
-task_id = 1
-result = get_rice_score(task_id)
-if result: 
-    print(f'The RICE score for task_id:{task_id} is {result["data"]["rice_total"]}')
-else:
-    print('No update needed.')
+tasks = get_tasks()
+for task in tasks:
+    update_rice_score(int(task["id"]))
+
