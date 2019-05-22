@@ -18,7 +18,8 @@ def add_task(creator,
              language=None,
              labels=None,
              num_of_comments=None,
-             num_or_reactions=None
+             num_or_reactions=None,
+             rice_total=None
              ):
     task = Task(creator=creator,
                 url=url,
@@ -28,7 +29,8 @@ def add_task(creator,
                 language=language,
                 labels=labels,
                 num_of_comments=num_of_comments,
-                num_of_reactions=num_or_reactions
+                num_of_reactions=num_or_reactions,
+                rice_total=rice_total
                 )
     db.session.add(task)
     db.session.commit()
@@ -122,8 +124,8 @@ class TestTaskService(BaseTestCase):
             response = self.client.get(f'/tasks/{task.id}')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
-            self.assertIn('anshul', data['data']['creator'])
-            self.assertIn('anshulsinghal.me', data['data']['url'])
+            self.assertIn('anshul', data['message']['creator'])
+            self.assertIn('anshulsinghal.me', data['message']['url'])
             self.assertIn('success', data['status'])
 
     def test_single_task_no_id(self):
@@ -143,13 +145,13 @@ class TestTaskService(BaseTestCase):
             response = self.client.get('/tasks')
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(data['data']['tasks']), 2)
-            self.assertIn('anshul', data['data']['tasks'][0]['creator'])
+            self.assertEqual(len(data['message']['tasks']), 2)
+            self.assertIn('anshul', data['message']['tasks'][0]['creator'])
             self.assertIn(
-                'anshulsinghal.me', data['data']['tasks'][0]['url'])
-            self.assertIn('another', data['data']['tasks'][1]['creator'])
+                'anshulsinghal.me', data['message']['tasks'][0]['url'])
+            self.assertIn('another', data['message']['tasks'][1]['creator'])
             self.assertIn(
-                'another.com', data['data']['tasks'][1]['url'])
+                'another.com', data['message']['tasks'][1]['url'])
             self.assertIn('success', data['status'])
 
     def test_calculate_rice_score(self):
@@ -173,7 +175,7 @@ class TestTaskService(BaseTestCase):
             }
             response = self.client.get(f'/tasks/rice/{task.id}', query_string=query_params)
             response = json.loads(response.data.decode())
-            task = response['data']
+            task = response['message']
             self.assertEqual(task['rice_total'], 2.0)
     
     def test_calculate_rice_score_with_strings(self):
@@ -197,8 +199,42 @@ class TestTaskService(BaseTestCase):
             }
             response = self.client.get(f'/tasks/rice/{task.id}', query_string=query_params)
             response = json.loads(response.data.decode())
-            task = response['data']
+            task = response['message']
             self.assertEqual(task['rice_total'], 2.0)    
+    
+    def test_rice_sorted_list(self):
+        add_task(
+            'thinkingserious',
+            'http://twilio.com',
+            '2019-05-17 00:58:56.285241',
+            '2019-05-17 00:58:56.285241',
+            '2019-05-17 00:58:56.285241',
+            'python',
+            '{"difficulty: medium","status: work in progress","type: community enhancement"}',
+            11,
+            5,
+            100
+        )
+        add_task(
+            'childish-sambino',
+            'http://twilio.com',
+            '2019-05-17 00:58:56.285241',
+            '2019-05-17 00:58:56.285241',
+            '2019-05-17 00:58:56.285241',
+            'python',
+            '{"difficulty: medium","status: work in progress","type: twilio enhancement"}',
+            11,
+            5,
+            200
+        )
+        query_params = {
+            "page_index": 1,
+            "num_results": 2
+        }
+        response = self.client.get('/tasks/rice', query_string=query_params)
+        response = json.loads(response.data.decode())
+        tasks = response['message']
+        self.assertTrue(tasks[0]['rice_total'] > tasks[1]['rice_total'])
 
 if __name__ == '__main__':
     unittest.main()

@@ -16,24 +16,14 @@ tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 def get_items(repo, item_type):
     client = Client(host=current_app.config['LOCALHOST'])
     query_params = {
-        "repo":repo,
-        "item_type":item_type,
-        "states[]":['OPEN'],
-        "limit[]":['first', '100']
+        "repo": repo,
+        "item_type": item_type,
+        "states[]": ['OPEN'],
+        "limit[]": ['first', '100']
         }
     response = client.github.items.get(query_params=query_params)
     items = json.loads(response.body)
-    return items  
-
-@tasks_blueprint.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        db.session.add(Task(creator=request.form['creator'],
-                       url=request.form['url']))
-        db.session.commit()
-    tasks = Task.query.all()
-    return render_template('index.html', tasks=tasks)
-
+    return items
 
 @tasks_blueprint.route('/tasks/ping/pong', methods=['GET'])
 def ping_pong():
@@ -91,7 +81,7 @@ def get_single_task(task_id):
         else:
             response_object = {
                 'status': 'success',
-                'data': {
+                'message': {
                     'id': task.id,
                     'url': task.url,
                     'creator': task.creator,
@@ -113,7 +103,7 @@ def get_single_task(task_id):
 def get_all_tasks():
     response_object = {
         'status': 'success',
-        'data': {
+        'message': {
             'tasks': [task.to_json() for task in Task.query.all()]
         }
     }
@@ -125,42 +115,30 @@ def get_all_tasks():
 def populate_db():
     all_repos = current_app.config['REPOS']
 
-    response_object = dict()
+    repos = dict()
     for repo in all_repos:
         prs = get_items(repo['name'], 'pull_requests')
         issues = get_items(repo['name'], 'issues')
         items = issues + prs
-        response_object[repo['name']] = items
+        repos[repo['name']] = items
 
     for repo in all_repos:
-        if len(response_object[repo['name']]) != 0:
-            for issue in response_object[repo['name']]:
-                if issue != None:
-                    if 'pull' in issue['url']:
-                        task_type = 'pr'
-                    else:
-                        task_type = 'issue'
-                    creator = issue['author']
-                    url = issue['url']
-                    created_at = issue['createdAt']
-                    updated_at = issue['updatedAt']
-                    labels = issue['labels']
-                    num_of_comments = issue['comments']
-                    num_of_reactions = issue['reactions']
-                    title = issue['title']
-                    language = repo['programming_language']
+        if len(repos[repo['name']]) != 0:
+            for item in repos[repo['name']]:
+                if item != None:
+                    task_type = 'pr' if 'pull' in item['url'] else 'issue'
                     try:
                         db.session.add(
                             Task(
-                                created_at=created_at,
-                                updated_at=updated_at,
-                                creator=creator,
-                                labels=labels,
-                                language=language,
-                                num_of_comments=num_of_comments,
-                                num_of_reactions=num_of_reactions,
-                                title=title,
-                                url=url,
+                                created_at=item['createdAt'],
+                                updated_at=item['updatedAt'],
+                                creator=item['author'],
+                                labels=item['labels'],
+                                language=repo['programming_language'],
+                                num_of_comments=item['comments'],
+                                num_of_reactions=item['reactions'],
+                                title=item['title'],
+                                url=item['url'],
                                 task_type=task_type
                             )
                         )
@@ -172,6 +150,10 @@ def populate_db():
                         }
                         db.session.rollback()
                         return jsonify(response_object), 400
+    response_object = {
+        'status': 'success',
+        'message': 'DB Initailized'
+    }
     return jsonify(response_object), 201
 
 @tasks_blueprint.route('/tasks/rice/<task_id>', methods=['GET'])
@@ -204,12 +186,32 @@ def calculate_rice_score(task_id):
             return jsonify(response_object), 400
         response_object = {
             'status': 'success',
-            'data': {
-                'id': task.id,
-                'url': task.url,
-                'creator': task.creator,
-                'rice_total': task.rice_total
-            }
+            'message': task.to_json()
         }
         return jsonify(response_object), 200
     
+
+@tasks_blueprint.route('/tasks/rice', methods=['GET'])
+def rice_sorted_backlog():
+    page_index = request.args.get('page_index', type = int)
+    num_results = request.args.get('num_results', type = int) or 20
+    
+    try:
+        if page_index:
+            tasks = Task.query.order_by(Task.rice_total.desc()).paginate(page_index, num_results, False).items
+        else:
+            tasks = Task.query.order_by(Task.rice_total.desc()).all()
+    except exc.IntegrityError:
+        db.session.rollback()
+        response_object = {
+            'status': 'fail',
+            'message': current_app.config['ERROR_DB_WRITE_FAILURE']
+        }
+        return jsonify(response_object), 400
+
+    response_object = {
+        'status': 'success',
+        'message': [task.to_json() for task in tasks]
+    }
+    
+    return jsonify(response_object), 200

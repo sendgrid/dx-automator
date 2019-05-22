@@ -92,6 +92,32 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 
 ### Admin Commands
 
+#### Get a List of the Top 20 Issues or PRs
+
+```bash
+source scripts/init-task-db 
+python examples/update_rice_scores.py
+python examples/rice_sorted_list_of_issues_and_prs.py
+```
+
+#### Restart a Particular Service
+
+```bash
+docker-compose -f docker-compose-dev.yml restart <Name of Service>
+```
+
+#### Run a Particular Test within a Python Service
+
+```bash
+docker-compose -f docker-compose-dev.yml run <service> python3 -m unittest <path.to.test>
+```
+
+For example
+
+```bash
+docker-compose -f docker-compose-dev.yml run tasks python3 -m unittest project.tests.test_tasks
+```
+
 #### Update the Hacktoberfest leaderboard
 
 ```bash
