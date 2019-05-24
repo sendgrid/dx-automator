@@ -125,6 +125,10 @@ def get_items():
     limit = (limit[0], int(limit[1]))
     item_type = request.args.get('item_type', type = str)
     repo = request.args.get('repo', type = str)
+    start_creation_date = request.args.get('start_creation_date', type = str)
+    end_creation_date = request.args.get('end_creation_date', type = str)
+    start_updated_date = request.args.get('start_updated_date', type = str)
+    end_updated_date = request.args.get('end_updated_date', type = str)
     list_of_labels = request.args.getlist('labels[]', type = str)
     for label in list_of_labels:
         if label:
@@ -200,7 +204,35 @@ def get_items():
                     item['reviewer_points'] = 0
                 item['num_reactions'] = r.get('reactions').get('totalCount') or 0
                 item['title'] = r.get('title')
-                items.append(item)
+                # check if date is between start and end date
+
+                if start_creation_date and end_creation_date:
+                    try:
+                        item_date = item['createdAt'].split('T')[0].split('-')
+                        start_creation_date = start_creation_date.split('-') # 0 - year, 1 - month, 2 - day
+                        end_creation_date = end_creation_date.split('-')
+
+                        if int(start_creation_date[0]) <= int(item_date[0]) and int(item_date[0]) <= int(end_creation_date[0]): # year
+                            if int(start_creation_date[1]) <= int(item_date[1]) and int(item_date[1]) <= int(end_creation_date[1]): # month
+                                if int(start_creation_date[2]) <= int(item_date[2]) and int(item_date[2]) <= int(end_creation_date[2]): # day
+                                    items.append(item)
+                    except:
+                        print("date format error, should be YYYY-MM-DD")
+                elif start_updated_date and end_updated_date:
+                    try:
+                        item_date = item['createdAt'].split('T')[0].split('-')
+                        start_updated_date = start_updated_date.split('-') # 0 - year, 1 - month, 2 - day
+                        end_updated_date = end_updated_date.split('-')
+
+                        if int(start_updated_date[0]) <= int(item_date[0]) and int(item_date[0]) <= int(end_updated_date[0]): # year
+                            if int(start_updated_date[1]) <= int(item_date[1]) and int(item_date[1]) <= int(end_updated_date[1]): # month
+                                if int(start_updated_date[2]) <= int(item_date[2]) and int(item_date[2]) <= int(end_updated_date[2]): # day
+                                    items.append(item)
+                    except:
+                        print("date format error, should be YYYY-MM-DD")
+                else:
+                    items.append(item)
+
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
                 end_cursor = result.get('pageInfo').get('endCursor')
