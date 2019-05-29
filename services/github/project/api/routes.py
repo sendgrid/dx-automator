@@ -3,6 +3,7 @@ import requests
 import sys
 import json
 from .graphql import GraphQL
+import datetime
 
 github_blueprint = Blueprint('github', __name__)
 
@@ -38,6 +39,11 @@ def get_reviewers(reviewers, author):
         if (reviewer.get('author').get('login') != author) and (reviewer.get('author').get('login') not in EXCLUSIONS):
             logins.append(reviewer.get('author').get('login'))
     return list(set(logins))
+
+# all datetime strs
+def check_between_dates(startdate, enddate, itemdate):
+    return startdate <= itemdate <= enddate
+
 
 @github_blueprint.route('/github/ping', methods=['GET'])
 def ping_pong():
@@ -205,29 +211,24 @@ def get_items():
                 item['num_reactions'] = r.get('reactions').get('totalCount') or 0
                 item['title'] = r.get('title')
                 # check if date is between start and end date
-
-                if start_creation_date and end_creation_date:
+                if len(start_creation_date) != 0 and len(end_creation_date) != 0:
                     try:
-                        item_date = item['createdAt'].split('T')[0].split('-')
-                        start_creation_date = start_creation_date.split('-') # 0 - year, 1 - month, 2 - day
-                        end_creation_date = end_creation_date.split('-')
+                        item_date = datetime.datetime.strptime(item['createdAt'].split('T')[0], "%Y-%m-%d")
+                        start_date = datetime.datetime.strptime(start_creation_date, "%Y-%m-%d")
+                        end_date = datetime.datetime.strptime(end_creation_date, "%Y-%m-%d")
 
-                        if int(start_creation_date[0]) <= int(item_date[0]) and int(item_date[0]) <= int(end_creation_date[0]): # year
-                            if int(start_creation_date[1]) <= int(item_date[1]) and int(item_date[1]) <= int(end_creation_date[1]): # month
-                                if int(start_creation_date[2]) <= int(item_date[2]) and int(item_date[2]) <= int(end_creation_date[2]): # day
-                                    items.append(item)
+                        if check_between_dates(start_date, end_date, item_date):
+                            items.append(item)
                     except:
                         print("date format error, should be YYYY-MM-DD")
-                elif start_updated_date and end_updated_date:
+                elif len(start_updated_date) != 0 and len(end_updated_date) != 0:
                     try:
-                        item_date = item['createdAt'].split('T')[0].split('-')
-                        start_updated_date = start_updated_date.split('-') # 0 - year, 1 - month, 2 - day
-                        end_updated_date = end_updated_date.split('-')
+                        item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%d")
+                        start_date = datetime.datetime.strptime(start_updated_date, "%Y-%m-%d")
+                        end_date = datetime.datetime.strptime(end_updated_date, "%Y-%m-%d")
 
-                        if int(start_updated_date[0]) <= int(item_date[0]) and int(item_date[0]) <= int(end_updated_date[0]): # year
-                            if int(start_updated_date[1]) <= int(item_date[1]) and int(item_date[1]) <= int(end_updated_date[1]): # month
-                                if int(start_updated_date[2]) <= int(item_date[2]) and int(item_date[2]) <= int(end_updated_date[2]): # day
-                                    items.append(item)
+                        if check_between_dates(start_date, end_date, item_date):
+                            items.append(item)
                     except:
                         print("date format error, should be YYYY-MM-DD")
                 else:
