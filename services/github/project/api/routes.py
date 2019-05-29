@@ -211,7 +211,7 @@ def get_items():
                 item['num_reactions'] = r.get('reactions').get('totalCount') or 0
                 item['title'] = r.get('title')
                 # check if date is between start and end date
-                if len(start_creation_date) != 0 and len(end_creation_date) != 0:
+                if start_creation_date != None and end_creation_date != None:
                     try:
                         item_date = datetime.datetime.strptime(item['createdAt'].split('T')[0], "%Y-%m-%d")
                         start_date = datetime.datetime.strptime(start_creation_date, "%Y-%m-%d")
@@ -221,7 +221,7 @@ def get_items():
                             items.append(item)
                     except:
                         print("date format error, should be YYYY-MM-DD")
-                elif len(start_updated_date) != 0 and len(end_updated_date) != 0:
+                elif start_updated_date != None and end_updated_date != None:
                     try:
                         item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%d")
                         start_date = datetime.datetime.strptime(start_updated_date, "%Y-%m-%d")
