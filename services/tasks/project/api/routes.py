@@ -109,7 +109,51 @@ def get_all_tasks():
     }
     return jsonify(response_object), 200
 
+@tasks_blueprint.route('/tasks/update/db', methods=['GET'])
+def update_db():
+    all_repos = current_app.config['REPOS']
 
+    repos = dict()
+    for repo in all_repos:
+        prs = get_items(repo['name'], 'pull_requests')
+        issues = get_items(repo['name'], 'issues')
+        items = issues + prs
+        repos[repo['name']] = items
+
+    for repo in all_repos:
+        if len(repos[repo['name']]) != 0:
+            for item in repos[repo['name']]:
+                if item != None:
+                    task_type = 'pr' if '/pull/' in item['url'] else 'issue'
+                    try:
+                        if Task.query.filter_by(url=item['url']).first() is None:
+                            db.session.add(
+                                Task(
+                                    created_at=item['createdAt'],
+                                    updated_at=item['updatedAt'],
+                                    creator=item['author'],
+                                    labels=item['labels'],
+                                    language=repo['programming_language'],
+                                    num_of_comments=item['num_comments'],
+                                    num_of_reactions=item['num_reactions'],
+                                    title=item['title'],
+                                    url=item['url'],
+                                    task_type=task_type
+                                )
+                            )
+                            db.session.commit()
+                    except exc.IntegrityError:
+                        response_object = {
+                            'status': 'fail',
+                            'message': current_app.config['ERROR_DB_WRITE_FAILURE']
+                        }
+                        db.session.rollback()
+                        return jsonify(response_object), 400
+    response_object = {
+        'status': 'success',
+        'message': 'DB Updated'
+    }
+    return jsonify(response_object), 201
 
 @tasks_blueprint.route('/tasks/init/db', methods=['GET'])
 def populate_db():
@@ -152,7 +196,7 @@ def populate_db():
                         return jsonify(response_object), 400
     response_object = {
         'status': 'success',
-        'message': 'DB Initailized'
+        'message': 'DB Initalized'
     }
     return jsonify(response_object), 201
 
