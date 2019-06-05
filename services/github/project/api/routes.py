@@ -219,8 +219,13 @@ def get_items():
 
                         if check_between_dates(start_date, end_date, item_date):
                             items.append(item)
-                    except:
-                        print("date format error, should be YYYY-MM-DD")
+                    except ValueError:
+                        response_object = {
+                            'status': 'fail',
+                            'message': "date format error, format should be YYYY-MM-DD"
+                        }
+                        db.session.rollback()
+                        return jsonify(response_object), 400
                 elif start_updated_date != None and end_updated_date != None:
                     try:
                         item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%d")
@@ -229,8 +234,13 @@ def get_items():
 
                         if check_between_dates(start_date, end_date, item_date):
                             items.append(item)
-                    except:
-                        print("date format error, should be YYYY-MM-DD")
+                    except ValueError:
+                        response_object = {
+                            'status': 'fail',
+                            'message': "date format error, format should be YYYY-MM-DD"
+                        }
+                        db.session.rollback()
+                        return jsonify(response_object), 400
                 else:
                     items.append(item)
 
