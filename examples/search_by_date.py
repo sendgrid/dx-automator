@@ -30,14 +30,13 @@ all_repos = [
 ]
 
 start_date = "2019-01-01"
-end_date = "2019-01-01"
+end_date = "2019-01-31"
 
 def get_items(repo, item_type):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))
     query_params = {
         "repo":repo,
         "item_type":item_type,
-        "labels[]":['type: bug'],
         "states[]":['OPEN'],
         "start_creation_date": start_date,
         "end_creation_date": end_date,
@@ -57,4 +56,4 @@ for repo in all_repos:
         print(text)
         total_bugs = total_bugs + 1
 
-print("There are a total of {} open bugs needing assistance across all repos created between {} to {}".format(total_bugs, start_date, end_date))
+print("There are a total of {} open issues/PRs needing assistance across all repos created between {} to {}".format(total_bugs, start_date, end_date))
