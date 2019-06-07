@@ -46,7 +46,7 @@ def get_items(repo, item_type):
     items = json.loads(response.body)
     return items
 
-total_bugs = 0
+total_items = 0
 for repo in all_repos:
     issues = get_items(repo, 'issues')
     prs = get_items(repo, 'pull_requests')
@@ -54,6 +54,6 @@ for repo in all_repos:
     for item in items:
         text = "{} , {}".format(item['url'], item['createdAt'])
         print(text)
-        total_bugs = total_bugs + 1
+        total_items = total_items + 1
 
-print("There are a total of {} open issues/PRs needing assistance across all repos created between {} to {}".format(total_bugs, start_date, end_date))
+print("There are a total of {} open issues/PRs needing assistance across all repos created between {} to {}".format(total_items, start_date, end_date))
