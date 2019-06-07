@@ -171,15 +171,16 @@ def get_items():
     has_next_page = True
     github_org = current_app.config['GITHUB_ORG']
     while has_next_page:
-        query = GraphQL(
-            organization=github_org,
-            github_type=item_type,
-            repo=repo,
-            states=states,
-            labels=labels,
-            limit=limit,
-            end_cursor=end_cursor
-        )
+        graphql_args = {}
+        graphql_args['organization']=github_org
+        graphql_args['github_type']=item_type
+        graphql_args['repo']=repo
+        graphql_args['labels']=labels
+        graphql_args['states']=states
+        graphql_args['end_cursor']=end_cursor
+        if limit:
+            graphql_args['limit']=limit
+        query = GraphQL(**graphql_args)
         result, status = GraphQL.run_query(query.__str__())
         if not status:
             return "GITHUB_TOKEN may not be valid", 400
