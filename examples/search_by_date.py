@@ -40,7 +40,7 @@ def get_items(repo, item_type):
         "states[]":['OPEN'],
         "start_creation_date": start_date,
         "end_creation_date": end_date,
-        "limit[]":['first', '100']
+        # "limit[]":['first', '100']
     }
     response = client.github.items.get(query_params=query_params)
     items = json.loads(response.body)

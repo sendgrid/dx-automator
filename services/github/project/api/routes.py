@@ -41,8 +41,8 @@ def get_reviewers(reviewers, author):
     return list(set(logins))
 
 # all datetime strs
-def check_between_dates(startdate, enddate, itemdate):
-    return startdate <= itemdate <= enddate
+def check_between_dates(start_date, end_date, item_date):
+    return start_date <= item_date <= end_date
 
 
 @github_blueprint.route('/github/ping', methods=['GET'])
@@ -128,13 +128,32 @@ def get_items():
     for limits in list_of_limits:
         if limits:
             limit.append(limits)
-    limit = (limit[0], int(limit[1]))
+    if limit:
+       limit = (limit[0], int(limit[1]))
     item_type = request.args.get('item_type', type = str)
     repo = request.args.get('repo', type = str)
     start_creation_date = request.args.get('start_creation_date', type = str)
     end_creation_date = request.args.get('end_creation_date', type = str)
+    start_creation_date_f = None
+    end_creation_date_f = None
+    # python doesn't strptime it correctly unless it assigns a new variable
+    if start_creation_date != None:
+        start_creation_date_f = datetime.datetime.strptime(start_creation_date, "%Y-%m-%d")
+    
+    if end_creation_date != None:
+        end_creation_date_f = datetime.datetime.strptime(end_creation_date, "%Y-%m-%d")
+
     start_updated_date = request.args.get('start_updated_date', type = str)
     end_updated_date = request.args.get('end_updated_date', type = str)
+
+    start_updated_date_f = None
+    end_updated_date_f = None
+    if start_updated_date != None:
+        start_updated_date_f = datetime.datetime.strptime(start_updated_date, "%Y-%m-%d")
+    
+    if end_updated_date_f != None:
+        end_updated_date_f = datetime.datetime.strptime(end_updated_date, "%Y-%m-%d")
+
     list_of_labels = request.args.getlist('labels[]', type = str)
     for label in list_of_labels:
         if label:
@@ -213,12 +232,15 @@ def get_items():
                 # check if date is between start and end date
                 if start_creation_date != None and end_creation_date != None:
                     try:
+                        print(item['createdAt'])
                         item_date = datetime.datetime.strptime(item['createdAt'].split('T')[0], "%Y-%m-%d")
-                        start_date = datetime.datetime.strptime(start_creation_date, "%Y-%m-%d")
-                        end_date = datetime.datetime.strptime(end_creation_date, "%Y-%m-%d")
 
-                        if check_between_dates(start_date, end_date, item_date):
+                        if check_between_dates(start_creation_date_f, end_creation_date_f, item_date):
                             items.append(item)
+                        else:
+                            print("item is outside of date range")
+                            # console.log("item is outside of date range")
+
                     except ValueError:
                         response_object = {
                             'status': 'fail',
@@ -226,14 +248,18 @@ def get_items():
                         }
                         db.session.rollback()
                         return jsonify(response_object), 400
-                elif start_updated_date != None and end_updated_date != None:
+
+                if start_updated_date != None and end_updated_date != None:
                     try:
+                        print(item['updatedAt'])
                         item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%d")
-                        start_date = datetime.datetime.strptime(start_updated_date, "%Y-%m-%d")
-                        end_date = datetime.datetime.strptime(end_updated_date, "%Y-%m-%d")
 
-                        if check_between_dates(start_date, end_date, item_date):
+                        if check_between_dates(start_updated_date_f, end_updated_date_f, item_date):
                             items.append(item)
+                        else:
+                            print("item is outside of date range")
+                            # console.log("item is outside of date range")
+
                     except ValueError:
                         response_object = {
                             'status': 'fail',
@@ -241,7 +267,8 @@ def get_items():
                         }
                         db.session.rollback()
                         return jsonify(response_object), 400
-                else:
+
+                if start_creation_date == None and end_creation_date == None and start_updated_date == None and end_updated_date == None:
                     items.append(item)
 
             has_next_page = result.get('pageInfo').get('hasNextPage')
