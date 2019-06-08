@@ -233,8 +233,7 @@ def get_items():
                 # check if date is between start and end date
                 if start_creation_date != None and end_creation_date != None:
                     try:
-                        print(item['createdAt'])
-                        item_date = datetime.datetime.strptime(item['createdAt'].split('T')[0], "%Y-%m-%d")
+                        item_date = datetime.datetime.strptime(item['createdAt'], "%Y-%m-%dT%H:%M:%SZ")
 
                         if check_between_dates(start_creation_date_f, end_creation_date_f, item_date):
                             items.append(item)
@@ -252,8 +251,7 @@ def get_items():
 
                 if start_updated_date != None and end_updated_date != None:
                     try:
-                        print(item['updatedAt'])
-                        item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%d")
+                        item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%dT%H:%M:%SZ")
 
                         if check_between_dates(start_updated_date_f, end_updated_date_f, item_date):
                             items.append(item)
