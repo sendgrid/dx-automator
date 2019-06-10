@@ -127,7 +127,7 @@ def update_db():
                     task_type = 'pr' if '/pull/' in item['url'] else 'issue'
                     try:
                         olditem = Task.query.filter_by(url=item['url']).first()
-                        if olditem is None or olditem.updated_at != updated_at:
+                        if olditem is None:
                             db.session.add(
                                 Task(
                                     created_at=item['createdAt'],
@@ -142,6 +142,12 @@ def update_db():
                                     task_type=task_type
                                 )
                             )
+                            db.session.commit()
+                        else:
+                            olditem.updated_at = item['updatedAt']
+                            olditem.labels = item['labels']
+                            olditem.num_of_comments = item['num_comments']
+                            olditem.num_of_reactions = item['num_reactions']
                             db.session.commit()
                             
                     except exc.IntegrityError:
