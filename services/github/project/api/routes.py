@@ -41,7 +41,7 @@ def get_reviewers(reviewers, author):
     return list(set(logins))
 
 # all datetime strs
-def check_between_dates(start_date, end_date, item_date):
+def check_between_dates(start_date, item_date, end_date):
     return start_date <= item_date <= end_date
 
 
@@ -235,7 +235,7 @@ def get_items():
                     try:
                         item_date = datetime.datetime.strptime(item['createdAt'], "%Y-%m-%dT%H:%M:%SZ")
 
-                        if check_between_dates(start_creation_date_f, end_creation_date_f, item_date):
+                        if check_between_dates(start_creation_date_f, item_date, end_creation_date_f):
                             items.append(item)
                         else:
                             print("item is outside of date range")
@@ -253,7 +253,7 @@ def get_items():
                     try:
                         item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%dT%H:%M:%SZ")
 
-                        if check_between_dates(start_updated_date_f, end_updated_date_f, item_date):
+                        if check_between_dates(start_updated_date_f, item_date, end_updated_date_f):
                             items.append(item)
                         else:
                             print("item is outside of date range")
