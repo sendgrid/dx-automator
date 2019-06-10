@@ -4,6 +4,7 @@ import sys
 import json
 from .graphql import GraphQL
 import datetime
+import logging
 
 github_blueprint = Blueprint('github', __name__)
 
@@ -40,10 +41,20 @@ def get_reviewers(reviewers, author):
             logins.append(reviewer.get('author').get('login'))
     return list(set(logins))
 
-# all datetime strs
 def check_between_dates(start_date, item_date, end_date):
-    return start_date <= item_date <= end_date
+    if start_date != None and end_date != None:
+        return start_date <= item_date <= end_date
+    elif start_date == None and end_date != None:
+        return item_date <= end_date
+    elif start_date != None and end_date == None:
+        return start_date <= item_date
+    else:
+        return False
 
+
+def get_request_arg_date(request_args, arg_name):
+    arg_value = request_args.get(arg_name, type = str)
+    return datetime.datetime.strptime(arg_value, "%Y-%m-%d") if arg_value else None
 
 @github_blueprint.route('/github/ping', methods=['GET'])
 def ping_pong():
@@ -132,27 +143,12 @@ def get_items():
        limit = (limit[0], int(limit[1]))
     item_type = request.args.get('item_type', type = str)
     repo = request.args.get('repo', type = str)
-    start_creation_date = request.args.get('start_creation_date', type = str)
-    end_creation_date = request.args.get('end_creation_date', type = str)
-    start_creation_date_f = None
-    end_creation_date_f = None
-    # python doesn't strptime it correctly unless it assigns a new variable
-    if start_creation_date != None:
-        start_creation_date_f = datetime.datetime.strptime(start_creation_date, "%Y-%m-%d")
-    
-    if end_creation_date != None:
-        end_creation_date_f = datetime.datetime.strptime(end_creation_date, "%Y-%m-%d")
 
-    start_updated_date = request.args.get('start_updated_date', type = str)
-    end_updated_date = request.args.get('end_updated_date', type = str)
+    start_creation_date = get_request_arg_date(request.args, 'start_creation_date')
+    end_creation_date = get_request_arg_date(request.args, 'end_creation_date')
 
-    start_updated_date_f = None
-    end_updated_date_f = None
-    if start_updated_date != None:
-        start_updated_date_f = datetime.datetime.strptime(start_updated_date, "%Y-%m-%d")
-    
-    if end_updated_date_f != None:
-        end_updated_date_f = datetime.datetime.strptime(end_updated_date, "%Y-%m-%d")
+    start_updated_date = get_request_arg_date(request.args, 'start_updated_date')
+    end_updated_date = get_request_arg_date(request.args, 'end_updated_date')
 
     list_of_labels = request.args.getlist('labels[]', type = str)
     for label in list_of_labels:
@@ -231,15 +227,17 @@ def get_items():
                 item['num_reactions'] = r.get('reactions').get('totalCount') or 0
                 item['title'] = r.get('title')
                 # check if date is between start and end date
-                if start_creation_date != None and end_creation_date != None:
+                if start_creation_date == None and end_creation_date == None and start_updated_date == None and end_updated_date == None:
+                    items.append(item)
+
+                if start_creation_date != None or end_creation_date != None:
                     try:
                         item_date = datetime.datetime.strptime(item['createdAt'], "%Y-%m-%dT%H:%M:%SZ")
 
-                        if check_between_dates(start_creation_date_f, item_date, end_creation_date_f):
+                        if check_between_dates(start_creation_date, item_date, end_creation_date):
                             items.append(item)
                         else:
-                            print("item is outside of date range")
-                            # console.log("item is outside of date range")
+                            logging.warning(" Item is outside of date range.")
 
                     except ValueError:
                         response_object = {
@@ -249,15 +247,14 @@ def get_items():
                         db.session.rollback()
                         return jsonify(response_object), 400
 
-                if start_updated_date != None and end_updated_date != None:
+                if start_updated_date != None or end_updated_date != None:
                     try:
                         item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%dT%H:%M:%SZ")
 
-                        if check_between_dates(start_updated_date_f, item_date, end_updated_date_f):
+                        if check_between_dates(start_updated_date, item_date, end_updated_date):
                             items.append(item)
                         else:
-                            print("item is outside of date range")
-                            # console.log("item is outside of date range")
+                            logging.error(" Item is outside of date range.")
 
                     except ValueError:
                         response_object = {
@@ -266,9 +263,6 @@ def get_items():
                         }
                         db.session.rollback()
                         return jsonify(response_object), 400
-
-                if start_creation_date == None and end_creation_date == None and start_updated_date == None and end_updated_date == None:
-                    items.append(item)
 
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
