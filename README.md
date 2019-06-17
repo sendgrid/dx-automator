@@ -95,7 +95,7 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 #### Get a List of the Top 20 Issues or PRs
 
 ```bash
-source scripts/init-task-db 
+./scripts/init-task-db 
 python examples/update_rice_scores.py
 python examples/rice_sorted_list_of_issues_and_prs.py
 ```
@@ -141,7 +141,7 @@ docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
 #### Retrieve all open and unlabeled issues
 
 ```bash
-python ./examples/unlabled_issues.py
+python ./examples/unlabeled_issues.py
 ```
 
 #### Retrieve all open issues that are bugs
