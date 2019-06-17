@@ -58,8 +58,8 @@ class App extends Component {
 
   componentWillMount() {
     this.getUnlabeledIssues();
-    this.getBugs();
     this.getFollowUps();
+    this.getBugs();
     this.getCodeReviews();
     this.getSecurityIssues();
   };
@@ -111,146 +111,131 @@ class App extends Component {
         }
       }
 
-      if (num_bugs !== 0) {
-        let bug_issue_id = "bugs-issues-".concat(value);
-        if(this.state.bugs_issues[value].length !== 0){
-          bug_issue_repos.push(
-            <a key={index.toString().concat('-issue')} className="link" href={"#".concat(bug_issue_id)}>
-            {value}: {this.state.bugs_issues[value].length}
-            <br></br>
-            </a>
-          );
-          items.push(
-            <div key={(index*index + 3*index + 4*all_repos.length).toString().concat('-issue')}>
-            <h2>Bugs Issues - {value}</h2>
-            <div id={bug_issue_id} className="Body" key={(index*index + 2*index + 3*all_repos.length).toString().concat('-issue')}>
-              <IssuesList issues={this.state.bugs_issues[value]}/>
-            </div>
-            </div>
-          );
-        }
+      let bug_issue_id = "bugs-issues-".concat(value);
+      if(this.state.bugs_issues[value].length !== 0){
+        bug_issue_repos.push(
+          <a key={index.toString().concat('-issue')} className="link" href={"#".concat(bug_issue_id)}>
+          {value}: {this.state.bugs_issues[value].length}
+          <br></br>
+          </a>
+        );
+        items.push(
+          <div key={(index*index + 3*index + 4*all_repos.length).toString().concat('-issue')}>
+          <h2>Bugs Issues - {value}</h2>
+          <div id={bug_issue_id} className="Body" key={(index*index + 2*index + 3*all_repos.length).toString().concat('-issue')}>
+            <IssuesList issues={this.state.bugs_issues[value]}/>
+          </div>
+          </div>
+        );
       }
 
-      if (num_bugs !== 0) {
-        let bug_pr_id = "bugs-prs-".concat(value);
-        if(this.state.bugs_prs[value].length !== 0){
-          bug_pr_repos.push(
-            <a key={index.toString().concat('-pr')} className="link" href={"#".concat(bug_pr_id)}>
-            {value}: {this.state.bugs_prs[value].length}
-            <br></br>
-            </a>
-          );
-          items.push(
-            <div key={(index*index + 3*index + 4*all_repos.length).toString().concat('-pr')}>
-            <h2>Bugs PRs - {value}</h2>
-            <div id={bug_pr_id} className="Body" key={index*index + 2*index + 3*all_repos.length}>
-              <IssuesList issues={this.state.bugs_prs[value]}/>
-            </div>
-            </div>
-          );
-        }
+      let bug_pr_id = "bugs-prs-".concat(value);
+      if(this.state.bugs_prs[value].length !== 0){
+        bug_pr_repos.push(
+          <a key={index.toString().concat('-pr')} className="link" href={"#".concat(bug_pr_id)}>
+          {value}: {this.state.bugs_prs[value].length}
+          <br></br>
+          </a>
+        );
+        items.push(
+          <div key={(index*index + 3*index + 4*all_repos.length).toString().concat('-pr')}>
+          <h2>Bugs PRs - {value}</h2>
+          <div id={bug_pr_id} className="Body" key={index*index + 2*index + 3*all_repos.length}>
+            <IssuesList issues={this.state.bugs_prs[value]}/>
+          </div>
+          </div>
+        );
       }
 
-      if (num_followups !== 0) {
-        let follow_issue_id = "followup-issues-".concat(value);
-        if(this.state.followups_issues[value].length !== 0){
-          followup_issue_repos.push(
-            <a key={index.toString().concat('-issue')} className="link" href={"#".concat(follow_issue_id)}>
-            {value}: {this.state.followups_issues[value].length}
-            <br></br>
-            </a>
-          );
-          items.push(
-            <div key={(index*index + 4*index + 5*all_repos.length).toString().concat('-issue')}>
-            <h2>Follow Ups Issues - {value}</h2>
-            <div id={follow_issue_id} className="Body" key={(index*index + 3*index + 4*all_repos.length).toString().concat('-issue')}>
-              <IssuesList issues={this.state.followups_issues[value]}/>
-            </div>
-            </div>
-          );
-        }
+      let follow_issue_id = "followup-issues-".concat(value);
+      if(this.state.followups_issues[value].length !== 0){
+        followup_issue_repos.push(
+          <a key={index.toString().concat('-issue')} className="link" href={"#".concat(follow_issue_id)}>
+          {value}: {this.state.followups_issues[value].length}
+          <br></br>
+          </a>
+        );
+        items.push(
+          <div key={(index*index + 4*index + 5*all_repos.length).toString().concat('-issue')}>
+          <h2>Follow Ups Issues - {value}</h2>
+          <div id={follow_issue_id} className="Body" key={(index*index + 3*index + 4*all_repos.length).toString().concat('-issue')}>
+            <IssuesList issues={this.state.followups_issues[value]}/>
+          </div>
+          </div>
+        );
       }
 
-      if (num_followups !== 0) {
-        let follow_pr_id = "followup-prs-".concat(value);
-        if(this.state.followups_prs[value].length !== 0){
-          followup_pr_repos.push(
-            <a key={index.toString().concat('-pr')} className="link" href={"#".concat(follow_pr_id)}>
-            {value}: {this.state.followups_prs[value].length}
-            <br></br>
-            </a>
-          );
-          items.push(
-            <div key={(index*index + 4*index + 5*all_repos.length).toString().concat('-pr')}>
-            <h2>Follow Ups Prs - {value}</h2>
-            <div id={follow_pr_id} className="Body" key={(index*index + 3*index + 4*all_repos.length).toString().concat('-pr')}>
-              <IssuesList issues={this.state.followups_prs[value]}/>
-            </div>
-            </div>
-          );
-        }
+      let follow_pr_id = "followup-prs-".concat(value);
+      if(this.state.followups_prs[value].length !== 0){
+        followup_pr_repos.push(
+          <a key={index.toString().concat('-pr')} className="link" href={"#".concat(follow_pr_id)}>
+          {value}: {this.state.followups_prs[value].length}
+          <br></br>
+          </a>
+        );
+        items.push(
+          <div key={(index*index + 4*index + 5*all_repos.length).toString().concat('-pr')}>
+          <h2>Follow Ups Prs - {value}</h2>
+          <div id={follow_pr_id} className="Body" key={(index*index + 3*index + 4*all_repos.length).toString().concat('-pr')}>
+            <IssuesList issues={this.state.followups_prs[value]}/>
+          </div>
+          </div>
+        );
       }
 
-      if (num_codereviews !== 0) {
-        let code_review_id = "coderev-".concat(value);
-        if(this.state.codereviews[value].length !== 0){
-          code_review_repos.push(
-            <a key={index} className="link" href={"#".concat(code_review_id)}>
-            {value}: {this.state.codereviews[value].length}
-            <br></br>
-            </a>
-          );
-          items.push(
-            <div key={index*index + 5*index + 6*all_repos.length}>
-            <h2>Code Review Needed - {value}</h2>
-            <div id={code_review_id} className="Body" key={index*index + 4*index + 5*all_repos.length}>
-              <IssuesList issues={this.state.codereviews[value]}/>
-            </div>
-            </div>
-          );
-        }
+      let code_review_id = "coderev-".concat(value);
+      if(this.state.codereviews[value].length !== 0){
+        code_review_repos.push(
+          <a key={index} className="link" href={"#".concat(code_review_id)}>
+          {value}: {this.state.codereviews[value].length}
+          <br></br>
+          </a>
+        );
+        items.push(
+          <div key={index*index + 5*index + 6*all_repos.length}>
+          <h2>Code Review Needed - {value}</h2>
+          <div id={code_review_id} className="Body" key={index*index + 4*index + 5*all_repos.length}>
+            <IssuesList issues={this.state.codereviews[value]}/>
+          </div>
+          </div>
+        );
       }
 
-      if (num_securityiss !== 0) {
-        let securityiss_issue_id = "securityiss-issues-".concat(value);
-        if(this.state.securityiss_issues[value].length !== 0){
-          securityiss_issue_repos.push(
-            <a key={index.toString().concat('-issue')} className="link" href={"#".concat(securityiss_issue_id)}>
-            {value}: {this.state.securityiss_issues[value].length}
-            <br></br>
-            </a>
-          );
-          items.push(
-            <div key={(index*index + 6*index + 7*all_repos.length).toString().concat('-issue')}>
-            <h2>Security Issues - {value}</h2>
-            <div id={securityiss_issue_id} className="Body" key={(index*index + 5*index + 6*all_repos.length).toString().concat('-issue')}>
-              <IssuesList issues={this.state.securityiss_issues[value]}/>
-            </div>
-            </div>
-          );
-        }
+      let securityiss_issue_id = "securityiss-issues-".concat(value);
+      if(this.state.securityiss_issues[value].length !== 0){
+        securityiss_issue_repos.push(
+          <a key={index.toString().concat('-issue')} className="link" href={"#".concat(securityiss_issue_id)}>
+          {value}: {this.state.securityiss_issues[value].length}
+          <br></br>
+          </a>
+        );
+        items.push(
+          <div key={(index*index + 6*index + 7*all_repos.length).toString().concat('-issue')}>
+          <h2>Security Issues - {value}</h2>
+          <div id={securityiss_issue_id} className="Body" key={(index*index + 5*index + 6*all_repos.length).toString().concat('-issue')}>
+            <IssuesList issues={this.state.securityiss_issues[value]}/>
+          </div>
+          </div>
+        );
       }
 
-      if (num_securityiss !== 0) {
-        let securityiss_pr_id = "securityiss-prs-".concat(value);
-        if(this.state.securityiss_prs[value].length !== 0){
-          securityiss_pr_repos.push(
-            <a key={index.toString().concat('-pr')} className="link" href={"#".concat(securityiss_pr_id)}>
-            {value}: {this.state.securityiss_prs[value].length}
-            <br></br>
-            </a>
-          );
-          items.push(
-            <div key={(index*index + 6*index + 7*all_repos.length).toString().concat('-pr')}>
-            <h2>Security PRs - {value}</h2>
-            <div id={securityiss_pr_id} className="Body" key={(index*index + 5*index + 6*all_repos.length).toString().concat('-pr')}>
-              <IssuesList issues={this.state.securityiss_prs[value]}/>
-            </div>
-            </div>
-          );
-        }
+      let securityiss_pr_id = "securityiss-prs-".concat(value);
+      if(this.state.securityiss_prs[value].length !== 0){
+        securityiss_pr_repos.push(
+          <a key={index.toString().concat('-pr')} className="link" href={"#".concat(securityiss_pr_id)}>
+          {value}: {this.state.securityiss_prs[value].length}
+          <br></br>
+          </a>
+        );
+        items.push(
+          <div key={(index*index + 6*index + 7*all_repos.length).toString().concat('-pr')}>
+          <h2>Security PRs - {value}</h2>
+          <div id={securityiss_pr_id} className="Body" key={(index*index + 5*index + 6*all_repos.length).toString().concat('-pr')}>
+            <IssuesList issues={this.state.securityiss_prs[value]}/>
+          </div>
+          </div>
+        );
       }
-
     }
 
     return (<div>
@@ -308,12 +293,13 @@ class App extends Component {
             </div>);
   }
 
-  getUnlabeledIssues(){
+  getUnlabeledIssues() {
     let unlabeledIssues = this.createDictofReposWithEmptyArrays(all_repos);
-    for (const [index, value] of all_repos.entries()) {
+
+    for (const repo of all_repos) {
       axios.get('http://192.168.99.100/github/items',{
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'issues',
           states: ['OPEN'],
           limit: ['first', '100'],
@@ -325,7 +311,7 @@ class App extends Component {
               res.data.splice(i, 1);
             }
         }
-        unlabeledIssues[value] = res.data;
+        unlabeledIssues[repo] = res.data;
         this.setState({unlabeled_issues: unlabeledIssues});
       })
       .catch((err) => {
@@ -334,20 +320,21 @@ class App extends Component {
     }
   }
 
-  getBugs(){
+  getBugs() {
     let issueBugs = this.createDictofReposWithEmptyArrays(all_repos);
     let prBugs = this.createDictofReposWithEmptyArrays(all_repos);
-    for (const [index, value] of all_repos.entries()) {
+
+    for (const repo of all_repos) {
       axios.get('http://192.168.99.100/github/items',{
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'issues',
           labels: ['type: bug'],
           states: ['OPEN'],
           limit: ['first', '100'],
       }})
       .then((res) => {
-        issueBugs[value] = res.data;
+        issueBugs[repo] = res.data;
         this.setState({bugs_issues: issueBugs});
       })
       .catch((err) => {
@@ -356,14 +343,14 @@ class App extends Component {
 
       axios.get('http://192.168.99.100/github/items',{
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'pull_requests',
           labels: ['type: bug'],
           states: ['OPEN'],
           limit: ['first', '100'],
       }})
       .then((res) => {
-        prBugs[value] = res.data;
+        prBugs[repo] = res.data;
         this.setState({bugs_prs: prBugs});
       })
       .catch((err) => {
@@ -373,61 +360,37 @@ class App extends Component {
   }
 
   getFollowUps() {
-    let issueFollowUps = this.createDictofReposWithEmptyArrays(all_repos);
-    let prFollowUps = this.createDictofReposWithEmptyArrays(all_repos);
-    const list_of_maintainers = [
-      'aroach',
-      'thinkingserious',
-      'kylearoberts',
-      'childish-sambino',
-      'SendGridDX',
-      'codecov'
-    ];
-    for (const [index, value] of all_repos.entries()) {
-      axios.get('http://192.168.99.100/github/items',{
+    let followups_issues = this.createDictofReposWithEmptyArrays(all_repos);
+    let followups_prs = this.createDictofReposWithEmptyArrays(all_repos);
+
+    for (const repo of all_repos) {
+      axios.get('http://192.168.99.100/github/items', {
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'issues',
           states: ['OPEN'],
-          filter: "all",
           limit: ['first', '100']
       }})
-      .then((res) => {
-        let temp1 = {0: []};
-        temp1[0] = res.data;
-        let temp = [];
-        for (const [index2, value2] of temp1[0].entries()){
-          if (value2['last_comment_author'] && !list_of_maintainers.includes(value2['last_comment_author'])){
-            temp.push(value2);
-          }
-        }
-        issueFollowUps[value] = temp;
-        this.setState({followups_issues: issueFollowUps});
+      .then(res => {
+        followups_issues[repo] = res.data.filter(item => item['follow_up_needed']);
+        this.setState({followups_issues});
       })
-      .catch((err) => {
+      .catch(err => {
           console.log(err);
       });
 
-      axios.get('http://192.168.99.100/github/items',{
+      axios.get('http://192.168.99.100/github/items', {
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'pull_requests',
           states: ['OPEN'],
           limit: ['first', '100']
       }})
-      .then((res) => {
-        let temp1 = {0: []};
-        temp1[0] = res.data;
-        let temp = [];
-        for (const [index2, value2] of temp1[0].entries()){
-          if (value2['last_comment_author'] && !list_of_maintainers.includes(value2['last_comment_author'])){
-            temp.push(value2);
-          }
-        }
-        prFollowUps[value] = temp;
-        this.setState({followups_prs: prFollowUps});
+      .then(res => {
+        followups_prs[repo] = res.data.filter(item => item['follow_up_needed']);
+          this.setState({followups_prs});
       })
-      .catch((err) => {
+      .catch(err => {
           console.log(err);
       });
     }
@@ -435,17 +398,18 @@ class App extends Component {
 
   getCodeReviews() {
     let codeReviews = this.createDictofReposWithEmptyArrays(all_repos);
-    for (const [index, value] of all_repos.entries()) {
+
+    for (const repo of all_repos) {
       axios.get('http://192.168.99.100/github/items',{
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'pull_requests',
           labels: ['status: code review request'],
           states: ['OPEN'],
           limit: ['first', '100'],
       }})
       .then((res) => {
-        codeReviews[value] = res.data;
+        codeReviews[repo] = res.data;
         this.setState({codereviews: codeReviews});
       })
       .catch((err) => {
@@ -457,17 +421,18 @@ class App extends Component {
   getSecurityIssues() {
     let issueSecurity = this.createDictofReposWithEmptyArrays(all_repos);
     let prSecurity = this.createDictofReposWithEmptyArrays(all_repos);
-    for (const [index, value] of all_repos.entries()) {
+
+    for (const repo of all_repos) {
       axios.get('http://192.168.99.100/github/items',{
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'issues',
           labels: ['type: security'],
           states: ['OPEN'],
           limit: ['first', '100'],
       }})
       .then((res) => {
-        issueSecurity[value] = res.data;
+        issueSecurity[repo] = res.data;
         this.setState({securityiss_issues: issueSecurity});
       })
       .catch((err) => {
@@ -476,14 +441,14 @@ class App extends Component {
 
       axios.get('http://192.168.99.100/github/items',{
         params: {
-          repo: value,
+          repo: repo,
           item_type: 'pull_requests',
           labels: ['type: security'],
           states: ['OPEN'],
           limit: ['first', '100'],
       }})
       .then((res) => {
-        prSecurity[value] = res.data;
+        prSecurity[repo] = res.data;
         this.setState({securityiss_prs: prSecurity});
       })
       .catch((err) => {
