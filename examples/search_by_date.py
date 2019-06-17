@@ -8,22 +8,24 @@ def get_items(repo, item_type):
     query_params = {
         "repo":repo,
         "item_type":item_type,
-        "labels[]":['type: security'],
+        "labels[]":['type: bug'],
         "states[]":['OPEN'],
+        "start_creation_date": "2018-01-01",
+        "end_creation_date": "2019-01-01",
         "limit[]":['first', '100']
     }
     response = client.github.items.get(query_params=query_params)
     items = json.loads(response.body)
     return items
 
-total_security_issues = 0
+total_bugs = 0
 for repo in all_repos:
     issues = get_items(repo, 'issues')
     prs = get_items(repo, 'pull_requests')
-    items = prs + issues
+    items = issues + prs
     for item in items:
         text = "{} , {}".format(item['url'], item['createdAt'])
         print(text)
-        total_security_issues = total_security_issues + 1
+        total_bugs = total_bugs + 1
 
-print("There are a total of {} open security issues needing attention across all repos".format(total_security_issues))
+print("There are a total of {} open bugs needing assistance across all repos".format(total_bugs))

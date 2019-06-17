@@ -2,36 +2,7 @@ from python_http_client import Client
 import os
 import json
 from collections import defaultdict
-
-all_repos = [
-    'sendgrid-nodejs',
-    'sendgrid-csharp',
-    'sendgrid-php',
-    'sendgrid-python',
-    'sendgrid-java',
-    'sendgrid-go',
-    'sendgrid-ruby',
-    'smtpapi-nodejs',
-    'smtpapi-go',
-    'smtpapi-python',
-    'smtpapi-php',
-    'smtpapi-csharp',
-    'smtpapi-java',
-    'smtpapi-ruby',
-    'sendgrid-oai',
-    'open-source-library-data-collector',
-    'python-http-client',
-    'php-http-client',
-    'csharp-http-client',
-    'java-http-client',
-    'ruby-http-client',
-    'rest',
-    'nodejs-http-client',
-    'dx-automator',
-    'dx-mobile',
-    'ui-components',
-    'docs'
-]
+from repos import all_repos
 
 def get_prs(repo):
     client = Client(host="http://{}".format(os.environ.get('DX_IP')))

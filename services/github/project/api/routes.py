@@ -3,6 +3,7 @@ import requests
 import sys
 import json
 from .graphql import GraphQL
+import datetime
 
 github_blueprint = Blueprint('github', __name__)
 
@@ -38,6 +39,11 @@ def get_reviewers(reviewers, author):
         if (reviewer.get('author').get('login') != author) and (reviewer.get('author').get('login') not in EXCLUSIONS):
             logins.append(reviewer.get('author').get('login'))
     return list(set(logins))
+
+# all datetime strs
+def check_between_dates(startdate, enddate, itemdate):
+    return startdate <= itemdate <= enddate
+
 
 @github_blueprint.route('/github/ping', methods=['GET'])
 def ping_pong():
@@ -125,6 +131,10 @@ def get_items():
     limit = (limit[0], int(limit[1]))
     item_type = request.args.get('item_type', type = str)
     repo = request.args.get('repo', type = str)
+    start_creation_date = request.args.get('start_creation_date', type = str)
+    end_creation_date = request.args.get('end_creation_date', type = str)
+    start_updated_date = request.args.get('start_updated_date', type = str)
+    end_updated_date = request.args.get('end_updated_date', type = str)
     list_of_labels = request.args.getlist('labels[]', type = str)
     for label in list_of_labels:
         if label:
@@ -200,7 +210,30 @@ def get_items():
                     item['reviewer_points'] = 0
                 item['num_reactions'] = r.get('reactions').get('totalCount') or 0
                 item['title'] = r.get('title')
-                items.append(item)
+                # check if date is between start and end date
+                if start_creation_date != None and end_creation_date != None:
+                    try:
+                        item_date = datetime.datetime.strptime(item['createdAt'].split('T')[0], "%Y-%m-%d")
+                        start_date = datetime.datetime.strptime(start_creation_date, "%Y-%m-%d")
+                        end_date = datetime.datetime.strptime(end_creation_date, "%Y-%m-%d")
+
+                        if check_between_dates(start_date, end_date, item_date):
+                            items.append(item)
+                    except:
+                        print("date format error, should be YYYY-MM-DD")
+                elif start_updated_date != None and end_updated_date != None:
+                    try:
+                        item_date = datetime.datetime.strptime(item['updatedAt'].split('T')[0], "%Y-%m-%d")
+                        start_date = datetime.datetime.strptime(start_updated_date, "%Y-%m-%d")
+                        end_date = datetime.datetime.strptime(end_updated_date, "%Y-%m-%d")
+
+                        if check_between_dates(start_date, end_date, item_date):
+                            items.append(item)
+                    except:
+                        print("date format error, should be YYYY-MM-DD")
+                else:
+                    items.append(item)
+
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page == True:
                 end_cursor = result.get('pageInfo').get('endCursor')
