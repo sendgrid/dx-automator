@@ -8,6 +8,7 @@ MAINTAINERS = {
     'thinkingserious',
     'kylearoberts',
     'childish-sambino',
+    'krantikt',
     'SendGridDX',
     'codecov'
 }
@@ -51,7 +52,7 @@ def is_follow_up_needed(item):
         last_comment_author = get_author(last_comment)
         thumbs_up_logins = [reaction.get('user').get('login')
                             for reaction in last_comment.get('reactions').get('nodes')
-                            if reaction.get('content') == 'THUMPS_UP']
+                            if reaction.get('content') == 'THUMBS_UP']
         follow_up_needed = bool(last_comment_author not in MAINTAINERS and
                                 not set(thumbs_up_logins) & MAINTAINERS)
 
