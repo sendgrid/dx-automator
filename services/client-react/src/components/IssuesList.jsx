@@ -10,8 +10,8 @@ const IssuesList = (props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        { props.issues.map((issue) =>{
-          return(
+        {props.issues.map((issue) => {
+          return (
             <TableRow key={props.id + '-' + issue.url}>
               <TableCell className="url"><a href={issue.url}>{issue.url}</a></TableCell>
             </TableRow>

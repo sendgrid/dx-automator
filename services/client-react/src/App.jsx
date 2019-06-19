@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import axios from "axios";
 import Header from "./components/Header";
 import IssuesList from "./components/IssuesList";
-import { Divider } from "@sendgrid/ui-components";
+import {Divider} from "@sendgrid/ui-components";
 
 const ALL_REPOS = [
   'sendgrid-nodejs',
@@ -271,20 +271,21 @@ class App extends Component {
     const unlabeled_issues = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
 
     for (const repo of ALL_REPOS) {
-      axios.get(GITHUB_URL,{
+      axios.get(GITHUB_URL, {
         params: {
           repo: repo,
           item_type: 'issues',
           states: ['OPEN'],
           limit: ['first', '100'],
-      }})
-      .then(res => {
-        unlabeled_issues[repo] = res.data.filter(item => item.labels.length === 0);
-        this.setState({unlabeled_issues});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          unlabeled_issues[repo] = res.data.filter(item => item.labels.length === 0);
+          this.setState({ unlabeled_issues });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
     }
   }
 
@@ -293,37 +294,39 @@ class App extends Component {
     const bugs_prs = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
 
     for (const repo of ALL_REPOS) {
-      axios.get(GITHUB_URL,{
+      axios.get(GITHUB_URL, {
         params: {
           repo: repo,
           item_type: 'issues',
           labels: ['type: bug'],
           states: ['OPEN'],
           limit: ['first', '100'],
-      }})
-      .then(res => {
-        bugs_issues[repo] = res.data;
-        this.setState({bugs_issues});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          bugs_issues[repo] = res.data;
+          this.setState({ bugs_issues });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
 
-      axios.get(GITHUB_URL,{
+      axios.get(GITHUB_URL, {
         params: {
           repo: repo,
           item_type: 'pull_requests',
           labels: ['type: bug'],
           states: ['OPEN'],
           limit: ['first', '100'],
-      }})
-      .then(res => {
-        bugs_prs[repo] = res.data;
-        this.setState({bugs_prs});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          bugs_prs[repo] = res.data;
+          this.setState({ bugs_prs });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
     }
   }
 
@@ -338,14 +341,15 @@ class App extends Component {
           item_type: 'issues',
           states: ['OPEN'],
           limit: ['first', '100']
-      }})
-      .then(res => {
-        followups_issues[repo] = res.data.filter(item => item['follow_up_needed']);
-        this.setState({followups_issues});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          followups_issues[repo] = res.data.filter(item => item['follow_up_needed']);
+          this.setState({ followups_issues });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
 
       axios.get(GITHUB_URL, {
         params: {
@@ -353,14 +357,15 @@ class App extends Component {
           item_type: 'pull_requests',
           states: ['OPEN'],
           limit: ['first', '100']
-      }})
-      .then(res => {
-        followups_prs[repo] = res.data.filter(item => item['follow_up_needed']);
-        this.setState({followups_prs});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          followups_prs[repo] = res.data.filter(item => item['follow_up_needed']);
+          this.setState({ followups_prs });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
     }
   }
 
@@ -368,21 +373,22 @@ class App extends Component {
     const code_reviews = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
 
     for (const repo of ALL_REPOS) {
-      axios.get(GITHUB_URL,{
+      axios.get(GITHUB_URL, {
         params: {
           repo: repo,
           item_type: 'pull_requests',
           labels: ['status: code review request'],
           states: ['OPEN'],
           limit: ['first', '100'],
-      }})
-      .then(res => {
-        code_reviews[repo] = res.data;
-        this.setState({code_reviews});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          code_reviews[repo] = res.data;
+          this.setState({ code_reviews });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
     }
   }
 
@@ -391,43 +397,45 @@ class App extends Component {
     const security_prs = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
 
     for (const repo of ALL_REPOS) {
-      axios.get(GITHUB_URL,{
+      axios.get(GITHUB_URL, {
         params: {
           repo: repo,
           item_type: 'issues',
           labels: ['type: security'],
           states: ['OPEN'],
           limit: ['first', '100'],
-      }})
-      .then(res => {
-        security_issues[repo] = res.data;
-        this.setState({security_issues});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          security_issues[repo] = res.data;
+          this.setState({ security_issues });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
 
-      axios.get(GITHUB_URL,{
+      axios.get(GITHUB_URL, {
         params: {
           repo: repo,
           item_type: 'pull_requests',
           labels: ['type: security'],
           states: ['OPEN'],
           limit: ['first', '100'],
-      }})
-      .then(res => {
-        security_prs[repo] = res.data;
-        this.setState({security_prs});
+        }
       })
-      .catch(err => {
+        .then(res => {
+          security_prs[repo] = res.data;
+          this.setState({ security_prs });
+        })
+        .catch(err => {
           console.log(err);
-      });
+        });
     }
   }
 
   createDictOfReposWithEmptyArrays(all_repos) {
     const dict_of_repos = {};
-    all_repos.forEach(function(repo) {
+    all_repos.forEach(function (repo) {
       dict_of_repos[repo] = [];
     });
     return dict_of_repos;
@@ -437,7 +445,7 @@ class App extends Component {
     return (
       <div id="app-maindiv">
         <div>
-          <Header />
+          <Header/>
         </div>
         {this.triage()}
       </div>
