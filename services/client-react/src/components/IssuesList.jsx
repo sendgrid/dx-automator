@@ -1,5 +1,5 @@
 import React from 'react';
-import {TableBody, TableCell, Table, TableHeader, TableRow, HeaderCell} from "@sendgrid/ui-components"
+import {TableBody, TableCell, Table, TableHeader, TableRow, HeaderCell} from "@sendgrid/ui-components";
 
 const IssuesList = (props) => {
   return (
@@ -12,15 +12,14 @@ const IssuesList = (props) => {
       <TableBody>
         { props.issues.map((issue) =>{
           return(
-            <TableRow>
+            <TableRow key={props.id + '-' + issue.url}>
               <TableCell className="url"><a href={issue.url}>{issue.url}</a></TableCell>
             </TableRow>
           )
         })}
       </TableBody>
     </Table>
-
-  )
+  );
 };
 
 export default IssuesList;

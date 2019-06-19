@@ -2,16 +2,17 @@ from flask import current_app
 import json
 import requests
 
+
 class GraphQL(object):
     def __init__(
-        self,
-        organization,
-        github_type,
-        repo,
-        states=None,
-        labels=None,
-        limit=['first', 100],
-        end_cursor=None):
+            self,
+            organization,
+            github_type,
+            repo,
+            states=None,
+            labels=None,
+            limit=['first', 100],
+            end_cursor=None):
         """Create a GitHub GraphQL v4 Query
 
         :param organization: Name of your GitHub organization
@@ -35,7 +36,7 @@ class GraphQL(object):
         self.limit = limit
         self.end_cursor = end_cursor
 
-        if github_type == 'pull_requests':
+        if github_type in {'pull_requests', 'pullRequests'}:
             self.github_type = 'pullRequests'
             self.review = f"""reviews(first: 10) {{
                                 nodes {{
@@ -61,7 +62,7 @@ class GraphQL(object):
             self.labels = '{}: {}, '.format('labels', json.dumps(self.labels))
         else:
             self.labels = ''
-        
+
         if self.end_cursor:
             self.end_cursor = '{}: {}'.format('after', json.dumps(self.end_cursor))
         else:
@@ -95,9 +96,17 @@ class GraphQL(object):
                                     author {{
                                         login
                                     }}
+                                    reactions(last: 100) {{
+                                        nodes {{
+                                            content
+                                            user {{
+                                                login
+                                            }}
+                                        }}
+                                    }}
                                 }}
                             }}
-                            reactions(last:100) {{
+                            reactions(last: 100) {{
                                 totalCount
                             }}
                         }}
@@ -109,7 +118,7 @@ class GraphQL(object):
                 }}
             }}
         }}"""
-    
+
     @classmethod
     def run_query(self, query):
         """Runs GraphQL query"""
