@@ -13,7 +13,7 @@ const IssuesList = (props) => {
         {props.issues.map((issue) => {
           return (
             <TableRow key={props.id + '-' + issue.url}>
-              <TableCell className="url"><a href={issue.url}>{issue.url}</a></TableCell>
+              <TableCell className="url"><a href={issue.url} target="_blank">{issue.url}</a></TableCell>
             </TableRow>
           )
         })}
