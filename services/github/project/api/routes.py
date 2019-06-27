@@ -84,7 +84,7 @@ def is_member(username):
         result, status = GraphQL.run_query(query)
         if status:
             if (result is not None and result.get('user') and
-                    result.get('user').get('organization')):
+                result.get('user').get('organization')):
                 member = True
         else:
             return "GITHUB_TOKEN may not be valid", 400
@@ -145,6 +145,7 @@ def get_items():
             limit.append(limits)
     limit = (limit[0], int(limit[1]))
     item_type = request.args.get('item_type', type=str)
+    org = request.args.get('org', type=str, default=current_app.config['GITHUB_ORG'])
     repo = request.args.get('repo', type=str)
     list_of_labels = request.args.getlist('labels[]', type=str)
     for label in list_of_labels:
@@ -161,13 +162,12 @@ def get_items():
         states.append('CLOSED')
     end_cursor = ''
     has_next_page = True
-    github_org = current_app.config['GITHUB_ORG']
     github_type = 'pullRequests' if item_type == 'pull_requests' else item_type
 
     while has_next_page:
         query = GraphQL(
-            organization=github_org,
             github_type=github_type,
+            organization=org,
             repo=repo,
             states=states,
             labels=labels,

@@ -4,15 +4,14 @@ import requests
 
 
 class GraphQL(object):
-    def __init__(
-            self,
-            organization,
-            github_type,
-            repo,
-            states=None,
-            labels=None,
-            limit=['first', 100],
-            end_cursor=None):
+    def __init__(self,
+                 organization,
+                 github_type,
+                 repo,
+                 states=None,
+                 labels=None,
+                 limit=['first', 100],
+                 end_cursor=None):
         """Create a GitHub GraphQL v4 Query
 
         :param organization: Name of your GitHub organization
@@ -70,7 +69,7 @@ class GraphQL(object):
 
         self.query = f"""query{{
             organization(login: "{self.organization}") {{
-                repository(name: {'"' + self.repo + '"'}) {{
+                repository(name: "{self.repo}") {{
                     {self.github_type}({self.limit}{self.states}{self.labels}{self.end_cursor}) {{
                         nodes {{
                             url

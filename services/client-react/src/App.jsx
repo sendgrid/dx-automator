@@ -4,32 +4,48 @@ import Header from "./components/Header";
 import IssuesList from "./components/IssuesList";
 import {Divider} from "@sendgrid/ui-components";
 
-const ALL_REPOS = [
-  'sendgrid-nodejs',
-  'sendgrid-csharp',
-  'sendgrid-php',
-  'sendgrid-python',
-  'sendgrid-java',
-  'sendgrid-go',
-  'sendgrid-ruby',
-  'smtpapi-nodejs',
-  'smtpapi-go',
-  'smtpapi-python',
-  'smtpapi-php',
-  'smtpapi-csharp',
-  'smtpapi-java',
-  'smtpapi-ruby',
-  'sendgrid-oai',
-  'open-source-library-data-collector',
-  'python-http-client',
-  'php-http-client',
-  'csharp-http-client',
-  'java-http-client',
-  'ruby-http-client',
-  'rest',
-  'nodejs-http-client',
-  'dx-automator'
-];
+const ORG_REPO_MAP = {
+  'sendgrid': [
+    'sendgrid-nodejs',
+    'sendgrid-csharp',
+    'sendgrid-php',
+    'sendgrid-python',
+    'sendgrid-java',
+    'sendgrid-go',
+    'sendgrid-ruby',
+    'smtpapi-nodejs',
+    'smtpapi-go',
+    'smtpapi-python',
+    'smtpapi-php',
+    'smtpapi-csharp',
+    'smtpapi-java',
+    'smtpapi-ruby',
+    'sendgrid-oai',
+    'open-source-library-data-collector',
+    'python-http-client',
+    'php-http-client',
+    'csharp-http-client',
+    'java-http-client',
+    'ruby-http-client',
+    'rest',
+    'nodejs-http-client',
+    'dx-automator',
+  ],
+  'twilio': [
+    'twilio-node',
+    'twilio-csharp',
+    'twilio-php',
+    'twilio-python',
+    'twilio-java',
+    'twilio-ruby',
+    'twilio-cli',
+    'twilio-cli-core',
+  ]
+};
+
+const ORG_REPO_LIST = [].concat(...Object.entries(ORG_REPO_MAP)
+  .map(([org, repos]) => repos
+    .map(repo => ({ org, repo, fullName: `${org}/${repo}` }))));
 
 const GITHUB_URL = 'http://192.168.99.100/github/items';
 
@@ -38,14 +54,14 @@ class App extends Component {
     super();
 
     this.state = {
-      unlabeled_issues: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
-      bugs_issues: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
-      bugs_prs: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
-      followups_issues: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
-      followups_prs: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
-      code_reviews: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
-      security_issues: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
-      security_prs: this.createDictOfReposWithEmptyArrays(ALL_REPOS),
+      unlabeled_issues: this.createDictOfReposWithEmptyArrays(),
+      bugs_issues: this.createDictOfReposWithEmptyArrays(),
+      bugs_prs: this.createDictOfReposWithEmptyArrays(),
+      followups_issues: this.createDictOfReposWithEmptyArrays(),
+      followups_prs: this.createDictOfReposWithEmptyArrays(),
+      code_reviews: this.createDictOfReposWithEmptyArrays(),
+      security_issues: this.createDictOfReposWithEmptyArrays(),
+      security_prs: this.createDictOfReposWithEmptyArrays(),
     };
   }
 
@@ -73,7 +89,7 @@ class App extends Component {
     const security_issue_repos = [];
     const security_pr_repos = [];
 
-    for (const repo of ALL_REPOS) {
+    for (const { fullName: repo } of ORG_REPO_LIST) {
       num_unlabeled += this.state.unlabeled_issues[repo].length;
       num_bugs += this.state.bugs_issues[repo].length + this.state.bugs_prs[repo].length;
       num_followups += this.state.followups_issues[repo].length + this.state.followups_prs[repo].length;
@@ -106,7 +122,7 @@ class App extends Component {
         );
         items.push(
           <div id={bug_issue_id} key={bug_issue_id}>
-            <h2>Bugs Issues - {repo}</h2>
+            <h2>Bug Issues - {repo}</h2>
             <IssuesList id={bug_issue_id} issues={this.state.bugs_issues[repo]}/>
           </div>
         );
@@ -122,7 +138,7 @@ class App extends Component {
         );
         items.push(
           <div id={bug_pr_id} key={bug_pr_id}>
-            <h2>Bugs PRs - {repo}</h2>
+            <h2>Bug PRs - {repo}</h2>
             <IssuesList id={bug_pr_id} issues={this.state.bugs_prs[repo]}/>
           </div>
         );
@@ -138,7 +154,7 @@ class App extends Component {
         );
         items.push(
           <div id={follow_issue_id} key={follow_issue_id}>
-            <h2>Follow Ups Issues - {repo}</h2>
+            <h2>Follow Up Issues - {repo}</h2>
             <IssuesList id={follow_issue_id} issues={this.state.followups_issues[repo]}/>
           </div>
         );
@@ -154,7 +170,7 @@ class App extends Component {
         );
         items.push(
           <div id={follow_pr_id} key={follow_pr_id}>
-            <h2>Follow Ups Prs - {repo}</h2>
+            <h2>Follow Up PRs - {repo}</h2>
             <IssuesList id={follow_pr_id} issues={this.state.followups_prs[repo]}/>
           </div>
         );
@@ -268,11 +284,12 @@ class App extends Component {
   }
 
   getUnlabeledIssues() {
-    const unlabeled_issues = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
+    const unlabeled_issues = this.createDictOfReposWithEmptyArrays();
 
-    for (const repo of ALL_REPOS) {
+    for (const { org, repo, fullName } of ORG_REPO_LIST) {
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'issues',
           states: ['OPEN'],
@@ -280,7 +297,7 @@ class App extends Component {
         }
       })
         .then(res => {
-          unlabeled_issues[repo] = res.data.filter(item => item.labels.length === 0);
+          unlabeled_issues[fullName] = res.data.filter(item => item.labels.length === 0);
           this.setState({ unlabeled_issues });
         })
         .catch(err => {
@@ -290,12 +307,13 @@ class App extends Component {
   }
 
   getBugs() {
-    const bugs_issues = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
-    const bugs_prs = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
+    const bugs_issues = this.createDictOfReposWithEmptyArrays();
+    const bugs_prs = this.createDictOfReposWithEmptyArrays();
 
-    for (const repo of ALL_REPOS) {
+    for (const { org, repo, fullName } of ORG_REPO_LIST) {
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'issues',
           labels: ['type: bug'],
@@ -304,7 +322,7 @@ class App extends Component {
         }
       })
         .then(res => {
-          bugs_issues[repo] = res.data;
+          bugs_issues[fullName] = res.data;
           this.setState({ bugs_issues });
         })
         .catch(err => {
@@ -313,6 +331,7 @@ class App extends Component {
 
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'pull_requests',
           labels: ['type: bug'],
@@ -321,7 +340,7 @@ class App extends Component {
         }
       })
         .then(res => {
-          bugs_prs[repo] = res.data;
+          bugs_prs[fullName] = res.data;
           this.setState({ bugs_prs });
         })
         .catch(err => {
@@ -331,20 +350,21 @@ class App extends Component {
   }
 
   getFollowUps() {
-    const followups_issues = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
-    const followups_prs = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
+    const followups_issues = this.createDictOfReposWithEmptyArrays();
+    const followups_prs = this.createDictOfReposWithEmptyArrays();
 
-    for (const repo of ALL_REPOS) {
+    for (const { org, repo, fullName } of ORG_REPO_LIST) {
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'issues',
           states: ['OPEN'],
-          limit: ['first', '100']
+          limit: ['first', '100'],
         }
       })
         .then(res => {
-          followups_issues[repo] = res.data.filter(item => item['follow_up_needed']);
+          followups_issues[fullName] = res.data.filter(item => item['follow_up_needed']);
           this.setState({ followups_issues });
         })
         .catch(err => {
@@ -353,14 +373,15 @@ class App extends Component {
 
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'pull_requests',
           states: ['OPEN'],
-          limit: ['first', '100']
+          limit: ['first', '100'],
         }
       })
         .then(res => {
-          followups_prs[repo] = res.data.filter(item => item['follow_up_needed']);
+          followups_prs[fullName] = res.data.filter(item => item['follow_up_needed']);
           this.setState({ followups_prs });
         })
         .catch(err => {
@@ -370,11 +391,12 @@ class App extends Component {
   }
 
   getCodeReviews() {
-    const code_reviews = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
+    const code_reviews = this.createDictOfReposWithEmptyArrays();
 
-    for (const repo of ALL_REPOS) {
+    for (const { org, repo, fullName } of ORG_REPO_LIST) {
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'pull_requests',
           labels: ['status: code review request'],
@@ -383,7 +405,7 @@ class App extends Component {
         }
       })
         .then(res => {
-          code_reviews[repo] = res.data;
+          code_reviews[fullName] = res.data;
           this.setState({ code_reviews });
         })
         .catch(err => {
@@ -393,12 +415,13 @@ class App extends Component {
   }
 
   getSecurityIssues() {
-    const security_issues = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
-    const security_prs = this.createDictOfReposWithEmptyArrays(ALL_REPOS);
+    const security_issues = this.createDictOfReposWithEmptyArrays();
+    const security_prs = this.createDictOfReposWithEmptyArrays();
 
-    for (const repo of ALL_REPOS) {
+    for (const { org, repo, fullName } of ORG_REPO_LIST) {
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'issues',
           labels: ['type: security'],
@@ -407,7 +430,7 @@ class App extends Component {
         }
       })
         .then(res => {
-          security_issues[repo] = res.data;
+          security_issues[fullName] = res.data;
           this.setState({ security_issues });
         })
         .catch(err => {
@@ -416,6 +439,7 @@ class App extends Component {
 
       axios.get(GITHUB_URL, {
         params: {
+          org: org,
           repo: repo,
           item_type: 'pull_requests',
           labels: ['type: security'],
@@ -424,7 +448,7 @@ class App extends Component {
         }
       })
         .then(res => {
-          security_prs[repo] = res.data;
+          security_prs[fullName] = res.data;
           this.setState({ security_prs });
         })
         .catch(err => {
@@ -433,12 +457,9 @@ class App extends Component {
     }
   }
 
-  createDictOfReposWithEmptyArrays(all_repos) {
-    const dict_of_repos = {};
-    all_repos.forEach(function (repo) {
-      dict_of_repos[repo] = [];
-    });
-    return dict_of_repos;
+  createDictOfReposWithEmptyArrays() {
+    return Object.assign(...ORG_REPO_LIST
+      .map(({ fullName }) => ({ [fullName]: [] })));
   }
 
   render() {
