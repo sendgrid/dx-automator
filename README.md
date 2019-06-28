@@ -2,11 +2,7 @@
 
 This tool is intended to help make managing multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams.
 
-We will deploy the code to pypi once the MVP is ready. Thank you for your support!
-
-# Announcements
-
-**NEW:** If you're a software engineer who is passionate about #DeveloperExperience and/or #OpenSource, [this is an incredible opportunity to join our #DX team](https://sendgrid.com/careers/role/1421152/?gh_jid=1421152) as a Developer Experience Engineer and work with [@thinkingserious](https://github.com/thinkingserious) and [@aroach](https://github.com/aroach)! Tell your friends :)
+We will deploy the code to pypi and create an initial release once the MVP is ready. Thank you for your support!
 
 ## Contributing
 Everyone who participates in our repo is expected to comply with our [Code of Conduct](https://github.com/sendgrid/dx-automator/blob/development/CODE_OF_CONDUCT.md).
@@ -18,6 +14,7 @@ We believe in open source and want to give credit where it's due. We used an ama
 
 ## Prerequisites
 
+* Virtual Box
 * Docker
 
 ## Usage - Local
@@ -92,14 +89,6 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 
 ### Admin Commands
 
-#### Get a List of the Top 20 Issues or PRs
-
-```bash
-./scripts/init-task-db 
-python examples/update_rice_scores.py
-python examples/rice_sorted_list_of_issues_and_prs.py
-```
-
 #### Restart a Particular Service
 
 ```bash
@@ -137,6 +126,14 @@ docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
 ```
 
 ### Examples
+
+#### Get a List of the Top 20 Issues or PRs
+
+```bash
+./scripts/init-task-db 
+python examples/update_rice_scores.py
+python examples/rice_sorted_list_of_issues_and_prs.py
+```
 
 #### Retrieve all open and unlabeled issues
 
