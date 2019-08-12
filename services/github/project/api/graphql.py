@@ -65,7 +65,7 @@ class GraphQL(object):
         if self.end_cursor:
             self.end_cursor = '{}: {}'.format('after', json.dumps(self.end_cursor))
         else:
-            self.end_cursor = '{}: {}'.format('after', '')
+            self.end_cursor = ''
 
         self.query = f"""query{{
             organization(login: "{self.organization}") {{
@@ -120,6 +120,7 @@ class GraphQL(object):
 
     @classmethod
     def run_query(self, query):
+        print(query)
         """Runs GraphQL query"""
         url = "https://api.github.com/graphql"
         github_token = current_app.config['GITHUB_TOKEN']

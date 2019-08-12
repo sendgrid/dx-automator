@@ -94,9 +94,12 @@ temp.json
 
 awscli-bundle*
 
+# VS Code
 .DS_Store
 .vscode
+.history
 
 node_modules
 alchemydumps
 tasks-db-backup.*
+*.csv

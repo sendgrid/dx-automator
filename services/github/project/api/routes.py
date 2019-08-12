@@ -117,12 +117,11 @@ def get_all_members():
                     }}
                 }}
             }}
-            }}"""
+        }}"""
         result, status = GraphQL.run_query(query)
         if not status:
             return "GITHUB_TOKEN may not be valid", 400
         elif result:
-            print(result)
             result = result.get('organization').get('members')
             for member in result.get('nodes'):
                 members.append(member.get('login'))
@@ -214,3 +213,54 @@ def get_items():
         else:
             break
     return jsonify(items), 200
+
+@github_blueprint.route('/github/releases', methods=['GET'])
+def get_releases():
+    """Retrieve a list of release tags from a given repo"""
+    releases = list()
+    has_next_page = True
+    end_cursor = ''
+    org = request.args.get('org', type=str, default=current_app.config['GITHUB_ORG'])
+    repo = request.args.get('repo', type=str)
+    github_org = current_app.config['GITHUB_ORG']
+    while has_next_page:
+        query = f"""query Repositories {{
+            repository(owner: "{org}", name: "{repo}") {{
+                nameWithOwner
+                releases(first: 100, orderBy: {{field:CREATED_AT, direction:DESC}}{end_cursor}) {{
+                    totalCount
+                    nodes {{
+                        releaseAssets(first: 1) {{
+                            nodes {{
+                                name
+                                downloadCount
+                                createdAt
+                            }}
+                        }}
+                        createdAt
+                        tagName
+                    }}
+                    pageInfo{{
+                        endCursor
+                        hasNextPage
+                    }}
+                }}
+            }}
+        }}"""
+        result, status = GraphQL.run_query(query)
+        if not status:
+            return "GITHUB_TOKEN may not be valid", 400
+        elif result:
+            result = result.get('repository').get('releases')
+            for r in result.get('nodes'):
+                release = {
+                    'repo': repo,
+                    'tag_name': r.get('tagName'),
+                    'created_at': r.get('createdAt')
+                }
+                releases.append(release)
+            has_next_page = result.get('pageInfo').get('hasNextPage')
+            if has_next_page:
+                end_cursor = ', after: {}'.format(result.get('pageInfo').get('endCursor'))
+            
+    return jsonify(releases), 200
