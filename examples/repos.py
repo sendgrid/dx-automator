@@ -1,0 +1,38 @@
+ALL_REPOS = {
+  'sendgrid': [
+    'sendgrid-nodejs',
+    'sendgrid-csharp',
+    'sendgrid-php',
+    'sendgrid-python',
+    'sendgrid-java',
+    'sendgrid-go',
+    'sendgrid-ruby',
+    'smtpapi-nodejs',
+    'smtpapi-go',
+    'smtpapi-python',
+    'smtpapi-php',
+    'smtpapi-csharp',
+    'smtpapi-java',
+    'smtpapi-ruby',
+    'sendgrid-oai',
+    'open-source-library-data-collector',
+    'python-http-client',
+    'php-http-client',
+    'csharp-http-client',
+    'java-http-client',
+    'ruby-http-client',
+    'rest',
+    'nodejs-http-client',
+    'dx-automator',
+  ],
+  'twilio': [
+    'twilio-node',
+    'twilio-csharp',
+    'twilio-php',
+    'twilio-python',
+    'twilio-java',
+    'twilio-ruby',
+    'twilio-cli',
+    'twilio-cli-core'
+  ]
+}

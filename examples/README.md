@@ -12,6 +12,8 @@ Update the values in the `.env` file.
 source .env
 ```
 
+Update the list of repos in `repos.py`.
+
 Now you may run the example scripts as such: 
 
 ```bash
