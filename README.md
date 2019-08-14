@@ -164,6 +164,12 @@ python ./examples/follow_up.py
 python ./examples/code_review.py
 ```
 
+#### Retrieve a list of releases for each repo
+
+```bash
+python ./examples/releases.py
+```
+
 ## Usage - Cloud
 
 ### Create AWS Docker Machine
