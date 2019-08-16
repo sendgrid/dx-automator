@@ -1,26 +1,25 @@
-from python_http_client import Client
-import os
 import json
-import repos
 
-all_repos = repos.ALL_REPOS
+from common.automator_client import client
+from common.repos import ALL_REPOS
 
-def get_issues(repo):
-    client = Client(host="http://{}".format(os.environ.get('DX_IP')))
+
+def get_issues(org, repo):
     query_params = {
-        "repo":repo,
-        "item_type":'issues',
-        "states[]":['OPEN'],
-        "limit[]":['first', '100']
+        "org": org,
+        "repo": repo,
+        "item_type": 'issues',
+        "states[]": ['OPEN'],
+        "limit[]": ['first', '100']
     }
     response = client.github.items.get(query_params=query_params)
-    issues = json.loads(response.body)
-    return issues
+    return json.loads(response.body)
+
 
 total_unlabeled_issues = 0
-for org in all_repos:
-    for repo in all_repos[org]:
-        issues = get_issues(repo)
+for org in ALL_REPOS:
+    for repo in ALL_REPOS[org]:
+        issues = get_issues(org, repo)
         for issue in issues:
             if issue['num_labels'] == 0:
                 text = "{} , {}".format(issue['url'], issue['createdAt'])

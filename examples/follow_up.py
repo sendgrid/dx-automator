@@ -1,13 +1,12 @@
-from python_http_client import Client
-import os
 import json
-import repos
 
-all_repos = repos.ALL_REPOS
+from common.automator_client import client
+from common.repos import ALL_REPOS
 
-def get_items(repo, item_type):
-    client = Client(host="http://{}".format(os.environ.get("DX_IP")))
+
+def get_items(org, repo, item_type):
     query_params = {
+        "org": org,
         "repo": repo,
         "item_type": item_type,
         "states[]": ["OPEN"],
@@ -22,13 +21,13 @@ def get_items(repo, item_type):
 
 total_issues = 0
 total_prs = 0
-for org in all_repos:
-    for repo in all_repos[org]:
-        for pr in get_items(repo, "pull_requests"):
+for org in ALL_REPOS:
+    for repo in ALL_REPOS[org]:
+        for pr in get_items(org, repo, "pull_requests"):
             text = "{} , {}".format(pr["url"], pr["createdAt"])
             print(text)
             total_prs = total_prs + 1
-        for issue in get_items(repo, "issues"):
+        for issue in get_items(org, repo, "issues"):
             text = "{} , {}".format(issue["url"], issue["createdAt"])
             print(text)
             total_issues = total_issues + 1
