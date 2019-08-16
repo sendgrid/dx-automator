@@ -1,15 +1,16 @@
 # Reference: https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/
-from python_http_client import Client
-import os
 import json
+import os
 from datetime import datetime
 from email.utils import parsedate_tz, mktime_tz
 
-client = Client(host="http://{}".format(os.environ.get('DX_IP')))
+from common.automator_client import client
+
 
 def get_repo_name(url):
-    split = url.rsplit('/',3)
+    split = url.rsplit('/', 3)
     return split[1]
+
 
 def calculate_rice_reach(task):
     repo_to_reach_env_var = {
@@ -31,6 +32,7 @@ def calculate_rice_reach(task):
     reach_env_var = repo_to_reach_env_var.get(get_repo_name(task['url']), 'MAXIMUM_REACH')
     rice_reach = os.getenv(reach_env_var) or 0
     return float(rice_reach) + task['num_of_comments'] + task['num_of_reactions']
+
 
 def calculate_rice_impact(task):
     if task['labels']:
@@ -59,11 +61,13 @@ def calculate_rice_impact(task):
         # score in this case to ensure it's at the top to be processed first
         return 1000
 
+
 def calculate_rice_confidence(task):
     rice_confidence = 1
     if task['language'] == 'go':
         rice_confidence = .8
     return rice_confidence
+
 
 def calculate_rice_effort(task):
     if task['labels']:
@@ -85,9 +89,11 @@ def calculate_rice_effort(task):
         return .0001
     return rice_effort
 
+
 def http_timestamp_to_datetime(http_timestamp):
     timestamp = mktime_tz(parsedate_tz(http_timestamp))
     return datetime.utcfromtimestamp(timestamp)
+
 
 def needs_updating(task_id):
     task = get_task(task_id)
@@ -99,15 +105,18 @@ def needs_updating(task_id):
         return True
     return False
 
+
 def get_task(task_id):
     response = client.tasks._(task_id).get()
     task = json.loads(response.body)
     return task['message']
 
+
 def get_tasks():
     response = client.tasks.get()
     tasks = json.loads(response.body)
     return tasks['message']['tasks']
+
 
 def update_rice_score(task_id):
     if needs_updating(task_id):
@@ -122,7 +131,7 @@ def update_rice_score(task_id):
         return items
     return None
 
+
 tasks = get_tasks()
 for task in tasks:
     update_rice_score(int(task["id"]))
-

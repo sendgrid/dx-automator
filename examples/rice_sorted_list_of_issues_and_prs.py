@@ -1,8 +1,6 @@
-from python_http_client import Client
-import os
 import json
 
-client = Client(host="http://{}".format(os.environ.get('DX_IP')))
+from common.automator_client import client
 
 query_params = {
     "page_index": 1,

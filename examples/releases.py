@@ -1,24 +1,22 @@
-from python_http_client import Client
 import datetime
 import json
-import os
-import repos
 
-all_repos = repos.ALL_REPOS
+from common.automator_client import client
+from common.repos import ALL_REPOS
+
 
 def get_releases(org, repo):
-    client = Client(host="http://{}".format(os.environ.get('DX_IP')))
     query_params = {
-        "repo":repo,
         "org": org,
+        "repo": repo,
     }
     response = client.github.releases.get(query_params=query_params)
-    releases = json.loads(response.body)
-    return releases
+    return json.loads(response.body)
+
 
 total_releases = 0
-for org in all_repos:
-    for repo in all_repos[org]:
+for org in ALL_REPOS:
+    for repo in ALL_REPOS[org]:
         releases = get_releases(org, repo)
         for release in releases:
             created_at = datetime.datetime.strptime(release['created_at'], '%Y-%m-%dT%H:%M:%SZ')
