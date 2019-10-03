@@ -139,7 +139,7 @@ def populate_db():
                                 language=repo['programming_language'],
                                 num_of_comments=item['num_comments'],
                                 num_of_reactions=item['num_reactions'],
-                                title=item['title'][:252] + '..',
+                                title=(item['title'][:252] + '..') if len(item['title']) > 251 else item['title'],
                                 url=item['url'],
                                 task_type=task_type
                             )
