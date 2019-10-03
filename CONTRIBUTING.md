@@ -106,6 +106,18 @@ Please run your code through:
 - [pylint](https://www.pylint.org/)
 - [pep8](https://pypi.python.org/pypi/pep8)
 
+## Debugging
+
+`docker logs <name of service>`
+
+To ensure your logging gets written in the container, within your Python app:
+
+```
+import sys
+sys.stderr.write("")
+sys.stderr.write("\n")
+```
+
 ## Creating a Pull Request<a name="creating-a-pull-request"></a>
 
 1. [Fork](https://help.github.com/fork-a-repo/) the project, clone your fork,

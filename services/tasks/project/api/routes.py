@@ -8,16 +8,18 @@ from project.api.models import Task
 from python_http_client import Client
 from .priority import Priority
 import os
+import sys
 import json
 import time
 
 tasks_blueprint = Blueprint('tasks', __name__, template_folder='./templates')
 
-def get_items(repo, item_type):
+def get_items(org, repo, item_type):
     client = Client(host=current_app.config['LOCALHOST'])
     query_params = {
         "repo": repo,
         "item_type": item_type,
+        "org": org,
         "states[]": ['OPEN'],
         "limit[]": ['first', '100']
         }
@@ -114,11 +116,11 @@ def get_all_tasks():
 @tasks_blueprint.route('/tasks/init/db', methods=['GET'])
 def populate_db():
     all_repos = current_app.config['REPOS']
-
+    
     repos = dict()
     for repo in all_repos:
-        prs = get_items(repo['name'], 'pull_requests')
-        issues = get_items(repo['name'], 'issues')
+        prs = get_items(repo['org'], repo['name'], 'pull_requests')
+        issues = get_items(repo['org'], repo['name'], 'issues')
         items = issues + prs
         repos[repo['name']] = items
 
@@ -137,7 +139,7 @@ def populate_db():
                                 language=repo['programming_language'],
                                 num_of_comments=item['num_comments'],
                                 num_of_reactions=item['num_reactions'],
-                                title=item['title'],
+                                title=item['title'][:252] + '..',
                                 url=item['url'],
                                 task_type=task_type
                             )
