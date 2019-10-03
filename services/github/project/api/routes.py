@@ -4,7 +4,7 @@ from .graphql import GraphQL
 github_blueprint = Blueprint('github', __name__)
 
 MAINTAINERS = {
-    'aroach',
+    'eshanholtz',
     'thinkingserious',
     'kylearoberts',
     'childish-sambino',
@@ -29,7 +29,8 @@ def get_points(labels):
 
 
 def get_labels(labels):
-    return [label.get('node').get('name') for label in labels]
+    all_labels = [label.get('node').get('name') for label in labels]
+    return all_labels
 
 
 def get_reviewers(reviewers, author):
@@ -44,7 +45,7 @@ def get_author(item):
 
 def is_follow_up_needed(item):
     author = get_author(item)
-    comments = item['comments'].get('nodes')
+    comments = item['comments'].get('nodes') or None
     follow_up_needed = author not in MAINTAINERS
 
     if follow_up_needed and comments:
@@ -200,16 +201,18 @@ def get_items():
                     item['labels'] = get_labels(r.get('labels').get('edges'))
                     item['num_labels'] = len(item['labels'])
                     item['points'] = get_points(r.get('labels').get('edges'))
+                
                 if r.get('reviews'):
                     reviews = r.get('reviews').get('nodes')
-                    item['reviewers'] = get_reviewers(reviews, item['author'])
-                    item['num_reviewers'] = len(item['reviewers'])
-                    item['reviewer_points'] = len(item['reviewers']) * (item['points'] / 2)
+                    if len(reviews) == 0:
+                        item['reviewers'] = get_reviewers(reviews, item['author'])
+                        item['num_reviewers'] = len(item['reviewers'])
+                        item['reviewer_points'] = len(item['reviewers']) * (item['points'] / 2)
 
                 items.append(item)
-            has_next_page = result.get('pageInfo').get('hasNextPage')
+            has_next_page = result.get('pageInfo').get('hasNextPage') or None
             if has_next_page:
-                end_cursor = result.get('pageInfo').get('endCursor')
+                end_cursor = result.get('pageInfo').get('endCursor') or None
         else:
             break
     return jsonify(items), 200

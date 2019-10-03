@@ -131,8 +131,8 @@ docker-compose -f docker-compose-dev.yml exec tasks-db psql -U postgres
 
 ```bash
 ./scripts/init-task-db 
-python examples/update_rice_scores.py
-python examples/rice_sorted_list_of_issues_and_prs.py
+python3 examples/update_rice_scores.py
+python3 examples/rice_sorted_list_of_issues_and_prs.py
 ```
 
 #### Retrieve all open and unlabeled issues
