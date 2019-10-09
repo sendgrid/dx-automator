@@ -22,9 +22,9 @@ for org in ALL_REPOS:
     for repo in ALL_REPOS[org]:
         items = get_items(org, repo, 'pull_requests')
         for item in items:
-            updated_at = datetime.datetime.strptime(item['updatedAt'], '%Y-%m-%dT%H:%M:%SZ')
+            closed_at = datetime.datetime.strptime(item['closedAt'], '%Y-%m-%dT%H:%M:%SZ')
             text = "{}, {} , {}, {}, {}".format(repo, item['url'], item['points'],
-                                                item['reviewer_points'], updated_at.date())
+                                                item['reviewer_points'], closed_at.date())
             print(text)
             total_closed_prs = total_closed_prs + 1
 

@@ -77,6 +77,7 @@ class GraphQL(object):
                             title
                             createdAt
                             updatedAt
+                            closedAt
                             {self.review}
                             author {{
                                 login
