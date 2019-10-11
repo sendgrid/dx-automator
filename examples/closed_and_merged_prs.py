@@ -10,7 +10,7 @@ def get_items(org, repo, item_type):
         "org": org,
         "repo": repo,
         "item_type": item_type,
-        "states[]": ['CLOSED'],
+        "states[]": ['MERGED', 'CLOSED'],
         "limit[]": ['first', '100']
     }
     response = client.github.items.get(query_params=query_params)
@@ -23,8 +23,7 @@ for org in ALL_REPOS:
         items = get_items(org, repo, 'pull_requests')
         for item in items:
             closed_at = datetime.datetime.strptime(item['closedAt'], '%Y-%m-%dT%H:%M:%SZ')
-            text = "{}, {} , {}, {}, {}".format(repo, item['url'], item['points'],
-                                                item['reviewer_points'], closed_at.date())
+            text = "{}, {} , {}, {}".format(repo, item['url'], closed_at.date(), item['author'])
             print(text)
             total_closed_prs = total_closed_prs + 1
 

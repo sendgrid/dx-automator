@@ -16,6 +16,7 @@ We believe in open source and want to give credit where it's due. We used an ama
 
 * Virtual Box
 * Docker
+* Python 3
 
 ## Usage - Local
 
@@ -168,6 +169,18 @@ python ./examples/code_review.py
 
 ```bash
 python ./examples/releases.py
+```
+
+#### Retrieve all closed issues
+
+```bash
+python ./examples/closed_issues.py
+```
+
+#### Retrieve all closed and merged PRs
+
+```bash
+python ./examples/closed_and_merged_prs.py
 ```
 
 ## Usage - Cloud

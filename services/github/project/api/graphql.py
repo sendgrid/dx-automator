@@ -78,6 +78,7 @@ class GraphQL(object):
                             createdAt
                             updatedAt
                             closedAt
+                            mergedAt
                             {self.review}
                             author {{
                                 login
