@@ -185,6 +185,7 @@ def get_items():
                     'title': r.get('title'),
                     'createdAt': r.get('createdAt'),
                     'updatedAt': r.get('updatedAt'),
+                    'closedAt': r.get('closedAt'),
                     'author': get_author(r) or 'unknown',
                     'num_reactions': r.get('reactions').get('totalCount') or 0,
                     'num_comments': r.get('comments').get('totalCount') or 0,
