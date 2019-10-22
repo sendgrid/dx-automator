@@ -24,6 +24,7 @@ ALL_REPOS = {
     'rest',
     'nodejs-http-client',
     'dx-automator',
+    'dx-mobile'
   ],
   'twilio': [
     'twilio-node',
