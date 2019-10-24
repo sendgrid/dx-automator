@@ -87,6 +87,12 @@ docker-compose -f docker-compose-dev.yml exec users-db psql -U postgres
 # \q
 ```
 
+### Connect to a service's container and enter a Bash prompt
+
+```bash
+docker exec -it <container name> /bin/bash
+```
+
 ### Admin Commands
 
 #### Restart a Particular Service
