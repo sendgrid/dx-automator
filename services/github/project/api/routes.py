@@ -265,6 +265,6 @@ def get_releases():
                 releases.append(release)
             has_next_page = result.get('pageInfo').get('hasNextPage')
             if has_next_page:
-                end_cursor = ', after: {}'.format(result.get('pageInfo').get('endCursor'))
+                end_cursor = ', after: "{}"'.format(result.get('pageInfo').get('endCursor'))
             
     return jsonify(releases), 200
