@@ -1,0 +1,2 @@
+python_http_client
+requests
