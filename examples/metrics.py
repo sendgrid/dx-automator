@@ -74,7 +74,9 @@ class MetricCollector:
     def process_repo(self, nodes: Dict,
                      org: str, repo: str,
                      start_date: str, end_date: str) -> None:
-        for issue_json in get_issues(org, repo, start_date, end_date):
+        for issue_json in get_issues(org, repo,
+                                     start_date=start_date,
+                                     end_date=end_date):
             try:
                 issue = Issue(issue_json)
 
@@ -112,6 +114,23 @@ class MetricCollector:
                     issue.metrics.pop('time_to_close_pr', None)
 
                 nodes['nodes'][issue.url]['metrics'] = issue.metrics
+
+            except Exception as e:
+                print_json(issue_json)
+                raise e
+
+        for issue_json in get_issues(org, repo,
+                                     state='open',
+                                     end_date=end_date):
+            try:
+                issue = Issue(issue_json)
+
+                if issue.author in ADMINS:
+                    continue
+
+                time_open = get_delta(issue.created_at, end_date)
+
+                nodes['nodes'][issue.url]['metrics']['time_open'] = get_delta_days(time_open)
 
             except Exception as e:
                 print_json(issue_json)
@@ -290,8 +309,18 @@ def get_delta(start: str, end: str) -> timedelta:
     return datetime.strptime(end, DATE_TIME_FORMAT) - datetime.strptime(start, DATE_TIME_FORMAT)
 
 
-def get_issues(org: str, repo: str,
-                       start_date: str = '*', end_date: str = '*') -> List[Dict]:
+def get_delta_days(delta: timedelta) -> float:
+    return delta / timedelta(days=1)
+
+
+def get_date_time(date: str) -> str:
+    return date + 'T00:00:00Z'
+
+
+def get_issues(org: str, repo: str, state: str = None,
+               start_date: str = '*', end_date: str = '*') -> List[Dict]:
+    state = f'state:{state}' if state else ''
+
     fragment_template = """
 ... on %issue_type% {
     author {
@@ -359,7 +388,7 @@ query{{
     search(type: ISSUE,
            first: 50,
            %cursor%,
-           query: "created:{start_date}..{end_date} repo:{org}/{repo}") {{
+           query: "{state} created:{start_date}..{end_date} repo:{org}/{repo}") {{
         nodes {{
             __typename
             {''.join(inline_fragments)}
@@ -411,5 +440,5 @@ def print_json(payload):
 
 
 if __name__ == '__main__':
-    MetricCollector().run(start_date='2019-01-01',
-                          end_date='2020-01-01')
+    MetricCollector().run(start_date=get_date_time('2019-01-01'),
+                          end_date=get_date_time('2020-02-07'))
