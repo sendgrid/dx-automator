@@ -26,7 +26,7 @@ class MetricCollector:
     def __init__(self):
         self.metrics = base_type()
 
-    def run(self) -> None:
+    def run(self, start_date: str, end_date: str) -> None:
         global_node = self.metrics
 
         for org in ALL_REPOS:
@@ -35,7 +35,7 @@ class MetricCollector:
             for repo in ALL_REPOS[org]:
                 repo_node = org_node['nodes'][repo]
 
-                self.process_repo(repo_node, org, repo)
+                self.process_repo(repo_node, org, repo, start_date, end_date)
 
                 self.aggregate(repo_node)
 
@@ -71,8 +71,10 @@ class MetricCollector:
                 'median': statistics.median(values),
             }
 
-    def process_repo(self, nodes: Dict, org: str, repo: str) -> None:
-        for issue_json in get_issues(org, repo):
+    def process_repo(self, nodes: Dict,
+                     org: str, repo: str,
+                     start_date: str, end_date: str) -> None:
+        for issue_json in get_issues(org, repo, start_date, end_date):
             try:
                 issue = Issue(issue_json)
 
@@ -91,9 +93,10 @@ class MetricCollector:
                 }
 
                 for event in issue.events:
-                    event_type = event['__typename']
-                    action = event_type_map[event_type]
-                    action(event)
+                    if get_date(event) <= end_date:
+                        event_type = event['__typename']
+                        action = event_type_map[event_type]
+                        action(event)
 
                 issue_type = issue.get_issue_type()
 
@@ -117,7 +120,7 @@ class MetricCollector:
 
 class Issue:
     def __init__(self, issue_json: Dict):
-        self.author = self.get_author(issue_json)
+        self.author = get_author(issue_json)
         self.type = issue_json['__typename']
         self.created_at = issue_json['createdAt']
         self.events = issue_json['timelineItems']['nodes']
@@ -140,14 +143,6 @@ class Issue:
     @property
     def is_pr(self):
         return self.type == 'PullRequest'
-
-    def get_author(self, element):
-        author = element['author']
-
-        if author:
-            author = author.get('user', author)
-
-        return author.get('login') if author else None
 
     def add_label(self, label_event: Dict) -> None:
         label = label_event['label']
@@ -205,13 +200,13 @@ class Issue:
     def commit(self, commit_event: Dict) -> None:
         commit = commit_event['commit']
 
-        if self.get_author(commit) not in ADMINS:
+        if get_author(commit) not in ADMINS:
             status = commit['status'] or {}
             self.checks_passed = commit if status.get('state') == 'SUCCESS' else None
             self.waiting_for_feedback = None
 
     def review(self, review_event: Dict) -> None:
-        if self.get_author(review_event) in ADMINS:
+        if get_author(review_event) in ADMINS:
             self.comment(review_event)
 
             if review_event['state'] != 'APPROVED':
@@ -221,7 +216,7 @@ class Issue:
         self.merged = merge_event
 
     def comment(self, comment: Dict) -> None:
-        if self.get_author(comment) in ADMINS:
+        if get_author(comment) in ADMINS:
             if not self.first_admin_comment:
                 self.first_admin_comment = comment
 
@@ -275,11 +270,28 @@ class Issue:
             self.metrics[metric_id].append(time / timedelta(days=1))
 
 
+def get_author(element: Dict) -> str:
+    author = element['author']
+
+    if author:
+        author = author.get('user', author)
+
+    return author.get('login') if author else None
+
+
+def get_date(element: Dict) -> str:
+    if 'createdAt' in element:
+        return element['createdAt']
+    if 'commit' in element:
+        return element['commit']['committedDate']
+
+
 def get_delta(start: str, end: str) -> timedelta:
     return datetime.strptime(end, DATE_TIME_FORMAT) - datetime.strptime(start, DATE_TIME_FORMAT)
 
 
-def get_issues(org: str, repo: str) -> List[Dict]:
+def get_issues(org: str, repo: str,
+                       start_date: str = '*', end_date: str = '*') -> List[Dict]:
     fragment_template = """
 ... on %issue_type% {
     author {
@@ -347,7 +359,7 @@ query{{
     search(type: ISSUE,
            first: 50,
            %cursor%,
-           query: "created:2019-01-01..* repo:{org}/{repo}") {{
+           query: "created:{start_date}..{end_date} repo:{org}/{repo}") {{
         nodes {{
             __typename
             {''.join(inline_fragments)}
@@ -399,4 +411,5 @@ def print_json(payload):
 
 
 if __name__ == '__main__':
-    MetricCollector().run()
+    MetricCollector().run(start_date='2019-01-01',
+                          end_date='2020-01-01')
