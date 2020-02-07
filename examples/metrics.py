@@ -8,6 +8,7 @@ from typing import Dict, List
 
 import requests
 
+from examples.common.google_api import get_spreadsheets
 from examples.common.repos import ALL_REPOS
 
 ADMINS = {'childish-sambino', 'eshanholtz', 'thinkingserious'}
@@ -15,6 +16,8 @@ DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 ISSUE_TYPES = {'question', 'support', 'bug', 'enhancement', 'non-library', 'docs', 'security'}
 ISSUE_STATUSES = {'duplicate', 'invalid'}
+
+GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
 
 
 def base_type():
@@ -25,6 +28,7 @@ class MetricCollector:
 
     def __init__(self):
         self.metrics = base_type()
+        self.all_metrics = []
 
     def run(self, start_date: str, end_date: str) -> None:
         global_node = self.metrics
@@ -37,15 +41,93 @@ class MetricCollector:
 
                 self.process_repo(repo_node, org, repo, start_date, end_date)
 
+        for org in global_node['nodes']:
+            org_node = global_node['nodes'][org]
+
+            for repo in org_node['nodes']:
+                repo_node = org_node['nodes'][repo]
+
                 self.aggregate(repo_node)
+                self.summarize(repo, end_date, repo_node)
 
             self.aggregate(org_node)
+            self.summarize(org, end_date, org_node)
 
         self.aggregate(global_node)
+        self.summarize('global', end_date, global_node)
 
         print_json(self.metrics)
 
-    def aggregate(self, node: Dict):
+        self.output_google_sheet()
+
+    def process_repo(self, nodes: Dict,
+                     org: str, repo: str,
+                     start_date: str, end_date: str) -> None:
+        start_date = get_date_time(start_date)
+        end_date = get_date_time(end_date)
+
+        for issue_json in get_issues(org, repo,
+                                     start_date=start_date,
+                                     end_date=end_date):
+            try:
+                issue = Issue(issue_json, end_date=end_date)
+
+                if issue.author in ADMINS:
+                    continue
+
+                event_type_map = {
+                    'LabeledEvent': issue.add_label,
+                    'UnlabeledEvent': issue.remove_label,
+                    'IssueComment': issue.comment,
+                    'ClosedEvent': issue.close,
+                    'ReopenedEvent': issue.reopen,
+                    'PullRequestCommit': issue.commit,
+                    'PullRequestReview': issue.review,
+                    'MergedEvent': issue.merge,
+                }
+
+                for event in issue.events:
+                    event_type = event['__typename']
+                    action = event_type_map[event_type]
+                    action(event)
+
+                issue_type = issue.get_issue_type()
+
+                if 'time_to_close' in issue.metrics:
+                    issue_type = issue_type or 'unknown'
+                    time_to_close = issue.metrics.pop('time_to_close')
+
+                    if issue.get_issue_status() not in ['duplicate', 'invalid']:
+                        if issue.first_admin_comment:
+                            issue.metrics[f'time_to_close_{issue_type}'] = time_to_close
+
+                if not issue.first_admin_comment:
+                    issue.metrics.pop('time_to_close_pr', None)
+
+                nodes['nodes'][issue.url]['metrics'] = issue.metrics
+
+            except Exception as e:
+                print_json(issue_json)
+                raise e
+
+        for issue_json in get_issues(org, repo,
+                                     state='open',
+                                     end_date=end_date):
+            try:
+                issue = Issue(issue_json, end_date=end_date)
+
+                if issue.author in ADMINS:
+                    continue
+
+                time_open = get_delta_days(issue.created_at, end_date)
+
+                nodes['nodes'][issue.url]['metrics']['time_open'] = time_open
+
+            except Exception as e:
+                print_json(issue_json)
+                raise e
+
+    def aggregate(self, node: Dict) -> None:
         metrics: Dict[str, List[float]] = {}
 
         for item in node['nodes'].values():
@@ -71,74 +153,53 @@ class MetricCollector:
                 'median': statistics.median(values),
             }
 
-    def process_repo(self, nodes: Dict,
-                     org: str, repo: str,
-                     start_date: str, end_date: str) -> None:
-        for issue_json in get_issues(org, repo,
-                                     start_date=start_date,
-                                     end_date=end_date):
-            try:
-                issue = Issue(issue_json)
+    def summarize(self, name: str, reporting_date: str, node: Dict) -> None:
+        repo_metrics = {'name': name, 'date': reporting_date}
 
-                if issue.author in ADMINS:
-                    continue
+        metrics = node['metrics']
 
-                event_type_map = {
-                    'LabeledEvent': issue.add_label,
-                    'UnlabeledEvent': issue.remove_label,
-                    'IssueComment': issue.comment,
-                    'ClosedEvent': issue.close,
-                    'ReopenedEvent': issue.reopen,
-                    'PullRequestCommit': issue.commit,
-                    'PullRequestReview': issue.review,
-                    'MergedEvent': issue.merge,
-                }
+        for metric, values in metrics.items():
+            for k, v in values.items():
+                if k != 'values':
+                    repo_metrics[f'{metric}_{k}'] = v
 
-                for event in issue.events:
-                    if get_date(event) <= end_date:
-                        event_type = event['__typename']
-                        action = event_type_map[event_type]
-                        action(event)
+        self.all_metrics.append(repo_metrics)
 
-                issue_type = issue.get_issue_type()
+    def output_google_sheet(self):
+        spreadsheets = get_spreadsheets()
 
-                if 'time_to_close' in issue.metrics:
-                    issue_type = issue_type or 'unknown'
-                    time_to_close = issue.metrics.pop('time_to_close')
+        response = spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
+                                             range='Sheet1!1:1').execute()
+        header = response.get('values', [[]])[0]
 
-                    if issue.get_issue_status() not in ['duplicate', 'invalid']:
-                        if issue.first_admin_comment:
-                            issue.metrics[f'time_to_close_{issue_type}'] = time_to_close
+        values = []
 
-                if not issue.first_admin_comment:
-                    issue.metrics.pop('time_to_close_pr', None)
+        for metrics in self.all_metrics:
+            row = []
+            values.append(row)
 
-                nodes['nodes'][issue.url]['metrics'] = issue.metrics
+            for metric_id in header:
+                row.append(metrics.get(metric_id))
 
-            except Exception as e:
-                print_json(issue_json)
-                raise e
+            for metric_id, value in metrics.items():
+                if metric_id not in header:
+                    header.append(metric_id)
+                    row.append(value)
 
-        for issue_json in get_issues(org, repo,
-                                     state='open',
-                                     end_date=end_date):
-            try:
-                issue = Issue(issue_json)
+        spreadsheets.values().update(spreadsheetId=GOOGLE_SHEET_ID,
+                                     range='Sheet1!1:1',
+                                     valueInputOption='USER_ENTERED',
+                                     body={'values': [header]}).execute()
 
-                if issue.author in ADMINS:
-                    continue
-
-                time_open = get_delta(issue.created_at, end_date)
-
-                nodes['nodes'][issue.url]['metrics']['time_open'] = get_delta_days(time_open)
-
-            except Exception as e:
-                print_json(issue_json)
-                raise e
+        spreadsheets.values().append(spreadsheetId=GOOGLE_SHEET_ID,
+                                     range='Sheet1!A2:A',
+                                     valueInputOption='USER_ENTERED',
+                                     body={'values': values}).execute()
 
 
 class Issue:
-    def __init__(self, issue_json: Dict):
+    def __init__(self, issue_json: Dict, end_date: str):
+        self.end_date = end_date
         self.author = get_author(issue_json)
         self.type = issue_json['__typename']
         self.created_at = issue_json['createdAt']
@@ -168,8 +229,8 @@ class Issue:
 
         self.labels[label['id']] = label['name']
 
-        self.add_contact_time(get_delta(self.created_at,
-                                        label_event['createdAt']))
+        self.add_contact_time(self.created_at,
+                              label_event['createdAt'])
 
         if 'waiting' in label['name'].lower():
             self.waiting_for_feedback = label_event
@@ -187,8 +248,8 @@ class Issue:
             self.waiting_removed = label_event
 
             if self.waiting_for_feedback and self.last_community_comment:
-                self.add_response_time(get_delta(self.last_community_comment['createdAt'],
-                                                 label_event['createdAt']))
+                self.add_response_time(self.last_community_comment['createdAt'],
+                                       label_event['createdAt'])
             self.waiting_for_feedback = None
 
     def close(self, close_event: Dict) -> None:
@@ -205,13 +266,13 @@ class Issue:
         if self.checks_passed:
             start_time = self.checks_passed['committedDate']
 
-        self.add_close_time(get_delta(start_time,
-                                      close_event['createdAt']))
+        self.add_close_time(start_time,
+                            close_event['createdAt'])
 
         # If there's no contact time yet, use the first admin comment.
         if self.first_admin_comment:
-            self.add_contact_time(get_delta(self.created_at,
-                                            self.first_admin_comment['createdAt']))
+            self.add_contact_time(self.created_at,
+                                  self.first_admin_comment['createdAt'])
 
     def reopen(self, reopen_event: Dict) -> None:
         self.closed = None
@@ -241,12 +302,12 @@ class Issue:
 
             self.last_admin_comment = comment
 
-            self.add_contact_time(get_delta(self.created_at,
-                                            comment['createdAt']))
+            self.add_contact_time(self.created_at,
+                                  comment['createdAt'])
 
             if self.waiting_for_feedback and self.last_community_comment:
-                self.add_response_time(get_delta(self.last_community_comment['createdAt'],
-                                                 comment['createdAt']))
+                self.add_response_time(self.last_community_comment['createdAt'],
+                                       comment['createdAt'])
                 self.last_community_comment = None
 
         else:
@@ -267,26 +328,29 @@ class Issue:
                 if issue_status in label_name.lower():
                     return issue_status
 
-    def add_contact_time(self, time_to_contact: timedelta) -> None:
+    def add_contact_time(self, start: str, end: str) -> None:
         # Only add contact time if an admin has commented the issue type has
         # been set or it's closed.
         if self.first_admin_comment and (self.get_issue_type() or self.closed or self.is_pr):
-            self.add_metric('time_to_contact', time_to_contact)
+            self.add_metric('time_to_contact', start, end)
 
-    def add_response_time(self, time_to_respond: timedelta) -> None:
+    def add_response_time(self, start: str, end: str) -> None:
         if not self.closed:
-            self.add_metric('time_to_respond', time_to_respond, multi=True)
+            self.add_metric('time_to_respond', start, end, multi=True)
 
-    def add_close_time(self, time_to_close: timedelta) -> None:
-        self.add_metric(f'time_to_close', time_to_close)
+    def add_close_time(self, start: str, end: str) -> None:
+        self.add_metric(f'time_to_close', start, end)
 
-    def add_metric(self, metric_id: str, time: timedelta, multi: bool = False) -> None:
+    def add_metric(self, metric_id: str, start: str, end: str, multi: bool = False) -> None:
+        if end > self.end_date:
+            return
+
         if self.is_pr:
             metric_id += '_pr'
 
         if metric_id not in self.metrics or multi:
             self.metrics[metric_id] = self.metrics.get(metric_id, [])
-            self.metrics[metric_id].append(time / timedelta(days=1))
+            self.metrics[metric_id].append(get_delta_days(start, end))
 
 
 def get_author(element: Dict) -> str:
@@ -309,8 +373,8 @@ def get_delta(start: str, end: str) -> timedelta:
     return datetime.strptime(end, DATE_TIME_FORMAT) - datetime.strptime(start, DATE_TIME_FORMAT)
 
 
-def get_delta_days(delta: timedelta) -> float:
-    return delta / timedelta(days=1)
+def get_delta_days(start: str, end: str) -> float:
+    return get_delta(start, end) / timedelta(days=1)
 
 
 def get_date_time(date: str) -> str:
@@ -411,7 +475,7 @@ def substitute(target: str, values: Dict) -> str:
 def post_query(query: str) -> List[Dict]:
     url = 'https://api.github.com/graphql'
     github_token = os.environ['GITHUB_TOKEN']
-    headers = {'Authorization': f'bearer {github_token}'}
+    headers = {'Authorization': f'token {github_token}'}
     cursor = None
 
     while True:
@@ -440,5 +504,5 @@ def print_json(payload):
 
 
 if __name__ == '__main__':
-    MetricCollector().run(start_date=get_date_time('2019-01-01'),
-                          end_date=get_date_time('2020-02-07'))
+    MetricCollector().run(start_date='2019-01-01',
+                          end_date='2019-10-01')
