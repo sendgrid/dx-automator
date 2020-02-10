@@ -11,6 +11,12 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 TOKEN_FILENAME = 'token.pickle'
 
 
+###
+# Enable the Drive API and download your credentials file here:
+# https://developers.google.com/drive/api/v3/quickstart/python
+###
+
+
 def get_creds():
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
