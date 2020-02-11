@@ -8,8 +8,8 @@ from typing import Dict, List
 
 import requests
 
-from examples.common.google_api import get_spreadsheets
-from examples.common.repos import ALL_REPOS
+from common.google_api import get_spreadsheets
+from common.repos import ALL_REPOS
 
 ADMINS = {'childish-sambino', 'eshanholtz', 'thinkingserious'}
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
