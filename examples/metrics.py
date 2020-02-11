@@ -28,7 +28,11 @@ class MetricCollector:
 
     def __init__(self):
         self.metrics = base_type()
+        self.untagged_issues = []
         self.all_metrics = []
+
+        # Load up the spreadsheet connector early to validate credentials.
+        self.spreadsheets = get_spreadsheets()
 
     def run(self, start_date: str, end_date: str) -> None:
         global_node = self.metrics
@@ -40,6 +44,13 @@ class MetricCollector:
                 repo_node = org_node['nodes'][repo]
 
                 self.process_repo(repo_node, org, repo, start_date, end_date)
+
+        # If we have any untagged issues, print them and exit.
+        if self.untagged_issues:
+            print('These issues need a "type" label:')
+            for issue in self.untagged_issues:
+                print(issue.url)
+            return
 
         for org in global_node['nodes']:
             org_node = global_node['nodes'][org]
@@ -94,12 +105,14 @@ class MetricCollector:
                 issue_type = issue.get_issue_type()
 
                 if 'time_to_close' in issue.metrics:
-                    issue_type = issue_type or 'unknown'
                     time_to_close = issue.metrics.pop('time_to_close')
 
                     if issue.get_issue_status() not in ['duplicate', 'invalid']:
                         if issue.first_admin_comment:
-                            issue.metrics[f'time_to_close_{issue_type}'] = time_to_close
+                            if issue_type:
+                                issue.metrics[f'time_to_close_{issue_type}'] = time_to_close
+                            else:
+                                self.untagged_issues.append(issue)
 
                 if not issue.first_admin_comment:
                     issue.metrics.pop('time_to_close_pr', None)
@@ -166,10 +179,8 @@ class MetricCollector:
         self.all_metrics.append(repo_metrics)
 
     def output_google_sheet(self):
-        spreadsheets = get_spreadsheets()
-
-        response = spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
-                                             range='Sheet1!1:1').execute()
+        response = self.spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
+                                                  range='Sheet1!1:1').execute()
         header = response.get('values', [[]])[0]
 
         values = []
@@ -186,15 +197,15 @@ class MetricCollector:
                     header.append(metric_id)
                     row.append(value)
 
-        spreadsheets.values().update(spreadsheetId=GOOGLE_SHEET_ID,
-                                     range='Sheet1!1:1',
-                                     valueInputOption='USER_ENTERED',
-                                     body={'values': [header]}).execute()
+        self.spreadsheets.values().update(spreadsheetId=GOOGLE_SHEET_ID,
+                                          range='Sheet1!1:1',
+                                          valueInputOption='USER_ENTERED',
+                                          body={'values': [header]}).execute()
 
-        spreadsheets.values().append(spreadsheetId=GOOGLE_SHEET_ID,
-                                     range='Sheet1!A2:A',
-                                     valueInputOption='USER_ENTERED',
-                                     body={'values': values}).execute()
+        self.spreadsheets.values().append(spreadsheetId=GOOGLE_SHEET_ID,
+                                          range='Sheet1!A2:A',
+                                          valueInputOption='USER_ENTERED',
+                                          body={'values': values}).execute()
 
 
 class Issue:
@@ -505,4 +516,4 @@ def print_json(payload):
 
 if __name__ == '__main__':
     MetricCollector().run(start_date='2019-01-01',
-                          end_date='2019-10-01')
+                          end_date='2020-02-10')
