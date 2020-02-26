@@ -78,7 +78,6 @@ class MetricCollector:
         end_date = get_date_time(end_date)
 
         for issue_json in get_issues(org, repo,
-                                     start_date=start_date,
                                      end_date=end_date):
             try:
                 issue = Issue(issue_json, end_date=end_date)
@@ -102,39 +101,28 @@ class MetricCollector:
                     action = event_type_map[event_type]
                     action(event)
 
-                issue_type = issue.get_issue_type()
+                if issue.created_at >= start_date:
+                    issue_type = issue.get_issue_type()
 
-                if 'time_to_close' in issue.metrics:
-                    time_to_close = issue.metrics.pop('time_to_close')
+                    if 'time_to_close' in issue.metrics:
+                        time_to_close = issue.metrics.pop('time_to_close')
 
-                    if issue.get_issue_status() not in ['duplicate', 'invalid']:
-                        if issue.first_admin_comment:
-                            if issue_type:
-                                issue.metrics[f'time_to_close_{issue_type}'] = time_to_close
-                            else:
-                                self.untagged_issues.append(issue)
+                        if issue.get_issue_status() not in ['duplicate', 'invalid']:
+                            if issue.first_admin_comment:
+                                if issue_type:
+                                    issue.metrics[f'time_to_close_{issue_type}'] = time_to_close
+                                else:
+                                    self.untagged_issues.append(issue)
 
-                if not issue.first_admin_comment:
-                    issue.metrics.pop('time_to_close_pr', None)
+                    if not issue.first_admin_comment:
+                        issue.metrics.pop('time_to_close_pr', None)
 
-                nodes['nodes'][issue.url]['metrics'] = issue.metrics
+                    nodes['nodes'][issue.url]['metrics'] = issue.metrics
 
-            except Exception as e:
-                print_json(issue_json)
-                raise e
+                if not issue.closed:
+                    time_open = get_delta_days(issue.created_at, end_date)
 
-        for issue_json in get_issues(org, repo,
-                                     state='open',
-                                     end_date=end_date):
-            try:
-                issue = Issue(issue_json, end_date=end_date)
-
-                if issue.author in ADMINS:
-                    continue
-
-                time_open = get_delta_days(issue.created_at, end_date)
-
-                nodes['nodes'][issue.url]['metrics']['time_open'] = time_open
+                    nodes['nodes'][issue.url]['metrics']['time_open'] = time_open
 
             except Exception as e:
                 print_json(issue_json)
@@ -264,6 +252,9 @@ class Issue:
             self.waiting_for_feedback = None
 
     def close(self, close_event: Dict) -> None:
+        if close_event['createdAt'] > self.end_date:
+            return
+
         self.closed = close_event
 
         start_time = self.created_at
@@ -286,6 +277,9 @@ class Issue:
                                   self.first_admin_comment['createdAt'])
 
     def reopen(self, reopen_event: Dict) -> None:
+        if reopen_event['createdAt'] > self.end_date:
+            return
+
         self.closed = None
 
     def commit(self, commit_event: Dict) -> None:
@@ -515,5 +509,5 @@ def print_json(payload):
 
 
 if __name__ == '__main__':
-    MetricCollector().run(start_date='2019-01-01',
-                          end_date='2020-02-10')
+    MetricCollector().run(start_date='2020-01-01',
+                          end_date='2020-02-01')
