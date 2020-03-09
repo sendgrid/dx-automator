@@ -26,8 +26,10 @@ class Issue:
             self.author = get_author(issue_json)
             self.type = issue_json['__typename']
             self.created_at = issue_json['createdAt']
-            self.events = issue_json['timelineItems']['nodes']
             self.url = issue_json['url']
+
+            if 'timelineItems' in issue_json:
+                self.events = issue_json['timelineItems']['nodes']
 
             self.metrics = {}
             self.labels = {}

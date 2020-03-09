@@ -25,7 +25,7 @@ class ClosedItemsCollector:
 
     def process_repo(self, org: str, repo: str,
                      start_date: str, end_date: str) -> None:
-        issues = get_closed_prs(org, repo)
+        issues = get_closed_items(org, repo)
 
         for issue_json in issues:
             issue = Issue(issue_json, end_date=end_date)
@@ -47,7 +47,7 @@ class ClosedItemsCollector:
 
 
 @lru_cache(maxsize=None)
-def get_closed_prs(org: str, repo: str):
+def get_closed_items(org: str, repo: str):
     fragments = """
 ... on Issue {
     author {
@@ -84,7 +84,7 @@ def get_closed_prs(org: str, repo: str):
 
 
 if __name__ == '__main__':
-    ClosedItemsCollector().run(start_date='2019-07-01',
-                               end_date='2019-10-01')
     ClosedItemsCollector().run(start_date='2019-10-01',
                                end_date='2020-01-01')
+    ClosedItemsCollector().run(start_date='2020-01-01',
+                               end_date='2020-04-01')
