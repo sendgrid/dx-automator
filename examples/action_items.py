@@ -41,7 +41,7 @@ class ActionItemsCollector:
 
             issue.process_events()
 
-            if 'time_to_contact' not in issue.metrics:
+            if 'time_to_contact' not in issue.metrics and 'time_to_contact_pr' not in issue.metrics:
                 if issue.is_pr:
                     if issue.checks_passed:
                         self.contact_needed.append(issue)
@@ -114,4 +114,4 @@ def get_open_items(org: str, repo: str, start_date: str):
 
 
 if __name__ == '__main__':
-    ActionItemsCollector().run(start_date='2020-01-01')
+    ActionItemsCollector().run(start_date='2019-12-01')
