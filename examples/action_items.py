@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import List
 
 from examples.common.admins import ADMINS
-from examples.common.issue import get_issues, Issue, substitute
+from examples.common.issue import get_author, get_issues, Issue, substitute
 from examples.common.repos import ALL_REPOS
 
 STUCK_DELTA = timedelta(days=30)
@@ -13,8 +13,12 @@ class ActionItemsCollector:
 
     def __init__(self):
         self.contact_needed = []
-        self.response_needed = []
-        self.stuck_waiting = []
+        self.response_needed = {}
+        self.stuck_waiting = {}
+
+        for admin in ADMINS:
+            self.response_needed[admin] = []
+            self.stuck_waiting[admin] = []
 
     def run(self, start_date: str) -> None:
         for org in ALL_REPOS:
@@ -22,8 +26,10 @@ class ActionItemsCollector:
                 self.process_repo(org, repo, start_date)
 
         self.print_issues('Issues needing contact', self.contact_needed)
-        self.print_issues('Issues needing response', self.response_needed)
-        self.print_issues('Issues stuck waiting', self.stuck_waiting)
+
+        for admin in ADMINS:
+            self.print_issues(f'{admin} - Issues needing response', self.response_needed[admin])
+            self.print_issues(f'{admin} - Issues stuck waiting', self.stuck_waiting[admin])
 
     def print_issues(self, title: str, issues: List[Issue]):
         if issues:
@@ -49,10 +55,10 @@ class ActionItemsCollector:
                     self.contact_needed.append(issue)
 
             if issue.is_waiting_for_response:
-                self.response_needed.append(issue)
+                self.response_needed[get_author(issue.last_admin_comment)].append(issue)
             elif issue.waiting_for_feedback and \
                 issue.waiting_for_feedback['createdAt'] < str(date.today() - STUCK_DELTA):
-                self.stuck_waiting.append(issue)
+                self.stuck_waiting[get_author(issue.last_admin_comment)].append(issue)
 
 
 @lru_cache(maxsize=None)
@@ -114,4 +120,4 @@ def get_open_items(org: str, repo: str, start_date: str):
 
 
 if __name__ == '__main__':
-    ActionItemsCollector().run(start_date='2019-12-01')
+    ActionItemsCollector().run(start_date='2019-11-01')
