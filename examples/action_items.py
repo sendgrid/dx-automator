@@ -7,6 +7,7 @@ from examples.common.issue import get_author, get_issues, Issue, substitute
 from examples.common.repos import ALL_REPOS
 
 STUCK_DELTA = timedelta(days=30)
+STUCK_DATE_STR = str(date.today() - STUCK_DELTA)
 
 
 class ActionItemsCollector:
@@ -57,7 +58,8 @@ class ActionItemsCollector:
             if issue.is_waiting_for_response:
                 self.response_needed[get_author(issue.last_admin_comment)].append(issue)
             elif issue.waiting_for_feedback and \
-                issue.waiting_for_feedback['createdAt'] < str(date.today() - STUCK_DELTA):
+                issue.waiting_for_feedback['createdAt'] < STUCK_DATE_STR and \
+                issue.last_admin_comment['createdAt'] < STUCK_DATE_STR:
                 self.stuck_waiting[get_author(issue.last_admin_comment)].append(issue)
 
 
@@ -120,4 +122,4 @@ def get_open_items(org: str, repo: str, start_date: str):
 
 
 if __name__ == '__main__':
-    ActionItemsCollector().run(start_date='2019-11-01')
+    ActionItemsCollector().run(start_date='2019-10-01')
