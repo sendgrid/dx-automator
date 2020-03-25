@@ -8,7 +8,7 @@ import requests
 from businesstime import BusinessTime
 from businesstime.holidays.usa import USFederalHolidays
 
-from examples.common.admins import ADMINS
+from common.admins import ADMINS
 
 ISSUE_TYPES = {'question', 'support', 'bug', 'enhancement', 'non-library', 'docs', 'security'}
 ISSUE_STATUSES = {'duplicate', 'invalid'}

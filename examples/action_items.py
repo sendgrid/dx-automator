@@ -2,9 +2,9 @@ from datetime import date, timedelta
 from functools import lru_cache
 from typing import List
 
-from examples.common.admins import ADMINS
-from examples.common.issue import get_author, get_issues, Issue, substitute
-from examples.common.repos import ALL_REPOS
+from common.admins import ADMINS
+from common.issue import get_author, get_issues, Issue, substitute
+from common.repos import ALL_REPOS
 
 STUCK_DATE = str(date.today() - timedelta(days=30))
 BUG_DATE = str(date.today() - timedelta(days=20))
