@@ -1,6 +1,6 @@
-from examples.common.admins import ADMINS
-from examples.common.issue import get_issues, Issue
-from examples.common.repos import ALL_REPOS
+from common.admins import ADMINS
+from common.issue import get_issues, Issue
+from common.repos import ALL_REPOS
 
 
 class OpenedItemsCollector:

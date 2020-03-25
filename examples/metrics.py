@@ -3,11 +3,11 @@ from collections import defaultdict
 from functools import lru_cache
 from typing import Dict, List
 
-from examples.common.admins import ADMINS
-from examples.common.google_api import get_spreadsheets
-from examples.common.issue import substitute, get_issues, Issue, get_delta_days, print_json, \
+from common.admins import ADMINS
+from common.google_api import get_spreadsheets
+from common.issue import substitute, get_issues, Issue, get_delta_days, print_json, \
     get_date_time
-from examples.common.repos import ALL_REPOS
+from common.repos import ALL_REPOS
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
 
@@ -241,16 +241,20 @@ def get_repo_issues(org: str, repo: str):
 
 
 if __name__ == '__main__':
-    reporting_dates = ['2020-01-06',
-                       '2020-01-13',
-                       '2020-01-20',
-                       '2020-01-27',
-                       '2020-02-03',
-                       '2020-02-10',
-                       '2020-02-17',
-                       '2020-02-24',
-                       '2020-03-02',
-                       '2020-03-09']
+    reporting_dates = [
+        # '2020-01-06',
+        # '2020-01-13',
+        # '2020-01-20',
+        # '2020-01-27',
+        # '2020-02-03',
+        # '2020-02-10',
+        # '2020-02-17',
+        # '2020-02-24',
+        # '2020-03-02',
+        # '2020-03-09',
+        # '2020-03-16',
+        '2020-03-23'
+    ]
     for end_date in reporting_dates:
         MetricCollector().run(start_date='2020-01-01',
                               end_date=end_date)
