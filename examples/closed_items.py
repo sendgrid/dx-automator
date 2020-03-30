@@ -80,7 +80,7 @@ def get_closed_items(org: str, repo: str):
     }
 }"""
 
-    return list(get_issues(org, repo, fragments, state='closed'))
+    return list(get_issues(org, repo, fragments, issue_state='closed'))
 
 
 if __name__ == '__main__':

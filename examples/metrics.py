@@ -10,6 +10,7 @@ from common.issue import substitute, get_issues, Issue, get_delta_days, print_js
 from common.repos import ALL_REPOS
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
+GOOGLE_SHEET_NAME = 'Sheet1'
 
 
 def base_type():
@@ -83,17 +84,25 @@ class MetricCollector:
             issue.process_events()
 
             if issue.created_at >= start_date:
-                issue_type = issue.get_issue_type()
+                issue_category = issue.get_issue_category()
 
                 if 'time_to_close' in issue.metrics:
                     time_to_close = issue.metrics.pop('time_to_close')
 
                     if issue.get_issue_status() not in ['duplicate', 'invalid']:
                         if issue.first_admin_comment:
-                            if issue_type:
-                                issue.metrics[f'time_to_close_{issue_type}'] = time_to_close
+                            if issue_category:
+                                issue.metrics[f'time_to_close_{issue_category}'] = time_to_close
                             else:
                                 self.untagged_issues.append(issue)
+
+                if 'time_awaiting_resolution' in issue.metrics:
+                    resolution = issue.metrics.pop('time_awaiting_resolution')
+
+                    if issue_category:
+                        issue.metrics[f'time_awaiting_resolution_{issue_category}'] = resolution
+                    else:
+                        self.untagged_issues.append(issue)
 
                 if not issue.first_admin_comment:
                     issue.metrics.pop('time_to_close_pr', None)
@@ -145,7 +154,7 @@ class MetricCollector:
 
     def output_google_sheet(self):
         response = self.spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
-                                                  range='Sheet1!1:1').execute()
+                                                  range=f'{GOOGLE_SHEET_NAME}!1:1').execute()
         header = response.get('values', [[]])[0]
 
         values = []
@@ -163,12 +172,12 @@ class MetricCollector:
                     row.append(value)
 
         self.spreadsheets.values().update(spreadsheetId=GOOGLE_SHEET_ID,
-                                          range='Sheet1!1:1',
+                                          range=f'{GOOGLE_SHEET_NAME}!1:1',
                                           valueInputOption='USER_ENTERED',
                                           body={'values': [header]}).execute()
 
         self.spreadsheets.values().append(spreadsheetId=GOOGLE_SHEET_ID,
-                                          range='Sheet1!A2:A',
+                                          range=f'{GOOGLE_SHEET_NAME}!A2:A',
                                           valueInputOption='USER_ENTERED',
                                           body={'values': values}).execute()
 
@@ -253,7 +262,8 @@ if __name__ == '__main__':
         # '2020-03-02',
         # '2020-03-09',
         # '2020-03-16',
-        '2020-03-23'
+        # '2020-03-23',
+        '2020-03-30',
     ]
     for end_date in reporting_dates:
         MetricCollector().run(start_date='2020-01-01',

@@ -3,12 +3,13 @@ from functools import lru_cache
 from typing import List
 
 from common.admins import ADMINS
-from common.issue import get_author, get_issues, Issue, substitute
+from common.issue import get_author, get_date, get_date_time, get_issues, Issue, substitute
 from common.repos import ALL_REPOS
 
 STUCK_DATE = str(date.today() - timedelta(days=30))
 BUG_DATE = str(date.today() - timedelta(days=20))
 ENHANCEMENT_DATE = str(date.today() - timedelta(days=60))
+TODAY = get_date_time(str(date.today()))
 
 
 class ActionItemsCollector:
@@ -48,9 +49,9 @@ class ActionItemsCollector:
         issues = get_open_items(org, repo, start_date)
 
         for issue_json in issues:
-            issue = Issue(issue_json)
+            issue = Issue(issue_json, end_date=TODAY)
 
-            if issue.author in ADMINS or issue.merged:
+            if issue.author in ADMINS:
                 continue
 
             issue.process_events()
@@ -60,20 +61,17 @@ class ActionItemsCollector:
             if issue.merged:
                 continue
 
-            if 'time_to_contact' not in issue.metrics and 'time_to_contact_pr' not in issue.metrics:
-                if issue.is_pr:
-                    if issue.checks_passed:
-                        self.contact_needed.append(issue)
-                else:
-                    self.contact_needed.append(issue)
-            elif issue.is_waiting_for_response:
+            if 'time_awaiting_contact' in issue.metrics or \
+               'time_awaiting_contact_pr' in issue.metrics:
+                self.contact_needed.append(issue)
+            elif 'time_awaiting_response' in issue.metrics:
                 self.response_needed[get_author(issue.last_admin_comment)].append(issue)
             elif issue.waiting_for_feedback:
-                if issue.waiting_for_feedback['createdAt'] < STUCK_DATE and \
-                    issue.last_admin_comment['createdAt'] < STUCK_DATE:
+                if get_date(issue.waiting_for_feedback) < STUCK_DATE and \
+                   get_date(issue.last_admin_comment) < STUCK_DATE:
                     self.stuck_waiting[get_author(issue.last_admin_comment)].append(issue)
             else:
-                if issue.get_issue_type() == 'bug':
+                if issue.get_issue_category() == 'bug':
                     if issue.created_at < BUG_DATE:
                         self.open_bugs.append(issue)
                 else:
@@ -138,7 +136,7 @@ def get_open_items(org: str, repo: str, start_date: str):
                         for fragment in fragment_params]
 
     return list(get_issues(org, repo, ''.join(inline_fragments),
-                           state='open', start_date=start_date))
+                           issue_state='open', start_date=start_date))
 
 
 if __name__ == '__main__':
