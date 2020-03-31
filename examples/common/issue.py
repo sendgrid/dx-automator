@@ -10,7 +10,13 @@ from businesstime.holidays.usa import USFederalHolidays
 
 from common.admins import ADMINS
 
-ISSUE_TYPES = {'question', 'support', 'bug', 'enhancement', 'non-library', 'docs', 'security'}
+ISSUE_CATEGORIES = {
+    'question': {'question'},
+    'support': {'support', 'non-library'},
+    'bug': {'bug', 'docs', 'security'},
+    'twilio_enhancement': {'twilio enhancement', 'sendgrid enhancement'},
+    'community_enhancement': {'community enhancement'},
+}
 ISSUE_STATUSES = {'duplicate', 'invalid'}
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
@@ -19,7 +25,7 @@ BUSINESS_TIME = BusinessTime(holidays=USFederalHolidays())
 
 
 class Issue:
-    def __init__(self, issue_json: Dict, end_date: str = None):
+    def __init__(self, issue_json: Dict, end_date: str):
         try:
             self.issue_json = issue_json
             self.end_date = end_date
@@ -63,8 +69,23 @@ class Issue:
         try:
             for event in self.events:
                 event_type = event['__typename']
-                action = event_type_map[event_type]
-                action(event)
+
+                if event_type in ['LabeledEvent', 'UnlabeledEvent'] or \
+                    not self.is_past_end_date(event):
+                    action = event_type_map[event_type]
+                    action(event)
+
+            if not self.closed and not self.merged:
+                if 'time_to_contact' not in self.metrics and 'time_to_contact_pr' not in self.metrics:
+                    if self.is_pr:
+                        if self.checks_passed:
+                            self.add_awaiting_time('contact', self.checks_passed)
+                    else:
+                        self.add_awaiting_time('contact', self.created_at)
+                elif self.is_waiting_for_response:
+                    self.add_awaiting_time('response', self.last_community_comment)
+                elif not self.waiting_for_feedback:
+                    self.add_awaiting_time('resolution', self.last_event)
         except Exception as e:
             print_json(self.issue_json)
             raise e
@@ -82,8 +103,10 @@ class Issue:
 
         self.labels[label['id']] = label['name']
 
-        self.add_contact_time(self.created_at,
-                              label_event['createdAt'])
+        if self.is_past_end_date(label_event):
+            return
+
+        self.add_contact_time(self.created_at, label_event)
 
         if 'waiting' in label['name'].lower():
             self.waiting_for_feedback = label_event
@@ -97,59 +120,40 @@ class Issue:
         # Safely remove label.
         self.labels.pop(label['id'], None)
 
+        if self.is_past_end_date(label_event):
+            return
+
         if 'waiting' in label['name'].lower():
             self.waiting_removed = label_event
 
             if self.is_waiting_for_response:
-                self.add_response_time(self.last_community_comment['createdAt'],
-                                       label_event['createdAt'])
+                self.add_response_time(self.last_community_comment, label_event)
             self.waiting_for_feedback = None
 
     def close(self, close_event: Dict) -> None:
-        if self.end_date and close_event['createdAt'] > self.end_date:
-            return
-
         self.closed = close_event
 
-        start_time = self.created_at
-
-        if self.waiting_removed:
-            start_time = self.waiting_removed['createdAt']
-
-        if self.type_added:
-            start_time = self.type_added['createdAt']
-
-        if self.checks_passed:
-            start_time = self.checks_passed['committedDate']
-
-        self.add_close_time(start_time,
-                            close_event['createdAt'])
+        self.add_close_time(self.last_event, close_event)
 
         # If there's no contact time yet, use the first admin comment.
         if self.first_admin_comment:
-            self.add_contact_time(self.created_at,
-                                  self.first_admin_comment['createdAt'])
+            self.add_contact_time(self.created_at, self.first_admin_comment)
 
     def reopen(self, reopen_event: Dict) -> None:
-        if self.end_date and reopen_event['createdAt'] > self.end_date:
-            return
-
         self.closed = None
 
     def commit(self, commit_event: Dict) -> None:
         commit = commit_event['commit']
 
         if get_author(commit) not in ADMINS:
+            self.comment(commit)
             status = commit['status'] or {}
             self.checks_passed = commit if status.get('state') == 'SUCCESS' else None
-            self.waiting_for_feedback = None
 
     def review(self, review_event: Dict) -> None:
         if get_author(review_event) in ADMINS:
             self.comment(review_event)
-
-            if review_event['state'] != 'APPROVED':
-                self.waiting_for_feedback = review_event
+            self.waiting_for_feedback = None if review_event['state'] == 'APPROVED' else review_event
 
     def merge(self, merge_event: Dict) -> None:
         self.merged = merge_event
@@ -161,12 +165,10 @@ class Issue:
 
             self.last_admin_comment = comment
 
-            self.add_contact_time(self.created_at,
-                                  comment['createdAt'])
+            self.add_contact_time(self.created_at, comment)
 
             if self.is_waiting_for_response:
-                self.add_response_time(self.last_community_comment['createdAt'],
-                                       comment['createdAt'])
+                self.add_response_time(self.last_community_comment, comment)
                 self.last_community_comment = None
 
         else:
@@ -175,11 +177,12 @@ class Issue:
 
         self.last_comment = comment
 
-    def get_issue_type(self) -> str:
+    def get_issue_category(self) -> str:
         for label_name in self.labels.values():
-            for issue_type in ISSUE_TYPES:
-                if issue_type in label_name.lower():
-                    return issue_type
+            for issue_category, issues_types in ISSUE_CATEGORIES.items():
+                for issue_type in issues_types:
+                    if issue_type in label_name.lower():
+                        return issue_category
 
     def get_issue_status(self) -> str:
         for label_name in self.labels.values():
@@ -187,22 +190,25 @@ class Issue:
                 if issue_status in label_name.lower():
                     return issue_status
 
-    def add_contact_time(self, start: str, end: str) -> None:
+    def add_contact_time(self, start, end) -> None:
         # Only add contact time if an admin has commented the issue type has
         # been set or it's closed.
-        if self.first_admin_comment and (self.get_issue_type() or self.closed or self.is_pr):
+        if self.first_admin_comment and (self.get_issue_category() or self.closed or self.is_pr):
             self.add_metric('time_to_contact', start, end)
 
-    def add_response_time(self, start: str, end: str) -> None:
+    def add_response_time(self, start, end) -> None:
         if not self.closed:
             self.add_metric('time_to_respond', start, end, multi=True)
 
-    def add_close_time(self, start: str, end: str) -> None:
-        self.add_metric(f'time_to_close', start, end)
+    def add_close_time(self, start, end) -> None:
+        self.add_metric('time_to_close', start, end)
 
-    def add_metric(self, metric_id: str, start: str, end: str, multi: bool = False) -> None:
-        if self.end_date and end > self.end_date:
-            return
+    def add_awaiting_time(self, action: str, start) -> None:
+        self.add_metric(f'time_awaiting_{action}', start, self.end_date)
+
+    def add_metric(self, metric_id: str, start, end, multi: bool = False) -> None:
+        start = get_date(start)
+        end = get_date(end)
 
         if self.is_pr:
             metric_id += '_pr'
@@ -210,6 +216,22 @@ class Issue:
         if metric_id not in self.metrics or multi:
             self.metrics[metric_id] = self.metrics.get(metric_id, [])
             self.metrics[metric_id].append(get_delta_days(start, end))
+
+    @property
+    def last_event(self):
+        if self.waiting_removed:
+            return self.waiting_removed
+
+        if self.type_added:
+            return self.type_added
+
+        if self.checks_passed:
+            return self.checks_passed
+
+        return self.created_at
+
+    def is_past_end_date(self, element):
+        return self.end_date and get_date(element) > self.end_date
 
 
 def get_author(element: Dict) -> str:
@@ -221,11 +243,16 @@ def get_author(element: Dict) -> str:
     return author.get('login') if author else None
 
 
-def get_date(element: Dict) -> str:
-    if 'createdAt' in element:
-        return element['createdAt']
-    if 'commit' in element:
-        return element['commit']['committedDate']
+def get_date(element) -> str:
+    if isinstance(element, dict):
+        if 'createdAt' in element:
+            return element['createdAt']
+        if 'committedDate' in element:
+            return element['committedDate']
+        if 'commit' in element:
+            return element['commit']['committedDate']
+
+    return element
 
 
 def get_delta_days(start: str, end: str) -> float:
@@ -242,17 +269,19 @@ def get_date_time(date: str) -> str:
 
 
 def get_issues(org: str, repo: str, fragments: str,
-               type: str = None, state: str = None,
+               issue_type: str = None, issue_state: str = None,
                start_date: str = '*', end_date: str = '*') -> List[Dict]:
-    type = f'type:{type}' if type else ''
-    state = f'state:{state}' if state else ''
+    issue_type = f'type:{issue_type}' if issue_type else ''
+    issue_state = f'state:{issue_state}' if issue_state else ''
 
     return post_query(f"""
 query{{
     search(type: ISSUE,
            first: 50,
            %cursor%,
-           query: "{type} {state} created:{start_date}..{end_date} repo:{org}/{repo}") {{
+           query: "{issue_type} {issue_state}
+                   created:{start_date}..{end_date}
+                   repo:{org}/{repo}") {{
         nodes {{
             __typename
             {fragments}
