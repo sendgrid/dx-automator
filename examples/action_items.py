@@ -1,15 +1,15 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from functools import lru_cache
 from typing import List
 
 from common.admins import ADMINS
-from common.issue import get_author, get_date, get_date_time, get_issues, Issue, substitute
+from common.issue import DATE_TIME_FORMAT, get_author, get_date, get_issues, Issue, substitute
 from common.repos import ALL_REPOS
 
 STUCK_DATE = str(date.today() - timedelta(days=30))
 BUG_DATE = str(date.today() - timedelta(days=20))
 ENHANCEMENT_DATE = str(date.today() - timedelta(days=60))
-TODAY = get_date_time(str(date.today()))
+TODAY = datetime.utcnow().strftime(DATE_TIME_FORMAT)
 
 
 class ActionItemsCollector:
@@ -140,4 +140,4 @@ def get_open_items(org: str, repo: str, start_date: str):
 
 
 if __name__ == '__main__':
-    ActionItemsCollector().run(start_date='2020-01-01')
+    ActionItemsCollector().run(start_date='2019-07-01')

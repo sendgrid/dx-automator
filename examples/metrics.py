@@ -263,7 +263,8 @@ if __name__ == '__main__':
         # '2020-03-09',
         # '2020-03-16',
         # '2020-03-23',
-        '2020-03-30',
+        # '2020-03-30',
+        '2020-04-06',
     ]
     for end_date in reporting_dates:
         MetricCollector().run(start_date='2020-01-01',
