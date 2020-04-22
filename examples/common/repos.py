@@ -21,7 +21,7 @@ ALL_REPOS = {
         'php-http-client',
         'python-http-client',
         'ruby-http-client',
-        # 'sendgrid-oai',
+        'sendgrid-oai',
         # 'open-source-library-data-collector',
         # 'dx-automator',
         # 'dx-mobile'
