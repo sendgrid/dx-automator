@@ -27,7 +27,8 @@ class MetricCollector:
         # Load up the spreadsheet connector early to validate credentials.
         self.spreadsheets = get_spreadsheets()
 
-    def run(self, start_date: str, end_date: str) -> None:
+    def run(self, start_date: str, end_date: str, reporting_period: str = None) -> None:
+        reporting_period = reporting_period or end_date
         global_node = self.metrics
 
         for org in ALL_REPOS:
@@ -52,13 +53,13 @@ class MetricCollector:
                 repo_node = org_node['nodes'][repo]
 
                 self.aggregate(repo_node)
-                self.summarize(repo, end_date, repo_node)
+                self.summarize(repo, reporting_period, repo_node)
 
             self.aggregate(org_node)
-            self.summarize(org, end_date, org_node)
+            self.summarize(org, reporting_period, org_node)
 
         self.aggregate(global_node)
-        self.summarize('global', end_date, global_node)
+        self.summarize('global', reporting_period, global_node)
 
         print_json(self.metrics)
 
@@ -271,3 +272,6 @@ if __name__ == '__main__':
     for end_date in reporting_dates:
         MetricCollector().run(start_date='2020-01-01',
                               end_date=end_date)
+    # MetricCollector().run(start_date='2020-01-01',
+    #                       end_date='2020-04-01',
+    #                       reporting_period='2020-Q1')
