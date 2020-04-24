@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 from common.admins import ADMINS
-from common.issue import get_issues, Issue
+from common.issue import get_date_time, get_issues, Issue
 from common.repos import ALL_REPOS
 
 
@@ -25,6 +25,9 @@ class ClosedItemsCollector:
 
     def process_repo(self, org: str, repo: str,
                      start_date: str, end_date: str) -> None:
+        start_date = get_date_time(start_date)
+        end_date = get_date_time(end_date)
+
         issues = get_closed_items(org, repo)
 
         for issue_json in issues:
