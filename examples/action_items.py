@@ -41,9 +41,10 @@ class ActionItemsCollector:
 
     def print_issues(self, title: str, issues: List[Issue]):
         if issues:
+            sorted_issues = sorted(issues, key=lambda issue: (not issue.is_pr, issue.created_at))
+
             print(f'\n{title}:')
-            print('\n'.join([issue.url for issue in sorted(issues,
-                                                           key=lambda issue: issue.created_at)]))
+            print('\n'.join([issue.url for issue in sorted_issues]))
 
     def process_repo(self, org: str, repo: str, start_date: str) -> None:
         issues = get_open_items(org, repo, start_date)
