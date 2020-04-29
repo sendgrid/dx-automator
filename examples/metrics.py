@@ -87,6 +87,8 @@ class MetricCollector:
             if issue.created_at >= start_date:
                 issue_category = issue.get_issue_category()
 
+                self.add_time_to_resolve(issue)
+
                 if 'time_to_close' in issue.metrics:
                     time_to_close = issue.metrics.pop('time_to_close')
 
@@ -114,6 +116,15 @@ class MetricCollector:
                 time_open = get_delta_days(issue.created_at, end_date)
 
                 nodes['nodes'][issue.url]['metrics']['time_open'] = time_open
+
+    def add_time_to_resolve(self, issue: Issue) -> None:
+        for ext in {'', '_pr'}:
+            if f'time_to_close{ext}' in issue.metrics and issue.first_admin_comment:
+                contact = issue.metrics[f'time_to_contact{ext}']
+                respond = issue.metrics.get(f'time_to_respond{ext}', [])
+                close = issue.metrics[f'time_to_close{ext}']
+
+                issue.metrics[f'time_to_resolve'] = sum(contact) + sum(respond) + sum(close)
 
     def aggregate(self, node: Dict) -> None:
         metrics: Dict[str, List[float]] = {}
@@ -267,7 +278,8 @@ if __name__ == '__main__':
         # '2020-03-30',
         # '2020-04-06',
         # '2020-04-13',
-        '2020-04-20',
+        # '2020-04-20',
+        '2020-04-27',
     ]
     for end_date in reporting_dates:
         MetricCollector().run(start_date='2020-01-01',
