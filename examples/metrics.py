@@ -1,6 +1,8 @@
 import statistics
 from collections import defaultdict
+from datetime import datetime, timedelta
 from functools import lru_cache
+from itertools import chain
 from typing import Dict, List
 
 from common.admins import ADMINS
@@ -261,29 +263,39 @@ def get_repo_issues(org: str, repo: str):
     return list(get_issues(org, repo, ''.join(inline_fragments)))
 
 
-if __name__ == '__main__':
-    reporting_dates = [
-        # '2020-01-06',
-        # '2020-01-13',
-        # '2020-01-20',
-        # '2020-01-27',
-        # '2020-02-03',
-        # '2020-02-10',
-        # '2020-02-17',
-        # '2020-02-24',
-        # '2020-03-02',
-        # '2020-03-09',
-        # '2020-03-16',
-        # '2020-03-23',
-        # '2020-03-30',
-        # '2020-04-06',
-        # '2020-04-13',
-        # '2020-04-20',
-        '2020-04-27',
-    ]
-    for end_date in reporting_dates:
+DATE_TIME_FORMAT = '%Y-%m-%d'
+
+
+def get_date_range(start_date: str, end_date: str) -> List[str]:
+    start_date = datetime.strptime(start_date, DATE_TIME_FORMAT)
+    end_date = datetime.strptime(end_date, DATE_TIME_FORMAT)
+
+    while start_date <= end_date:
+        yield start_date.strftime(DATE_TIME_FORMAT)
+        start_date = start_date + timedelta(days=7)
+
+
+def run_backfill() -> None:
+    mondays = get_date_range('2020-01-06', '2020-05-18')
+    fridays = get_date_range('2020-05-22', datetime.now().strftime(DATE_TIME_FORMAT))
+
+    for end_date in chain(mondays, fridays):
         MetricCollector().run(start_date='2020-01-01',
                               end_date=end_date)
+
+
+def run_today() -> None:
+    today = datetime.now().strftime(DATE_TIME_FORMAT)
+    MetricCollector().run(start_date='2020-01-01',
+                          end_date=today)
+
+
+if __name__ == '__main__':
+    run_today()
+
+    # run_backfill()
+
+    # Q1
     # MetricCollector().run(start_date='2020-01-01',
     #                       end_date='2020-04-01',
     #                       reporting_period='2020-Q1')
