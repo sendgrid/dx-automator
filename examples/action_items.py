@@ -65,7 +65,8 @@ class ActionItemsCollector:
             if 'time_awaiting_contact' in issue.metrics or \
                'time_awaiting_contact_pr' in issue.metrics:
                 self.contact_needed.append(issue)
-            elif 'time_awaiting_response' in issue.metrics:
+            elif 'time_awaiting_response' in issue.metrics or \
+                 'time_awaiting_response_pr' in issue.metrics:
                 self.response_needed[get_author(issue.last_admin_comment)].append(issue)
             elif issue.waiting_for_feedback:
                 if get_date(issue.waiting_for_feedback) < STUCK_DATE and \
