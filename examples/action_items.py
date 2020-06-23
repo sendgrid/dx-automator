@@ -59,6 +59,10 @@ class ActionItemsCollector:
             if issue.merged:
                 continue
 
+            if issue.author in ADMINS:
+                self.process_pending_issue(issue)
+                continue
+
             if 'time_awaiting_contact' in issue.metrics or \
                'time_awaiting_contact_pr' in issue.metrics:
                 self.contact_needed.append(issue)
@@ -70,12 +74,15 @@ class ActionItemsCollector:
                    get_date(issue.last_admin_comment) < STUCK_DATE:
                     self.stuck_waiting[get_author(issue.last_admin_comment)].append(issue)
             else:
-                if issue.get_issue_category() == 'bug':
-                    if issue.created_at < BUG_DATE:
-                        self.open_bugs.append(issue)
-                else:
-                    if issue.created_at < ENHANCEMENT_DATE:
-                        self.open_enhancements.append(issue)
+                self.process_pending_issue(issue)
+
+    def process_pending_issue(self, issue: Issue) -> None:
+        issue_category = issue.get_issue_category()
+
+        if issue_category == 'bug' and issue.created_at < BUG_DATE:
+            self.open_bugs.append(issue)
+        elif issue_category == 'twilio_enhancement' and issue.created_at < ENHANCEMENT_DATE:
+            self.open_enhancements.append(issue)
 
 
 @lru_cache(maxsize=None)
