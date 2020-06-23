@@ -52,9 +52,6 @@ class ActionItemsCollector:
         for issue_json in issues:
             issue = Issue(issue_json, end_date=TODAY)
 
-            if issue.author in ADMINS:
-                continue
-
             issue.process_events()
 
             # Required because some merged PRs come back as open.
