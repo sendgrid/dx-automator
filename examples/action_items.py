@@ -52,14 +52,15 @@ class ActionItemsCollector:
         for issue_json in issues:
             issue = Issue(issue_json, end_date=TODAY)
 
-            if issue.author in ADMINS:
-                continue
-
             issue.process_events()
 
             # Required because some merged PRs come back as open.
             # E.g., https://github.com/sendgrid/python-http-client/pull/132
             if issue.merged:
+                continue
+
+            if issue.author in ADMINS:
+                self.process_pending_issue(issue)
                 continue
 
             if 'time_awaiting_contact' in issue.metrics or \
@@ -73,12 +74,15 @@ class ActionItemsCollector:
                    get_date(issue.last_admin_comment) < STUCK_DATE:
                     self.stuck_waiting[get_author(issue.last_admin_comment)].append(issue)
             else:
-                if issue.get_issue_category() == 'bug':
-                    if issue.created_at < BUG_DATE:
-                        self.open_bugs.append(issue)
-                else:
-                    if issue.created_at < ENHANCEMENT_DATE:
-                        self.open_enhancements.append(issue)
+                self.process_pending_issue(issue)
+
+    def process_pending_issue(self, issue: Issue) -> None:
+        issue_category = issue.get_issue_category()
+
+        if issue_category == 'bug' and issue.created_at < BUG_DATE:
+            self.open_bugs.append(issue)
+        elif issue_category == 'twilio_enhancement' and issue.created_at < ENHANCEMENT_DATE:
+            self.open_enhancements.append(issue)
 
 
 @lru_cache(maxsize=None)
@@ -142,4 +146,4 @@ def get_open_items(org: str, repo: str, start_date: str):
 
 
 if __name__ == '__main__':
-    ActionItemsCollector().run(start_date='2019-07-01')
+    ActionItemsCollector().run(start_date='2019-01-01')

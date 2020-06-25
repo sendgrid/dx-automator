@@ -11,7 +11,7 @@ from businesstime.holidays.usa import USFederalHolidays
 from common.admins import ADMINS
 
 ISSUE_CATEGORIES = {
-    'question': {'question'},
+    'question': {'question', 'getting started'},
     'support': {'support', 'non-library'},
     'bug': {'bug', 'docs', 'security'},
     'twilio_enhancement': {'twilio enhancement', 'sendgrid enhancement'},
