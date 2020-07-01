@@ -1,3 +1,4 @@
+import types
 from datetime import date, datetime, timedelta
 from functools import lru_cache
 from typing import List
@@ -36,15 +37,18 @@ class ActionItemsCollector:
             self.print_issues(f'{admin} - Issues needing response', self.response_needed[admin])
             self.print_issues(f'{admin} - Issues stuck waiting', self.stuck_waiting[admin])
 
-        self.print_issues('Aging bugs', self.open_bugs)
-        self.print_issues('Aging enhancements', self.open_enhancements)
+        # Sort aging items by reaction count (desc) and creation date (asc).
+        reaction_sort = lambda issue: (-issue.reaction_count, issue.created_at)
+        self.print_issues('Aging bugs', self.open_bugs, reaction_sort)
+        self.print_issues('Aging enhancements', self.open_enhancements, reaction_sort)
 
-    def print_issues(self, title: str, issues: List[Issue]):
+    def print_issues(self, title: str, issues: List[Issue], sort_key: types.FunctionType = None):
         if issues:
-            sorted_issues = sorted(issues, key=lambda issue: (not issue.is_pr, issue.created_at))
+            # Default sort PRs first and by creation date (asc).
+            sort_key = sort_key if sort_key else lambda issue: (not issue.is_pr, issue.created_at)
 
             print(f'\n{title}:')
-            print('\n'.join([issue.url for issue in sorted_issues]))
+            print('\n'.join([issue.url for issue in sorted(issues, key=sort_key)]))
 
     def process_repo(self, org: str, repo: str, start_date: str) -> None:
         issues = get_open_items(org, repo, start_date)
@@ -94,6 +98,9 @@ def get_open_items(org: str, repo: str, start_date: str):
     }
     createdAt
     url
+    reactions(content: THUMBS_UP) {
+      totalCount
+    }
     timelineItems(first: 100, itemTypes: [LABELED_EVENT UNLABELED_EVENT ISSUE_COMMENT
                                           %additional_event_names%]) {
         nodes {
