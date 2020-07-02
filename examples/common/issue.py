@@ -33,6 +33,7 @@ class Issue:
             self.type = issue_json['__typename']
             self.created_at = issue_json['createdAt']
             self.url = issue_json['url']
+            self.reaction_count = issue_json.get('reactions', {}).get('totalCount')
 
             if 'timelineItems' in issue_json:
                 self.events = issue_json['timelineItems']['nodes']
