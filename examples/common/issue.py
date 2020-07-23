@@ -172,6 +172,10 @@ class Issue:
                 self.add_response_time(self.last_community_comment, comment)
                 self.last_community_comment = None
 
+            if self.is_pr:
+                # Treat admin PR comments like unapproved review events.
+                self.waiting_for_feedback = comment
+
         else:
             if self.last_admin_comment:
                 self.last_community_comment = comment
