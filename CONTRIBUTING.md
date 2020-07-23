@@ -65,7 +65,7 @@ In order to make the process easier, we've included a [sample bug report templat
 We welcome direct contributions to the dx-automator code base. Thank you!
 
 ### How we use branches
-All PRs and changes will be made to the `development` branch. Once we have that branch stable, we will make merges to `master` and update the package managers.
+All PRs and changes will be made to the `main` branch.
 
 ### Development Environment ###
 
@@ -135,11 +135,11 @@ sys.stderr.write("\n")
 2. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
-   git checkout development
-   git pull upstream development
+   git checkout main
+   git pull upstream main
    ```
 
-3. Create a new topic branch (off the main project development branch) to
+3. Create a new topic branch (off the main project `main` branch) to
    contain your feature, change, or fix:
 
    ```bash
@@ -156,10 +156,10 @@ sys.stderr.write("\n")
 
 4b. Create or update the example code that demonstrates the functionality of this change to the code.
 
-5. Locally merge (or rebase) the upstream development branch into your topic branch:
+5. Locally merge (or rebase) the upstream `main` branch into your topic branch:
 
    ```bash
-   git pull [--rebase] upstream master
+   git pull [--rebase] upstream main
    ```
 
 6. Push your topic branch up to your fork:
@@ -169,7 +169,7 @@ sys.stderr.write("\n")
    ```
 
 7. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
-    with a clear title and description against the `master` branch. All tests must be passing before we will review the PR.
+    with a clear title and description against the `main` branch. All tests must be passing before we will review the PR.
 
 If you have any additional questions, please feel free to [email](mailto:dx@sendgrid.com) us or create an issue in this repo.
 

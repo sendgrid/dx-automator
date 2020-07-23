@@ -4,10 +4,12 @@ This tool is intended to help make managing multiple Github repositories much ea
 
 We will deploy the code to pypi and create an initial release once the MVP is ready. Thank you for your support!
 
-## Contributing
-Everyone who participates in our repo is expected to comply with our [Code of Conduct](https://github.com/sendgrid/dx-automator/blob/development/CODE_OF_CONDUCT.md).
+**The default branch name for this repository has been changed to `main` as of 07/23/2020.**
 
-We welcome [contributions](https://github.com/sendgrid/dx-automator/blob/development/CONTRIBUTING.md) in the form of issues, pull requests and code reviews. Or you can simply shoot us an [email](mailto:dx@sendgrid.com).
+## Contributing
+Everyone who participates in our repo is expected to comply with our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+We welcome [contributions](CONTRIBUTING.md) in the form of issues, pull requests and code reviews. Or you can simply shoot us an [email](mailto:dx@sendgrid.com).
 
 ## Attributions
 We believe in open source and want to give credit where it's due. We used an amazing tutorial at [testdriven.io](https://testdriven.io) to guide us in setting up a solid foundation using flask, docker, and (eventually) node and react. This tutorial helped us build and iterate this project successfully!
