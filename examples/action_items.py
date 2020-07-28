@@ -4,7 +4,7 @@ from functools import lru_cache
 from typing import List
 
 from common.admins import ADMINS
-from common.issue import DATE_TIME_FORMAT, get_author, get_date, get_issues, Issue, substitute
+from common.issue import DATE_TIME_FORMAT, get_date, get_issues, Issue, substitute
 from common.repos import ALL_REPOS
 
 STUCK_DATE = str(date.today() - timedelta(days=30))
@@ -16,26 +16,29 @@ TODAY = datetime.utcnow().strftime(DATE_TIME_FORMAT)
 class ActionItemsCollector:
 
     def __init__(self):
-        self.contact_needed = []
-        self.response_needed = {}
-        self.stuck_waiting = {}
+        self.issues_contact_needed = []
+        self.issues_response_needed = []
+        self.issues_stuck_waiting = []
+
+        self.prs_contact_needed = []
+        self.prs_response_needed = []
+        self.prs_stuck_waiting = []
+
         self.open_bugs = []
         self.open_enhancements = []
-
-        for admin in ADMINS:
-            self.response_needed[admin] = []
-            self.stuck_waiting[admin] = []
 
     def run(self, start_date: str) -> None:
         for org in ALL_REPOS:
             for repo in ALL_REPOS[org]:
                 self.process_repo(org, repo, start_date)
 
-        self.print_issues('Issues needing contact', self.contact_needed)
+        self.print_issues('Issues needing contact', self.issues_contact_needed)
+        self.print_issues('Issues needing response', self.issues_response_needed)
+        self.print_issues('Issues stuck waiting', self.issues_stuck_waiting)
 
-        for admin in ADMINS:
-            self.print_issues(f'{admin} - Issues needing response', self.response_needed[admin])
-            self.print_issues(f'{admin} - Issues stuck waiting', self.stuck_waiting[admin])
+        self.print_issues('PRs needing contact', self.prs_contact_needed)
+        self.print_issues('PRs needing response', self.prs_response_needed)
+        self.print_issues('PRs stuck waiting', self.prs_stuck_waiting)
 
         # Sort aging items by reaction count (desc) and creation date (asc).
         reaction_sort = lambda issue: (-issue.reaction_count, issue.created_at)
@@ -44,8 +47,8 @@ class ActionItemsCollector:
 
     def print_issues(self, title: str, issues: List[Issue], sort_key: types.FunctionType = None):
         if issues:
-            # Default sort PRs first and by creation date (asc).
-            sort_key = sort_key if sort_key else lambda issue: (not issue.is_pr, issue.created_at)
+            # Default sort by creation date (asc).
+            sort_key = sort_key if sort_key else lambda issue: issue.created_at
 
             print(f'\n{title}:')
             print('\n'.join([issue.url for issue in sorted(issues, key=sort_key)]))
@@ -67,16 +70,21 @@ class ActionItemsCollector:
                 self.process_pending_issue(issue)
                 continue
 
-            if 'time_awaiting_contact' in issue.metrics or \
-               'time_awaiting_contact_pr' in issue.metrics:
-                self.contact_needed.append(issue)
-            elif 'time_awaiting_response' in issue.metrics or \
-                 'time_awaiting_response_pr' in issue.metrics:
-                self.response_needed[get_author(issue.last_admin_comment)].append(issue)
+            if 'time_awaiting_contact' in issue.metrics:
+                self.issues_contact_needed.append(issue)
+            elif 'time_awaiting_response' in issue.metrics:
+                self.issues_response_needed.append(issue)
+            elif 'time_awaiting_contact_pr' in issue.metrics:
+                self.prs_contact_needed.append(issue)
+            elif 'time_awaiting_response_pr' in issue.metrics:
+                self.prs_response_needed.append(issue)
             elif issue.waiting_for_feedback:
                 if get_date(issue.waiting_for_feedback) < STUCK_DATE and \
                    get_date(issue.last_admin_comment) < STUCK_DATE:
-                    self.stuck_waiting[get_author(issue.last_admin_comment)].append(issue)
+                    if issue.is_pr:
+                        self.prs_stuck_waiting.append(issue)
+                    else:
+                        self.issues_stuck_waiting.append(issue)
             else:
                 self.process_pending_issue(issue)
 
