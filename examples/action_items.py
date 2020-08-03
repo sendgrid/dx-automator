@@ -95,6 +95,8 @@ class ActionItemsCollector:
             self.open_bugs.append(issue)
         elif issue_category == 'twilio_enhancement' and issue.created_at < ENHANCEMENT_DATE:
             self.open_enhancements.append(issue)
+        elif issue_category == 'question':
+            self.issues_response_needed.append(issue)
 
 
 @lru_cache(maxsize=None)
