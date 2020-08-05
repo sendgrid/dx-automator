@@ -170,7 +170,11 @@ class Issue:
 
             if self.is_waiting_for_response:
                 self.add_response_time(self.last_community_comment, comment)
-                self.last_community_comment = None
+
+            # Clear the community comment since it's no longer needed. Either
+            # we were waiting for a response and it was clocked or we weren't
+            # and just commented on the issue anyway.
+            self.last_community_comment = None
 
             if self.is_pr:
                 # Treat admin PR comments like unapproved review events.
