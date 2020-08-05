@@ -15,7 +15,7 @@ class TestGitHubService(BaseTestCase):
         # TODO: This should be configurable
         test_users = [
             'mitsuhiko',
-            'ThiefMaster',
+            'Thief,
             'lepture',
             'jeffwidman',
             'untitaker',
@@ -50,7 +50,7 @@ class TestGitHubService(BaseTestCase):
         # TODO: This should be configurable
         test_users = [
             'mitsuhiko',
-            'ThiefMaster',
+            'Thief',
             'lepture',
             'jeffwidman',
             'untitaker',

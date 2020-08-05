@@ -70,7 +70,7 @@ All PRs and changes will be made to the `main` branch.
 ### Development Environment ###
 
 #### Using Docker ####
-You can use our Docker image to avoid setting up the development environment yourself.  See [USAGE.md](https://github.com/sendgrid/dx-automator/blob/master/docker/USAGE.md).
+You can use our Docker image to avoid setting up the development environment yourself.  See [USAGE.md](https://github.com/sendgrid/dx-automator/blob/HEAD/docker/USAGE.md).
 
 #### Install and Run Locally ####
 
