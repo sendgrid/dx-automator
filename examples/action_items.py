@@ -163,4 +163,4 @@ def get_open_items(org: str, repo: str, start_date: str):
 
 
 if __name__ == '__main__':
-    ActionItemsCollector().run(start_date='2018-10-20')
+    ActionItemsCollector().run(start_date='2018-10-10')
