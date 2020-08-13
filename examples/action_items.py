@@ -11,6 +11,7 @@ STUCK_DATE = str(date.today() - timedelta(days=30))
 BUG_DATE = str(date.today() - timedelta(days=20))
 ENHANCEMENT_DATE = str(date.today() - timedelta(days=60))
 TODAY = datetime.utcnow().strftime(DATE_TIME_FORMAT)
+TOP_ITEM_COUNT = 10
 
 
 class ActionItemsCollector:
@@ -27,10 +28,10 @@ class ActionItemsCollector:
         self.open_bugs = []
         self.open_enhancements = []
 
-    def run(self, start_date: str) -> None:
+    def run(self) -> None:
         for org in ALL_REPOS:
             for repo in ALL_REPOS[org]:
-                self.process_repo(org, repo, start_date)
+                self.process_repo(org, repo)
 
         self.print_issues('Issues needing contact', self.issues_contact_needed)
         self.print_issues('Issues needing response', self.issues_response_needed)
@@ -45,16 +46,20 @@ class ActionItemsCollector:
         self.print_issues('Aging bugs', self.open_bugs, reaction_sort)
         self.print_issues('Aging enhancements', self.open_enhancements, reaction_sort)
 
-    def print_issues(self, title: str, issues: List[Issue], sort_key: types.FunctionType = None):
+    def print_issues(self, title: str, issues: List[Issue], sort_key=None, reverse_sort=False):
         if issues:
-            # Default sort by creation date (asc).
-            sort_key = sort_key if sort_key else lambda issue: issue.created_at
+            if not sort_key:
+                # Default sort by creation date (desc).
+                sort_key = lambda issue: issue.created_at
+                reverse_sort = True
+
+            sorted_top_x = sorted(issues, key=sort_key, reverse=reverse_sort)[:TOP_ITEM_COUNT]
 
             print(f'\n{title}:')
-            print('\n'.join([issue.url for issue in sorted(issues, key=sort_key)]))
+            print('\n'.join([issue.url for issue in sorted_top_x]))
 
-    def process_repo(self, org: str, repo: str, start_date: str) -> None:
-        issues = get_open_items(org, repo, start_date)
+    def process_repo(self, org: str, repo: str) -> None:
+        issues = get_open_items(org, repo)
 
         for issue_json in issues:
             issue = Issue(issue_json, end_date=TODAY)
@@ -100,7 +105,7 @@ class ActionItemsCollector:
 
 
 @lru_cache(maxsize=None)
-def get_open_items(org: str, repo: str, start_date: str):
+def get_open_items(org: str, repo: str):
     fragment_template = """
 ... on %issue_type% {
     author {
@@ -159,8 +164,8 @@ def get_open_items(org: str, repo: str, start_date: str):
                         for fragment in fragment_params]
 
     return list(get_issues(org, repo, ''.join(inline_fragments),
-                           issue_state='open', start_date=start_date))
+                           issue_state='open'))
 
 
 if __name__ == '__main__':
-    ActionItemsCollector().run(start_date='2018-10-10')
+    ActionItemsCollector().run()
