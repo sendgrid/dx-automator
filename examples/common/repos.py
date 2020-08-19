@@ -34,6 +34,7 @@ ALL_REPOS = {
         'twilio-python',
         'twilio-ruby',
         'twilio-cli',
-        'twilio-cli-core'
+        'twilio-cli-core',
+        'twilio-oai'
     ]
 }
