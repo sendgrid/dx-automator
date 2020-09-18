@@ -46,16 +46,32 @@ class ActionItemsCollector:
         self.print_issues('Aging bugs', self.open_bugs, reaction_sort)
         self.print_issues('Aging enhancements', self.open_enhancements, reaction_sort)
 
-    def print_issues(self, title: str, issues: List[Issue], sort_key=None, reverse_sort=False):
+    def print_issues(self, title: str, issues: List[Issue],
+                     sort_key=None, reverse_sort=False, divider=None):
         if issues:
             if not sort_key:
                 # Default sort by creation date (desc).
                 sort_key = lambda issue: issue.created_at
                 reverse_sort = True
 
+                # Default split before/after 2020
+                divider = lambda issue: issue.created_at >= '2020'
+
             sorted_top_x = sorted(issues, key=sort_key, reverse=reverse_sort)[:TOP_ITEM_COUNT]
 
             print(f'\n{title}:')
+
+            if divider:
+                top, bottom = [], []
+                for x in sorted_top_x:
+                    (top if divider(x) else bottom).append(x)
+
+                if top and bottom:
+                    print('\n'.join([issue.url for issue in top]))
+                    print('-' * 40)
+                    print('\n'.join([issue.url for issue in bottom]))
+                    return
+
             print('\n'.join([issue.url for issue in sorted_top_x]))
 
     def process_repo(self, org: str, repo: str) -> None:
