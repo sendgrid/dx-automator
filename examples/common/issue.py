@@ -147,9 +147,12 @@ class Issue:
         commit = commit_event['commit']
 
         if get_author(commit) not in ADMINS:
-            self.comment(commit)
             status = commit['status'] or {}
             self.checks_passed = commit if status.get('state') == 'SUCCESS' else None
+
+            # Only treat this as a comment if the checks passed.
+            if self.checks_passed:
+                self.comment(commit)
 
     def review(self, review_event: Dict) -> None:
         if get_author(review_event) in ADMINS:
