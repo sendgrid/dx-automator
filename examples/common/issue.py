@@ -146,13 +146,14 @@ class Issue:
     def commit(self, commit_event: Dict) -> None:
         commit = commit_event['commit']
 
-        if get_author(commit) not in ADMINS:
-            status = commit['status'] or {}
-            self.checks_passed = commit if status.get('state') == 'SUCCESS' else None
+        # status is sometimes null so fallback to the rollup if needed.
+        # https://github.community/t/graphql-api-response-for-commit-status-is-null/
+        status = commit['status'] or commit['statusCheckRollup'] or {}
+        self.checks_passed = commit if status.get('state') == 'SUCCESS' else None
 
-            # Only treat this as a comment if the checks passed.
-            if self.checks_passed:
-                self.comment(commit)
+        # Treat this as a comment if from non-admin and the checks passed.
+        if get_author(commit) not in ADMINS and self.checks_passed:
+            self.comment(commit)
 
     def review(self, review_event: Dict) -> None:
         if get_author(review_event) in ADMINS:

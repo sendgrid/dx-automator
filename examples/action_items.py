@@ -170,7 +170,7 @@ def get_open_items(org: str, repo: str):
             'additional_event_names': ['PULL_REQUEST_COMMIT', 'PULL_REQUEST_REVIEW',
                                        'MERGED_EVENT'],
             'additional_event_types': [
-                '... on PullRequestCommit {commit {committedDate author {user {login}} status {state}}}',
+                '... on PullRequestCommit {commit {committedDate author {user {login}} status {state} statusCheckRollup {state}}}',
                 '... on PullRequestReview {createdAt state author {login}}',
                 '... on MergedEvent {createdAt}']
         }
