@@ -4,4 +4,5 @@ ADMINS = {
     'garethpaul',
     'JenniferMah',
     'thinkingserious',
+    'shwetha-manvinkurke'
 }
