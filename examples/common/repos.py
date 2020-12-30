@@ -35,6 +35,7 @@ ALL_REPOS = {
         'twilio-ruby',
         'twilio-cli',
         'twilio-cli-core',
-        'twilio-oai'
+        'twilio-oai',
+        'plugin-debugger'
     ]
 }
