@@ -36,6 +36,7 @@ ALL_REPOS = {
         'twilio-cli',
         'twilio-cli-core',
         'twilio-oai',
-        'plugin-debugger'
+        'plugin-debugger',
+        'homebrew-brew'
     ]
 }
