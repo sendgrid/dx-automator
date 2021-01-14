@@ -41,11 +41,6 @@ class ActionItemsCollector:
         self.print_issues('PRs needing response', self.prs_response_needed)
         self.print_issues('PRs stuck waiting', self.prs_stuck_waiting)
 
-        # Sort aging items by reaction count (desc) and creation date (asc).
-        reaction_sort = lambda issue: (-issue.reaction_count, issue.created_at)
-        self.print_issues('Aging bugs', self.open_bugs, reaction_sort)
-        self.print_issues('Aging enhancements', self.open_enhancements, reaction_sort)
-
     def print_issues(self, title: str, issues: List[Issue],
                      sort_key=None, reverse_sort=False, divider=None):
         if issues:
@@ -118,6 +113,16 @@ class ActionItemsCollector:
             self.open_enhancements.append(issue)
         elif issue_category == 'question':
             self.issues_response_needed.append(issue)
+
+    def get_aging_items(self) -> None:
+        for org in ALL_REPOS:
+            for repo in ALL_REPOS[org]:
+                self.process_repo(org, repo)
+
+        # Sort aging items by reaction count (desc) and creation date (asc).
+        reaction_sort = lambda issue: (-issue.reaction_count, issue.created_at)
+        self.print_issues('Aging bugs', self.open_bugs, reaction_sort)
+        self.print_issues('Aging enhancements', self.open_enhancements, reaction_sort)
 
 
 @lru_cache(maxsize=None)
