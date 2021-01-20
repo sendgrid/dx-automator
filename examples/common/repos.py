@@ -17,7 +17,7 @@ ALL_REPOS = {
         'csharp-http-client',
         'rest',
         'java-http-client',
-        'nodejs-http-client',
+        # 'nodejs-http-client',
         'php-http-client',
         'python-http-client',
         'ruby-http-client',
