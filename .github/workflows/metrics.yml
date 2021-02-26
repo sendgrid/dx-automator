@@ -34,8 +34,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_CREDS: ${{ secrets.GOOGLE_API_CREDS }}
         run: |
-          output=$(source venv/bin/activate && python examples/metrics.py)
-          output="${output//'%'/'%25'}"
-          output="${output//$'\n'/'%0A'}"
-          output="${output//$'\r'/'%0D'}"
-          echo "::set-output name=items::$output"
+          echo "$(source venv/bin/activate && python examples/metrics.py)"
