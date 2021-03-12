@@ -22,7 +22,7 @@ for org in ALL_REPOS:
     for repo in ALL_REPOS[org]:
         items = get_items(org, repo, 'issues')
         for item in items:
-            updated_at = datetime.datetime.strptime(item['updatedAt'], '%Y-%m-%dT%H:%M:%SZ')
+            updated_at = datetime.datetime.strptime(item['closedAt'], '%Y-%m-%dT%H:%M:%SZ')
             text = "{}, {} , {}".format(repo, item['url'], updated_at.date())
             print(text)
             total_closed_issues = total_closed_issues + 1
