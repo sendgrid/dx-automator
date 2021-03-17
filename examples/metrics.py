@@ -74,6 +74,8 @@ class MetricCollector:
         end_date = get_date_time(end_date)
 
         issues = get_repo_issues(org, repo)
+        issue_count = 0
+        pr_count = 0
 
         for issue_json in issues:
             issue = Issue(issue_json, end_date=end_date)
@@ -118,6 +120,13 @@ class MetricCollector:
                 time_open = get_delta_days(issue.created_at, end_date)
 
                 nodes['nodes'][issue.url]['metrics']['time_open'] = time_open
+
+                if issue.is_pr:
+                    pr_count += 1
+                    nodes['nodes'][issue.url]['metrics']['pr_count'] = pr_count
+                else:
+                    issue_count += 1
+                    nodes['nodes'][issue.url]['metrics']['issue_count'] = issue_count
 
     def add_time_to_resolve(self, issue: Issue) -> None:
         for ext in {'', '_pr'}:
