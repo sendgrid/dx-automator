@@ -1,3 +1,12 @@
+TEST_REPOS = {
+    'sendgrid': [
+        'sendgrid-csharp'
+    ],
+    'twilio': [
+        'twilio-node'
+    ]  
+}
+
 ALL_REPOS = {
     'sendgrid': [
         'sendgrid-csharp',

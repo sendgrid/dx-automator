@@ -7,12 +7,12 @@ from typing import Dict, List
 
 from common.admins import ADMINS
 from common.google_api import get_spreadsheets
-from common.issue import substitute, get_issues, Issue, get_delta_days, print_json, \
-    get_date_time
-from common.repos import ALL_REPOS
+from common.issue import substitute, get_issues, Issue, get_delta_days, print_json, get_date_time
+from common.repos import TEST_REPOS
+ALL_REPOS = TEST_REPOS
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
-GOOGLE_SHEET_NAME = 'Sheet1'
+GOOGLE_SHEET_NAME = 'Daily'
 
 
 def base_type():
@@ -286,8 +286,7 @@ def run_backfill() -> None:
 
 def run_today() -> None:
     today = datetime.now().strftime(DATE_TIME_FORMAT)
-    MetricCollector().run(start_date='2020-01-01',
-                          end_date=today)
+    MetricCollector().run(start_date=today, end_date=today)
 
 
 if __name__ == '__main__':
