@@ -47,7 +47,6 @@ class MetricCollector:
             print('These issues need a "type" label:')
             for issue in self.untagged_issues:
                 print(issue.url)
-            return
 
         for org in global_node['nodes']:
             org_node = global_node['nodes'][org]
@@ -81,33 +80,32 @@ class MetricCollector:
 
             issue.process_events()
 
-            if issue.created_at >= start_date:
-                issue_category = issue.get_issue_category()
+            issue_category = issue.get_issue_category()
 
-                self.add_time_to_resolve(issue)
+            self.add_time_to_resolve(issue)
 
-                if 'time_to_close' in issue.metrics:
-                    time_to_close = issue.metrics.pop('time_to_close')
+            if 'time_to_close' in issue.metrics:
+                time_to_close = issue.metrics.pop('time_to_close')
 
-                    if issue.get_issue_status() not in ['duplicate', 'invalid']:
-                        if issue.first_admin_comment:
-                            if issue_category:
-                                issue.metrics[f'time_to_close_{issue_category}'] = time_to_close
-                            else:
-                                self.untagged_issues.append(issue)
+                if issue.get_issue_status() not in ['duplicate', 'invalid']:
+                    if issue.first_admin_comment:
+                        if issue_category:
+                            issue.metrics[f'time_to_close_{issue_category}'] = time_to_close
+                        else:
+                            self.untagged_issues.append(issue)
 
-                if 'time_awaiting_resolution' in issue.metrics:
-                    resolution = issue.metrics.pop('time_awaiting_resolution')
+            if 'time_awaiting_resolution' in issue.metrics:
+                resolution = issue.metrics.pop('time_awaiting_resolution')
 
-                    if issue_category:
-                        issue.metrics[f'time_awaiting_resolution_{issue_category}'] = resolution
-                    else:
-                        self.untagged_issues.append(issue)
+                if issue_category:
+                    issue.metrics[f'time_awaiting_resolution_{issue_category}'] = resolution
+                else:
+                    self.untagged_issues.append(issue)
 
-                if not issue.first_admin_comment:
-                    issue.metrics.pop('time_to_close_pr', None)
+            if not issue.first_admin_comment:
+                issue.metrics.pop('time_to_close_pr', None)
 
-                nodes['nodes'][issue.url]['metrics'] = issue.metrics
+            nodes['nodes'][issue.url]['metrics'] = issue.metrics
 
             if not issue.closed:
                 time_open = get_delta_days(issue.created_at, end_date)
@@ -149,7 +147,7 @@ class MetricCollector:
         for metric_id, values in metrics.items():
             node['metrics'][metric_id] = {
                 'values': sorted(values),
-                'count': values,
+                'count': len(values),
                 'min': min(values),
                 'max': max(values),
                 'mean': statistics.mean(values),
@@ -157,7 +155,7 @@ class MetricCollector:
             }
 
     def summarize(self, name: str, reporting_date: str, node: Dict) -> None:
-        repo_metrics = {'name': name, 'date': reporting_date}
+        repo_metrics = {'name': name, 'date': datetime.now().strftime(DATE_TIME_FORMAT)}
 
         metrics = node['metrics']
 
@@ -171,7 +169,7 @@ class MetricCollector:
     def output_google_sheet(self, reporting_period: str) -> None:
         if reporting_period == 'daily':
             google_sheet_name = GOOGLE_SHEET_NAME_DAILY
-        if reporting_period == 'daily':
+        if reporting_period == 'weekly':
             google_sheet_name = GOOGLE_SHEET_NAME_WEEKLY
 
         response = self.spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
@@ -304,7 +302,6 @@ def run_now(reporting_period: str) -> None:
 
 if __name__ == '__main__':
     reporting_period = sys.argv[1]
-    print(reporting_period)
     run_now(reporting_period)
 
     # run_backfill()
