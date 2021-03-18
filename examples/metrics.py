@@ -56,13 +56,13 @@ class MetricCollector:
                 self.aggregate(repo_node)
                 self.summarize(repo, reporting_period, repo_node)
 
-            self.aggregate(org_node)
-            self.summarize(org, reporting_period, org_node)
+            # self.aggregate(org_node)
+            # self.summarize(org, reporting_period, org_node)
 
-        self.aggregate(global_node)
-        self.summarize('global', reporting_period, global_node)
+        # self.aggregate(global_node)
+        # self.summarize('global', reporting_period, global_node)
 
-        print_json(self.metrics)
+        # print_json(self.metrics)
 
         self.output_google_sheet()
 
