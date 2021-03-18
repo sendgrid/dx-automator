@@ -297,15 +297,14 @@ def run_now(reporting_period: str) -> None:
     if reporting_period == 'daily':
         MetricCollector().run(start_date=today, end_date=today, reporting_period=reporting_period)
     if reporting_period == 'weekly':
-        start_date = today - timedelta(days=7)
+        start_date = datetime.strptime(today, DATE_TIME_FORMAT) - timedelta(days=7)
+        start_date = start_date.strftime(DATE_TIME_FORMAT)
         MetricCollector().run(start_date=start_date, end_date=today, reporting_period=reporting_period)
 
 
 if __name__ == '__main__':
     reporting_period = sys.argv[1]
-    if 'daily' or 'weekly' not in reporting_period:
-        print('this command requires one argument: daily | weekly')
-        sys.exit()
+    print(reporting_period)
     run_now(reporting_period)
 
     # run_backfill()
