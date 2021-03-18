@@ -8,8 +8,7 @@ from typing import Dict, List
 from common.admins import ADMINS
 from common.google_api import get_spreadsheets
 from common.issue import substitute, get_issues, Issue, get_delta_days, print_json, get_date_time
-from common.repos import TEST_REPOS
-ALL_REPOS = TEST_REPOS
+from common.repos import ALL_REPOS
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
 GOOGLE_SHEET_NAME = 'Daily'
