@@ -149,7 +149,7 @@ class MetricCollector:
         for metric_id, values in metrics.items():
             node['metrics'][metric_id] = {
                 'values': sorted(values),
-                'count': len(values),
+                'count': values,
                 'min': min(values),
                 'max': max(values),
                 'mean': statistics.mean(values),
