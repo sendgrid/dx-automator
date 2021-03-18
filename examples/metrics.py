@@ -1,4 +1,5 @@
 import statistics
+import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
 from functools import lru_cache
@@ -11,7 +12,8 @@ from common.issue import substitute, get_issues, Issue, get_delta_days, print_js
 from common.repos import ALL_REPOS
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
-GOOGLE_SHEET_NAME = 'Daily'
+GOOGLE_SHEET_NAME_DAILY = 'Daily'
+GOOGLE_SHEET_NAME_WEEKLY = 'Weekly'
 
 
 def base_type():
@@ -56,15 +58,7 @@ class MetricCollector:
                 self.aggregate(repo_node)
                 self.summarize(repo, reporting_period, repo_node)
 
-            # self.aggregate(org_node)
-            # self.summarize(org, reporting_period, org_node)
-
-        # self.aggregate(global_node)
-        # self.summarize('global', reporting_period, global_node)
-
-        # print_json(self.metrics)
-
-        self.output_google_sheet()
+        self.output_google_sheet(reporting_period=reporting_period)
 
     def process_repo(self, nodes: Dict,
                      org: str, repo: str,
@@ -174,9 +168,14 @@ class MetricCollector:
 
         self.all_metrics.append(repo_metrics)
 
-    def output_google_sheet(self):
+    def output_google_sheet(self, reporting_period: str) -> None:
+        if reporting_period == 'daily':
+            google_sheet_name = GOOGLE_SHEET_NAME_DAILY
+        if reporting_period == 'daily':
+            google_sheet_name = GOOGLE_SHEET_NAME_WEEKLY
+
         response = self.spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
-                                                  range=f'{GOOGLE_SHEET_NAME}!1:1').execute()
+                                                  range=f'{google_sheet_name}!1:1').execute()
         header = response.get('values', [[]])[0]
 
         values = []
@@ -194,12 +193,12 @@ class MetricCollector:
                     row.append(value)
 
         self.spreadsheets.values().update(spreadsheetId=GOOGLE_SHEET_ID,
-                                          range=f'{GOOGLE_SHEET_NAME}!1:1',
+                                          range=f'{google_sheet_name}!1:1',
                                           valueInputOption='USER_ENTERED',
                                           body={'values': [header]}).execute()
 
         self.spreadsheets.values().append(spreadsheetId=GOOGLE_SHEET_ID,
-                                          range=f'{GOOGLE_SHEET_NAME}!A2:A',
+                                          range=f'{google_sheet_name}!A2:A',
                                           valueInputOption='USER_ENTERED',
                                           body={'values': values}).execute()
 
@@ -292,13 +291,22 @@ def run_backfill() -> None:
                               end_date=end_date)
 
 
-def run_today() -> None:
+def run_now(reporting_period: str) -> None:
     today = datetime.now().strftime(DATE_TIME_FORMAT)
-    MetricCollector().run(start_date=today, end_date=today)
+
+    if reporting_period == 'daily':
+        MetricCollector().run(start_date=today, end_date=today, reporting_period=reporting_period)
+    if reporting_period == 'weekly':
+        start_date = today - timedelta(days=7)
+        MetricCollector().run(start_date=start_date, end_date=today, reporting_period=reporting_period)
 
 
 if __name__ == '__main__':
-    run_today()
+    reporting_period = sys.argv[1]
+    if 'daily' or 'weekly' not in reporting_period:
+        print('this command requires one argument: daily | weekly')
+        sys.exit()
+    run_now(reporting_period)
 
     # run_backfill()
 
