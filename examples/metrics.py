@@ -8,12 +8,13 @@ from typing import Dict, List
 
 from common.admins import ADMINS
 from common.google_api import get_spreadsheets
-from common.issue import substitute, get_issues, Issue, get_delta_days, print_json, get_date_time
+from common.issue import substitute, get_issues, Issue, get_delta_days, get_date_time
 from common.repos import ALL_REPOS
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
 GOOGLE_SHEET_NAME_DAILY = 'Daily'
 GOOGLE_SHEET_NAME_WEEKLY = 'Weekly'
+STALE_DAYS = 365
 
 
 def base_type():
@@ -42,7 +43,7 @@ class MetricCollector:
 
                 self.process_repo(repo_node, org, repo, start_date, end_date)
 
-        # If we have any untagged issues, print them and exit.
+        # If we have any untagged issues, print them
         if self.untagged_issues:
             print('These issues need a "type" label:')
             for issue in self.untagged_issues:
@@ -55,7 +56,8 @@ class MetricCollector:
                 repo_node = org_node['nodes'][repo]
 
                 self.aggregate(repo_node)
-                self.summarize(repo, reporting_period, repo_node)
+                name = f'https://github.com/{org}/{repo}'
+                self.summarize(name, reporting_period, repo_node)
 
         self.output_google_sheet(reporting_period=reporting_period)
 
@@ -64,10 +66,10 @@ class MetricCollector:
                      start_date: str, end_date: str) -> None:
         start_date = get_date_time(start_date)
         end_date = get_date_time(end_date)
+        stale_date = datetime.strptime(datetime.now().strftime(DATE_TIME_FORMAT), DATE_TIME_FORMAT) - timedelta(days=STALE_DAYS)
+        stale_date = get_date_time(stale_date.strftime(DATE_TIME_FORMAT))
 
         issues = get_repo_issues(org, repo)
-        issue_count = 0
-        pr_count = 0
 
         for issue_json in issues:
             issue = Issue(issue_json, end_date=end_date)
@@ -78,45 +80,52 @@ class MetricCollector:
             if issue.created_at > end_date:
                 continue
 
+            if issue.created_at < stale_date:
+                continue
+
             issue.process_events()
 
-            issue_category = issue.get_issue_category()
+            if issue.created_at >= start_date:
+                issue_category = issue.get_issue_category()
 
-            self.add_time_to_resolve(issue)
+                self.add_time_to_resolve(issue)
 
-            if 'time_to_close' in issue.metrics:
-                time_to_close = issue.metrics.pop('time_to_close')
+                if 'time_to_close' in issue.metrics:
+                    time_to_close = issue.metrics.pop('time_to_close')
 
-                if issue.get_issue_status() not in ['duplicate', 'invalid']:
-                    if issue.first_admin_comment:
-                        if issue_category:
-                            issue.metrics[f'time_to_close_{issue_category}'] = time_to_close
-                        else:
-                            self.untagged_issues.append(issue)
+                    if issue.get_issue_status() not in ['duplicate', 'invalid']:
+                        if issue.first_admin_comment:
+                            if issue_category:
+                                issue.metrics[f'time_to_close_{issue_category}'] = time_to_close
+                            else:
+                                self.untagged_issues.append(issue)
 
-            if 'time_awaiting_resolution' in issue.metrics:
-                resolution = issue.metrics.pop('time_awaiting_resolution')
+                if 'time_awaiting_resolution' in issue.metrics:
+                    resolution = issue.metrics.pop('time_awaiting_resolution')
 
-                if issue_category:
-                    issue.metrics[f'time_awaiting_resolution_{issue_category}'] = resolution
-                else:
-                    self.untagged_issues.append(issue)
+                    if issue_category:
+                        issue.metrics[f'time_awaiting_resolution_{issue_category}'] = resolution
+                    else:
+                        self.untagged_issues.append(issue)
 
-            if not issue.first_admin_comment:
-                issue.metrics.pop('time_to_close_pr', None)
+                if not issue.first_admin_comment:
+                    issue.metrics.pop('time_to_close_pr', None)
 
             nodes['nodes'][issue.url]['metrics'] = issue.metrics
 
-            if not issue.closed:
-                time_open = get_delta_days(issue.created_at, end_date)
+            if issue.events != []:
+                if issue.events is not None:
+                    last_update = issue.events[-1].get('createdAt', None)
+                if last_update is None:
+                    last_update = issue.events[-1]['commit']['committedDate']
+            else:
+                last_update = issue.created_at
 
-                if issue.is_pr:
-                    pr_count += 1
-                    nodes['nodes'][issue.url]['metrics']['pr_count'] = pr_count
+            if not issue.closed and last_update > stale_date:
+                time_open = get_delta_days(issue.created_at, end_date)
+                if '/pull/' in issue.url:
                     nodes['nodes'][issue.url]['metrics']['time_open_pr'] = time_open
                 else:
-                    issue_count += 1
-                    nodes['nodes'][issue.url]['metrics']['issue_count'] = issue_count
                     nodes['nodes'][issue.url]['metrics']['time_open_issue'] = time_open
 
     def add_time_to_resolve(self, issue: Issue) -> None:

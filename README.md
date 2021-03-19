@@ -44,6 +44,8 @@ source venv/bin/activate
 
 ```bash
 python ./examples/action_items.py
+python ./examples/metrics.py daily
+python ./examples/metrics.py weekly
 ```
 
 ### Create Local Docker Machine
