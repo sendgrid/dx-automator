@@ -70,6 +70,8 @@ class MetricCollector:
         stale_date = get_date_time(stale_date.strftime(DATE_TIME_FORMAT))
 
         issues = get_repo_issues(org, repo)
+        issue_count = 0
+        pr_count = 0
 
         for issue_json in issues:
             issue = Issue(issue_json, end_date=end_date)
@@ -124,8 +126,12 @@ class MetricCollector:
             if not issue.closed and last_update > stale_date:
                 time_open = get_delta_days(issue.created_at, end_date)
                 if '/pull/' in issue.url:
+                    pr_count += 1
+                    nodes['nodes'][issue.url]['metrics']['pr_count'] = pr_count
                     nodes['nodes'][issue.url]['metrics']['time_open_pr'] = time_open
                 else:
+                    issue_count += 1
+                    nodes['nodes'][issue.url]['metrics']['issue_count'] = issue_count
                     nodes['nodes'][issue.url]['metrics']['time_open_issue'] = time_open
 
     def add_time_to_resolve(self, issue: Issue) -> None:
