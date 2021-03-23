@@ -1,6 +1,4 @@
-# This is a basic workflow to help you get started with Actions
-
-name: metrics
+name: metrics weekly
 
 # Controls when the action will run.
 on:
@@ -29,9 +27,9 @@ jobs:
         run: make install
 
       - name: Run Metrics
-        id: metrics
+        id: metrics_weekly
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_CREDS: ${{ secrets.GOOGLE_API_CREDS }}
         run: |
-          echo "$(source venv/bin/activate && python examples/metrics.py)"
+          echo "$(source venv/bin/activate && python examples/metrics.py weekly)"
