@@ -39,6 +39,7 @@ ALL_REPOS = {
         'plugin-debugger',
         'homebrew-brew',
         'twilio-go',
-        'twilio-oai-generator'
+        'twilio-oai-generator',
+        'terraform-provider-twilio'
     ]
 }
