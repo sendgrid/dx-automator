@@ -291,7 +291,8 @@ def get_issues(org: str, repo: str, fragments: str,
 query{{
     search(type: ISSUE,
            first: 50,
-           query: "{issue_type} {issue_state} %cursor% created:{start_date}..{end_date} repo:{org}/{repo}") {{
+           %cursor%,
+           query: "{issue_type} {issue_state} created:{start_date}..{end_date} repo:{org}/{repo}") {{
         nodes {{
             __typename
             {fragments}
