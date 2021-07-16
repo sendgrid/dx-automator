@@ -292,9 +292,7 @@ query{{
     search(type: ISSUE,
            first: 50,
            %cursor%,
-           query: "{issue_type} {issue_state}
-                   created:{start_date}..{end_date}
-                   repo:{org}/{repo}") {{
+           query: "{issue_type} {issue_state} created:{start_date}..{end_date} repo:{org}/{repo}") {{
         nodes {{
             __typename
             {fragments}
