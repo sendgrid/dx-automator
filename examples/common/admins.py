@@ -3,9 +3,11 @@ ADMINS = {
     'eshanholtz',
     'garethpaul',
     'JenniferMah',
-    'thinkingserious',
     'shwetha-manvinkurke',
     'Sindhura3',
     'onuzbee',
-    'ravali-rimmalapudi'
+    'ravali-rimmalapudi',
+    'kridai',
+    'shamantraghav',
+    'shrutiburman'
 }
