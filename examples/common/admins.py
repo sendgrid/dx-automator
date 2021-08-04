@@ -9,5 +9,6 @@ ADMINS = {
     'ravali-rimmalapudi',
     'kridai',
     'shamantraghav',
-    'shrutiburman'
+    'shrutiburman',
+    'thinkingserious'
 }
