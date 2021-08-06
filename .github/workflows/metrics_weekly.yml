@@ -4,7 +4,7 @@ name: metrics weekly
 on:
   # Triggers the workflow weekly on Fridays at 7AM PT
   schedule:
-    - cron: '0 15 * * 5'
+    - cron: '0 17 * * 5'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
