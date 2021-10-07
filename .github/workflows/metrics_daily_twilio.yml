@@ -1,11 +1,10 @@
-name: metrics daily
+name: twilio metrics daily
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow every business day at 7AM PT
+  # Triggers the workflow every business day at 9AM PT
   schedule:
-    - cron: '0 15 * * 1-5'
-
+    - cron: '0 16 * * 1-5'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -27,9 +26,9 @@ jobs:
         run: make install
 
       - name: Run Metrics
-        id: metrics_daily
+        id: metrics_daily_twilio
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_CREDS: ${{ secrets.GOOGLE_API_CREDS }}
         run: |
-          echo "$(source venv/bin/activate && python examples/metrics.py daily)"
+          echo "$(source venv/bin/activate && python examples/metrics.py --period daily --org twilio)"
