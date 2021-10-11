@@ -1,0 +1,34 @@
+name: sendgrid metrics weekly
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow weekly on Fridays at 10AM PT
+  schedule:
+      - cron: '0 17 * * 5'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "actionItems"
+  metrics:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+
+      - name: Install Dependencies
+        run: make install
+
+      - name: Run Metrics
+        id: metrics_weekly_sendgrid
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOOGLE_API_CREDS: ${{ secrets.GOOGLE_API_CREDS }}
+        run: |
+          echo "$(source venv/bin/activate && python examples/metrics.py --period weekly --org sendgrid)"

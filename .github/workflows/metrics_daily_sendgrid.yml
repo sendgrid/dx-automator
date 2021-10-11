@@ -1,11 +1,10 @@
-name: metrics weekly
+name: sendgrid metrics daily
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow weekly on Fridays at 7AM PT
+  # Triggers the workflow every business day at 8AM PT
   schedule:
-    - cron: '0 17 * * 5'
-
+    - cron: '0 15 * * 1-5'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -21,15 +20,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Setup Python
+        id: setup_python
         uses: actions/setup-python@v2
 
       - name: Install Dependencies
+        id: install_deps
         run: make install
 
       - name: Run Metrics
-        id: metrics_weekly
+        id: metrics_daily_sendgrid
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_CREDS: ${{ secrets.GOOGLE_API_CREDS }}
         run: |
-          echo "$(source venv/bin/activate && python examples/metrics.py weekly)"
+          echo "$(source venv/bin/activate && python examples/metrics.py --period daily --org sendgrid)"

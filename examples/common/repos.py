@@ -17,14 +17,10 @@ ALL_REPOS = {
         'csharp-http-client',
         'rest',
         'java-http-client',
-        # 'nodejs-http-client',
         'php-http-client',
         'python-http-client',
         'ruby-http-client',
         'sendgrid-oai',
-        # 'open-source-library-data-collector',
-        # 'dx-automator',
-        # 'dx-mobile'
     ],
     'twilio': [
         'twilio-csharp',
@@ -43,3 +39,5 @@ ALL_REPOS = {
         'terraform-provider-twilio'
     ]
 }
+
+ALL_REPOS_CONSOLIDATED = ALL_REPOS['twilio'] + ALL_REPOS['sendgrid']
