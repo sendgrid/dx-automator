@@ -15,6 +15,8 @@ from common.repos import ALL_REPOS, ALL_REPOS_CONSOLIDATED
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
 GOOGLE_SHEET_NAME_DAILY = 'Daily'
 GOOGLE_SHEET_NAME_WEEKLY = 'Weekly'
+DAILY = 'daily'
+WEEKLY = 'weekly'
 TWILIO = 'twilio'
 SENDGRID = 'sendgrid'
 STALE_DAYS = 365
@@ -43,18 +45,16 @@ class MetricCollector:
         repos_to_exclude = run_options['exclude']
 
         repos = repos_to_include or ALL_REPOS_CONSOLIDATED
-        orgs = [TWILIO, SENDGRID]
 
         if org_specified:
             repos = ALL_REPOS[org_specified]
-            orgs = [org_specified]
-        if repos_to_exclude:
-            repos = list(set(ALL_REPOS_CONSOLIDATED) - set(repos_to_exclude))
+        if repos_to_include or repos_to_exclude:
+            repos = set(repos_to_include + repos) - set(repos_to_exclude)
 
         print(f'repos to run the metrics on: {repos}')
         global_node = self.metrics
 
-        for org in orgs:
+        for org in ALL_REPOS:
             org_node = global_node['nodes'][org]
 
             for repo in ALL_REPOS[org]:
@@ -200,9 +200,9 @@ class MetricCollector:
         self.all_metrics.append(repo_metrics)
 
     def output_google_sheet(self, reporting_period: str) -> None:
-        if reporting_period == 'daily':
+        if reporting_period == DAILY:
             google_sheet_name = GOOGLE_SHEET_NAME_DAILY
-        if reporting_period == 'weekly':
+        if reporting_period == WEEKLY:
             google_sheet_name = GOOGLE_SHEET_NAME_WEEKLY
 
         response = self.spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
@@ -318,8 +318,11 @@ def run_backfill() -> None:
     fridays = get_date_range('2020-05-22', datetime.now().strftime(DATE_TIME_FORMAT))
 
     for end_date in chain(mondays, fridays):
-        MetricCollector().run(start_date='2020-01-01',
-                              end_date=end_date)
+        options = {
+            'start_date': '2020-01-01',
+            'end_date': end_date,
+        }
+        MetricCollector().run(options)
 
 
 def run_now(reporting_period: str, org: str, to_include: list, to_exclude: list) -> None:
@@ -333,9 +336,9 @@ def run_now(reporting_period: str, org: str, to_include: list, to_exclude: list)
         'exclude': to_exclude
     }
 
-    if reporting_period == 'daily':
+    if reporting_period == DAILY:
         MetricCollector().run(options)
-    if reporting_period == 'weekly':
+    if reporting_period == WEEKLY:
         start_date = datetime.strptime(today, DATE_TIME_FORMAT) - timedelta(days=7)
         start_date = start_date.strftime(DATE_TIME_FORMAT)
         options['start_date'] = start_date
@@ -344,14 +347,18 @@ def run_now(reporting_period: str, org: str, to_include: list, to_exclude: list)
 
 def parse_args():
     options_parser = argparse.ArgumentParser(description='dx-automator')
-    options_parser.add_argument('--period', '-p', default='daily', choices=['daily', 'weekly'])
-
-    group = options_parser.add_mutually_exclusive_group()
-    group.add_argument('--exclude', '-e', nargs='*', default=[],
-                       choices=ALL_REPOS_CONSOLIDATED)
-    group.add_argument('--include', '-i', nargs='*', default=[],
-                       choices=ALL_REPOS_CONSOLIDATED)
-    group.add_argument('--org', '-o', action='store', choices=[TWILIO, SENDGRID])
+    options_parser.add_argument('--period', '-p', required=True, help="period to run the metrics on",
+                                choices=[DAILY, WEEKLY])
+    options_parser.add_argument('--org', '-o', action='store',
+                                help="if none specified, runs on both twilio and sendgrid orgs",
+                                choices=[TWILIO, SENDGRID])
+    options_parser.add_argument('--exclude', '-e', nargs='*', help="libraries to exclude", default=[],
+                                choices=ALL_REPOS_CONSOLIDATED)
+    options_parser.add_argument('--include', '-i', nargs='*',
+                                help="libraries to include; when specified with no org, runs on just the specified "
+                                     "libraries",
+                                default=[],
+                                choices=ALL_REPOS_CONSOLIDATED)
 
     args = vars(options_parser.parse_args())
 
