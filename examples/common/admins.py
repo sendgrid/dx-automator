@@ -1,4 +1,5 @@
 ADMINS = {
+    'beebzz',
     'childish-sambino',
     'eshanholtz',
     'garethpaul',
