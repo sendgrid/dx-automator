@@ -1,6 +1,7 @@
 import argparse
 import statistics
 import sys
+import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 from functools import lru_cache
@@ -60,6 +61,8 @@ class MetricCollector:
             for repo in ALL_REPOS[org]:
                 if repo not in repos:
                     continue
+                # sleep 5 seconds to not hit the secondary rate limit
+                time.sleep(5)
                 repo_node = org_node['nodes'][repo]
                 self.process_repo(repo_node, org, repo, start_date, end_date)
 
