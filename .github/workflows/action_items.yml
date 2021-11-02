@@ -51,3 +51,21 @@ jobs:
           SLACK_FOOTER: Posted automatically using GitHub Actions
           MSG_MINIMAL: true
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+  notify-on-failure:
+    name: Slack notify on failure
+    if: ${{ failure() }}
+    needs: [actionItems]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON_EMOJI: ':github:'
+          SLACK_MESSAGE: ${{ format('Build {2} in {1} failed{3} {0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id, ':') }}
+          SLACK_TITLE: Action Items Failure
+          SLACK_USERNAME: GitHub Actions
+          SLACK_MSG_AUTHOR: twilio-dx
+          SLACK_FOOTER: Posted automatically using GitHub Actions
+          SLACK_WEBHOOK: ${{ secrets.ALERTS_SLACK_WEBHOOK }}
+          MSG_MINIMAL: true
