@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import sys
 from datetime import datetime, timedelta
 from typing import Dict, List
 
@@ -317,6 +318,9 @@ def post_query(query: str) -> List[Dict]:
         response = requests.post(url, json={'query': paged_query}, headers=headers)
         response.raise_for_status()
         response = response.json()
+
+        if response.raise_for_status() is not None:
+            sys.exit()
 
         if 'data' not in response:
             print_json(response)

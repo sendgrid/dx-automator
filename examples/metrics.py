@@ -62,7 +62,7 @@ class MetricCollector:
                 if repo not in repos:
                     continue
                 # sleep 5 seconds to not hit the secondary rate limit
-                time.sleep(5)
+                # time.sleep(5)
                 repo_node = org_node['nodes'][repo]
                 self.process_repo(repo_node, org, repo, start_date, end_date)
 
