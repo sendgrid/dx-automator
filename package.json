@@ -1,0 +1,39 @@
+{
+  "name": "dx-automator",
+  "version": "1.0.0",
+  "description": "This tool is intended to help make managing multiple Github repositories much easier for DX, DevRel, and Open Source Engineering teams.",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write 'actions/**/*.ts'",
+    "format-check": "prettier --check 'actions/**/*.ts'",
+    "lint": "eslint actions/**/*.ts",
+    "package-release": "ncc build lib/actions/release --license licenses.txt --out actions/release/dist",
+    "test": "jest",
+    "all": "npm run build && npm run format && npm run lint && npm test && npm run package-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sendgrid/dx-automator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.0",
+    "@octokit/rest": "^18.12.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "@types/node": "^16.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.8.1",
+    "@typescript-eslint/parser": "^5.8.1",
+    "@vercel/ncc": "^0.33.1",
+    "eslint": "^8.5.0",
+    "jest": "^27.4.5",
+    "js-yaml": "^4.1.0",
+    "prettier": "^2.5.1",
+    "ts-jest": "^27.1.2",
+    "typescript": "^4.5.4"
+  }
+}

@@ -1,0 +1,16 @@
+name: CreateGitHubRelease
+description: Creates a GitHub release for the repository
+inputs:
+  changelog-filename:
+    description: Filename of the changelog file
+    required: false
+    default: CHANGES.md
+  footer:
+    description: Custom release notes footer
+    required: false
+  assets:
+    description: Space-separated list of assets to include with the release
+    required: false
+runs:
+  using: node12
+  main: dist/index.js
