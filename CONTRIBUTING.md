@@ -7,7 +7,6 @@ Hello! Thank you for choosing to help contribute to one of the SendGrid open sou
 - [Improvements to the Codebase](#improvements-to-the-codebase)
   - [How we use branches](#how-we-use-branches)
   - [Development Environment](#development-environment)
-    - [Using Docker](#using-docker)
     - [Install and Run Locally](#install-and-run-locally)
       - [Prerequisites](#prerequisites)
       - [Initial setup:](#initial-setup)
@@ -69,9 +68,6 @@ All PRs and changes will be made to the `main` branch.
 
 ### Development Environment ###
 
-#### Using Docker ####
-You can use our Docker image to avoid setting up the development environment yourself.  See [USAGE.md](docker/USAGE.md).
-
 #### Install and Run Locally ####
 
 ##### Prerequisites #####
@@ -91,7 +87,6 @@ cd dx-automator
 
 Please see the Installation section in the README
 
-
 <a name="style-guidelines-and-naming-conventions"></a>
 
 ## Style Guidelines & Naming Conventions
@@ -105,18 +100,6 @@ Please run your code through:
 - [pyflakes](https://pypi.python.org/pypi/pyflakes)
 - [pylint](https://www.pylint.org/)
 - [pep8](https://pypi.python.org/pypi/pep8)
-
-## Debugging
-
-`docker logs <name of service>`
-
-To ensure your logging gets written in the container, within your Python app:
-
-```
-import sys
-sys.stderr.write("")
-sys.stderr.write("\n")
-```
 
 ## Creating a Pull Request<a name="creating-a-pull-request"></a>
 
