@@ -197,28 +197,48 @@ describe("ReleaseGitHub", () => {
         "not found in changelog"
       );
     });
+  });
 
-    test("excludes the footer for non-Twilio repos", () => {
+  describe("getFooter", () => {
+    test("contains the Twilio footer for Twilio repos", () => {
+      const release = new ReleaseGitHub(
+        { repo: { owner: "twilio", repo: "twilio-BASIC" } } as Context,
+        {} as ReleaseGitHubParams
+      );
+      const footer = release.getFooter("1.2.3");
+      expect(footer).toHaveLength(1);
+      expect(footer[0]).toContain("twilio-BASIC/1.2.3/index.html");
+    });
+
+    test("excludes the Twilio footer for non-Twilio repos", () => {
       const release = new ReleaseGitHub(
         { repo: { owner: "sendgrid", repo: "sendgrid-BASIC" } } as Context,
-        {
-          changelogFilename: CHANGES,
-        } as ReleaseGitHubParams
+        {} as ReleaseGitHubParams
       );
-      const releaseNotes = release.getReleaseNotes("2021.11.12");
-      expect(releaseNotes).not.toContain("twilio.com");
+      const footer = release.getFooter("1.2.3");
+      expect(footer).toHaveLength(0);
     });
 
     test("includes a custom footer", () => {
       const release = new ReleaseGitHub(
         { repo: { owner: "twilio", repo: "twilio-BASIC" } } as Context,
+        { customFooter: "this is just a test" } as ReleaseGitHubParams
+      );
+      const footer = release.getFooter("2021.11.12");
+      expect(footer).toHaveLength(2);
+      expect(footer[1]).toEqual("this is just a test");
+    });
+
+    test("expands expected variables in custom footer", () => {
+      const release = new ReleaseGitHub(
+        { repo: { owner: "twilio", repo: "twilio-BASIC" } } as Context,
         {
-          changelogFilename: CHANGES,
-          customFooter: "this is just a test",
+          customFooter: "the version is ${version}, okay",
         } as ReleaseGitHubParams
       );
-      const releaseNotes = release.getReleaseNotes("2021.11.12");
-      expect(releaseNotes).toContain("\nthis is just a test");
+      const footer = release.getFooter("1.2.3");
+      expect(footer).toHaveLength(2);
+      expect(footer[1]).toEqual("the version is 1.2.3, okay");
     });
   });
 });

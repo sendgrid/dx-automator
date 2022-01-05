@@ -161,7 +161,11 @@ export default class ReleaseGitHub {
     }
 
     if (this.params.customFooter) {
-      footer = footer.concat(this.params.customFooter.split("\n"));
+      const expandedFooter = this.params.customFooter.replace(
+        "${version}",
+        version
+      );
+      footer = footer.concat(expandedFooter.split("\n"));
     }
 
     return footer;
