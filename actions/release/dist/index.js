@@ -128,7 +128,7 @@ class ReleaseGitHub {
                 const assetContents = (0, fs_1.readFileSync)(asset, "binary");
                 const assetName = path.basename(asset);
                 const existingAsset = existingAssets[assetName];
-                const updateParams = Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId, name: assetName, data: assetContents, headers: { "Content-Type": "application/zip" } });
+                const updateParams = Object.assign(Object.assign({}, this.context.repo), { name: assetName, data: assetContents, headers: { "Content-Type": "application/zip" } });
                 if (existingAsset) {
                     core.info(`Updating GitHub release asset: id=${existingAsset.id}, name=${existingAsset.name}`);
                     yield this.octokit.repos.updateReleaseAsset(Object.assign(Object.assign({}, updateParams), { asset_id: existingAsset.id }));
@@ -136,7 +136,7 @@ class ReleaseGitHub {
                 }
                 else {
                     core.info(`Uploading GitHub release asset: ${asset}`);
-                    yield this.octokit.repos.uploadReleaseAsset(updateParams);
+                    yield this.octokit.repos.uploadReleaseAsset(Object.assign(Object.assign({}, updateParams), { release_id: releaseId }));
                 }
             }
             for (const asset of Object.values(existingAssets)) {

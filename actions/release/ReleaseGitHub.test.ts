@@ -132,9 +132,8 @@ describe("ReleaseGitHub", () => {
       expect(mockDeleteReleaseAsset).not.toHaveBeenCalled();
 
       const params: any = mockUpdateReleaseAsset.mock.calls[0][0];
-      expect(params.release_id).toEqual(123);
-      expect(params.asset_id).toEqual(456);
       expect(params.name).toEqual("CHANGES.md");
+      expect(params.asset_id).toEqual(456);
     });
 
     test("deletes an existing asset", async () => {

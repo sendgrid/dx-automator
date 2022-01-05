@@ -138,7 +138,6 @@ export default class ReleaseGitHub {
       const existingAsset = existingAssets[assetName];
       const updateParams = {
         ...this.context.repo,
-        release_id: releaseId,
         name: assetName,
         data: assetContents,
         headers: { "Content-Type": "application/zip" },
@@ -156,7 +155,10 @@ export default class ReleaseGitHub {
         delete existingAssets[assetName];
       } else {
         core.info(`Uploading GitHub release asset: ${asset}`);
-        await this.octokit.repos.uploadReleaseAsset(updateParams);
+        await this.octokit.repos.uploadReleaseAsset({
+          ...updateParams,
+          release_id: releaseId,
+        });
       }
     }
 
