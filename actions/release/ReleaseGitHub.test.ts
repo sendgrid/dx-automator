@@ -8,7 +8,10 @@ const CHANGES = path.join(__dirname, "fixtures", "CHANGES.md");
 const mockGetReleaseByTag = jest.fn();
 const mockUpdateRelease = jest.fn();
 const mockCreateRelease = jest.fn();
+const mockListReleaseAssets = jest.fn();
+const mockUpdateReleaseAsset = jest.fn();
 const mockUploadReleaseAsset = jest.fn();
+const mockDeleteReleaseAsset = jest.fn();
 
 jest.mock("@octokit/rest", () => ({
   Octokit: jest.fn(() => ({
@@ -16,7 +19,10 @@ jest.mock("@octokit/rest", () => ({
       getReleaseByTag: mockGetReleaseByTag,
       updateRelease: mockUpdateRelease,
       createRelease: mockCreateRelease,
+      listReleaseAssets: mockListReleaseAssets,
+      updateReleaseAsset: mockUpdateReleaseAsset,
       uploadReleaseAsset: mockUploadReleaseAsset,
+      deleteReleaseAsset: mockDeleteReleaseAsset,
     },
   })),
 }));
@@ -35,13 +41,16 @@ describe("ReleaseGitHub", () => {
     );
 
     test("fully creates a release", async () => {
-      mockGetReleaseByTag.mockReturnValue({ status: 404 });
-      mockCreateRelease.mockReturnValue({ status: 201, data: { id: 123 } });
-      mockUploadReleaseAsset.mockReturnValue({ status: 201 });
+      mockGetReleaseByTag.mockImplementation(() => {
+        throw new Error("NOT FOUND");
+      });
+      mockCreateRelease.mockReturnValue({ data: { id: 123 } });
+      mockListReleaseAssets.mockReturnValue({ data: [] });
 
       await release.run();
       expect(mockGetReleaseByTag).toHaveBeenCalledTimes(1);
       expect(mockCreateRelease).toHaveBeenCalledTimes(1);
+      expect(mockListReleaseAssets).toHaveBeenCalledTimes(1);
       expect(mockUploadReleaseAsset).toHaveBeenCalledTimes(1);
     });
   });
@@ -53,8 +62,10 @@ describe("ReleaseGitHub", () => {
     );
 
     test("creates a new release", async () => {
-      mockGetReleaseByTag.mockReturnValue({ status: 404 });
-      mockCreateRelease.mockReturnValue({ status: 201, data: { id: 123 } });
+      mockGetReleaseByTag.mockImplementation(() => {
+        throw new Error("NOT FOUND");
+      });
+      mockCreateRelease.mockReturnValue({ data: { id: 123 } });
 
       const releaseId = await release.release("1.2.3", "NOTES");
       expect(releaseId).toEqual(123);
@@ -72,8 +83,8 @@ describe("ReleaseGitHub", () => {
     });
 
     test("updates an existing release", async () => {
-      mockGetReleaseByTag.mockReturnValue({ status: 200, data: { id: 123 } });
-      mockUpdateRelease.mockReturnValue({ status: 200, data: { id: 123 } });
+      mockGetReleaseByTag.mockReturnValue({ data: { id: 123 } });
+      mockUpdateRelease.mockReturnValue({ data: { id: 123 } });
 
       const releaseId = await release.release("1.2.3", "NOTES");
       expect(releaseId).toEqual(123);
@@ -87,30 +98,6 @@ describe("ReleaseGitHub", () => {
       expect(updateReleaseParams.name).toEqual("1.2.3");
       expect(updateReleaseParams.body).toEqual("NOTES");
     });
-
-    test("handles create release API failures", async () => {
-      mockGetReleaseByTag.mockReturnValue({ status: 404 });
-      mockCreateRelease.mockReturnValue({
-        status: 500,
-        data: "Internal server error",
-      });
-
-      await expect(release.release("1.2.3", "NOTES")).rejects.toThrow(
-        "Unable to create"
-      );
-    });
-
-    test("handles update release API failures", async () => {
-      mockGetReleaseByTag.mockReturnValue({ status: 200, data: { id: 123 } });
-      mockUpdateRelease.mockReturnValue({
-        status: 500,
-        data: "Internal server error",
-      });
-
-      await expect(release.release("1.2.3", "NOTES")).rejects.toThrow(
-        "Unable to update"
-      );
-    });
   });
 
   describe("uploadAssets", () => {
@@ -119,25 +106,51 @@ describe("ReleaseGitHub", () => {
       { assets: [CHANGES] } as ReleaseGitHubParams
     );
 
-    test("uploads the asset", async () => {
-      mockUploadReleaseAsset.mockReturnValue({ status: 201 });
+    test("uploads a new asset", async () => {
+      mockListReleaseAssets.mockReturnValue({ data: [] });
 
       await release.uploadAssets(123);
+      expect(mockListReleaseAssets).toHaveBeenCalledTimes(1);
       expect(mockUploadReleaseAsset).toHaveBeenCalledTimes(1);
+      expect(mockUpdateReleaseAsset).not.toHaveBeenCalled();
+      expect(mockDeleteReleaseAsset).not.toHaveBeenCalled();
 
       const params: any = mockUploadReleaseAsset.mock.calls[0][0];
       expect(params.release_id).toEqual(123);
       expect(params.name).toEqual("CHANGES.md");
     });
 
-    test("handles API failures", async () => {
-      mockUploadReleaseAsset.mockReturnValue({
-        status: 500,
-        data: "Internal server error",
+    test("updates an existing asset", async () => {
+      mockListReleaseAssets.mockReturnValue({
+        data: [{ id: 456, name: "CHANGES.md" }],
       });
 
-      await expect(release.uploadAssets(123)).rejects.toThrow();
+      await release.uploadAssets(123);
+      expect(mockListReleaseAssets).toHaveBeenCalledTimes(1);
+      expect(mockUpdateReleaseAsset).toHaveBeenCalledTimes(1);
+      expect(mockUploadReleaseAsset).not.toHaveBeenCalled();
+      expect(mockDeleteReleaseAsset).not.toHaveBeenCalled();
+
+      const params: any = mockUpdateReleaseAsset.mock.calls[0][0];
+      expect(params.release_id).toEqual(123);
+      expect(params.asset_id).toEqual(456);
+      expect(params.name).toEqual("CHANGES.md");
+    });
+
+    test("deletes an existing asset", async () => {
+      mockListReleaseAssets.mockReturnValue({
+        data: [{ id: 456, name: "NOT_CHANGES.md" }],
+      });
+
+      await release.uploadAssets(123);
+      expect(mockListReleaseAssets).toHaveBeenCalledTimes(1);
       expect(mockUploadReleaseAsset).toHaveBeenCalledTimes(1);
+      expect(mockDeleteReleaseAsset).toHaveBeenCalledTimes(1);
+      expect(mockUpdateReleaseAsset).not.toHaveBeenCalled();
+
+      const params: any = mockDeleteReleaseAsset.mock.calls[0][0];
+      expect(params.release_id).toEqual(123);
+      expect(params.asset_id).toEqual(456);
     });
   });
 

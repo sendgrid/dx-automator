@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { Octokit } from "@octokit/rest";
+import { components } from "@octokit/openapi-types";
 import { readFileSync } from "fs";
 import * as path from "path";
 
@@ -79,10 +80,10 @@ export default class ReleaseGitHub {
   }
 
   async release(version: string, releaseNotes: string): Promise<number> {
-    let release;
+    let existingRelease;
 
     try {
-      release = await this.octokit.repos.getReleaseByTag({
+      existingRelease = await this.octokit.repos.getReleaseByTag({
         ...this.context.repo,
         tag: version,
       });
@@ -90,21 +91,15 @@ export default class ReleaseGitHub {
       core.info(`Could not get existing GitHub release: ${error}`);
     }
 
-    if (release?.status === 200) {
+    if (existingRelease) {
       core.info(`Updating existing GitHub release: ${version}`);
       const updateReleaseResponse = await this.octokit.repos.updateRelease({
         ...this.context.repo,
-        release_id: release.data.id,
+        release_id: existingRelease.data.id,
         tag_name: version,
         name: version,
         body: releaseNotes,
       });
-
-      if (updateReleaseResponse.status !== 200) {
-        throw new Error(
-          `Unable to update GitHub release: ${updateReleaseResponse.status} ${updateReleaseResponse.data}`
-        );
-      }
 
       return updateReleaseResponse.data.id;
     } else {
@@ -116,33 +111,64 @@ export default class ReleaseGitHub {
         body: releaseNotes,
       });
 
-      if (createReleaseResponse.status !== 201) {
-        throw new Error(
-          `Unable to create GitHub release: ${createReleaseResponse.status} ${createReleaseResponse.data}`
-        );
-      }
-
       return createReleaseResponse.data.id;
     }
   }
 
   async uploadAssets(releaseId: number): Promise<void> {
+    const assetsResponse = await this.octokit.repos.listReleaseAssets({
+      ...this.context.repo,
+      release_id: releaseId,
+    });
+    const existingAssets: {
+      [key: string]: components["schemas"]["release-asset"];
+    } = assetsResponse.data.reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur.name]: cur,
+      }),
+      {}
+    );
+
     for (const asset of this.params.assets) {
-      core.info(`Uploading GitHub release asset: ${asset}`);
+      core.info(`Reading asset from disk: ${asset}`);
       const assetContents = readFileSync(asset, "binary");
-      const uploadAssetResponse = await this.octokit.repos.uploadReleaseAsset({
+      const assetName = path.basename(asset);
+
+      const existingAsset = existingAssets[assetName];
+      const updateParams = {
         ...this.context.repo,
         release_id: releaseId,
-        name: path.basename(asset),
+        name: assetName,
         data: assetContents,
         headers: { "Content-Type": "application/zip" },
-      });
+      };
 
-      if (uploadAssetResponse.status !== 201) {
-        throw new Error(
-          `Unable to create GitHub release: ${uploadAssetResponse.status} ${uploadAssetResponse.data}`
+      if (existingAsset) {
+        core.info(
+          `Updating GitHub release asset: id=${existingAsset.id}, name=${existingAsset.name}`
         );
+        await this.octokit.repos.updateReleaseAsset({
+          ...updateParams,
+          asset_id: existingAsset.id,
+        });
+
+        delete existingAssets[assetName];
+      } else {
+        core.info(`Uploading GitHub release asset: ${asset}`);
+        await this.octokit.repos.uploadReleaseAsset(updateParams);
       }
+    }
+
+    for (const asset of Object.values(existingAssets)) {
+      core.info(
+        `Deleting GitHub release asset: id=${asset.id}, name=${asset.name}`
+      );
+      await this.octokit.repos.deleteReleaseAsset({
+        ...this.context.repo,
+        release_id: releaseId,
+        asset_id: asset.id,
+      });
     }
   }
 
