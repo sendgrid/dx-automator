@@ -5,7 +5,7 @@ import { readFileSync } from "fs";
 import * as path from "path";
 
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
-const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
+const REF_REGEX = /^refs\/(.+?)\/(.*)$/;
 
 export interface ReleaseGitHubParams {
   changelogFilename: string;
