@@ -1,5 +1,5 @@
-name: CreateGitHubRelease
-description: Creates a GitHub release for the repository
+name: GitHubRelease
+description: Creates or updates a GitHub release for the repository
 inputs:
   changelog-filename:
     description: Filename of the changelog file
