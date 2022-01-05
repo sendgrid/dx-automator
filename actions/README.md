@@ -28,6 +28,13 @@ A GitHub action to create or update a Release in GitHub.
 The env var `GITHUB_TOKEN` must also be given which can be either `GITHUB_TOKEN` or a `repo`
 -scoped [PAT](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
 
+The `footer` input supports limited string parameter expansion. The table below lists the string literals and what they
+will expand into.
+
+| Literal      | Value                                                  |
+|--------------|--------------------------------------------------------|
+| `${version}` | The version of the release (i.e., the name of the tag) |
+
 # Developing
 
 ## Requirements
