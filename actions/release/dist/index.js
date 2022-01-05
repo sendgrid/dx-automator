@@ -122,26 +122,16 @@ class ReleaseGitHub {
     uploadAssets(releaseId) {
         return __awaiter(this, void 0, void 0, function* () {
             const assetsResponse = yield this.octokit.repos.listReleaseAssets(Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId }));
-            const existingAssets = assetsResponse.data.reduce((acc, cur) => (Object.assign(Object.assign({}, acc), { [cur.name]: cur })), {});
+            for (const asset of assetsResponse.data) {
+                core.info(`Deleting GitHub release asset: id=${asset.id}, name=${asset.name}`);
+                yield this.octokit.repos.deleteReleaseAsset(Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId, asset_id: asset.id }));
+            }
             for (const asset of this.params.assets) {
                 core.info(`Reading asset from disk: ${asset}`);
                 const assetContents = (0, fs_1.readFileSync)(asset, "binary");
                 const assetName = path.basename(asset);
-                const existingAsset = existingAssets[assetName];
-                const updateParams = Object.assign(Object.assign({}, this.context.repo), { name: assetName, data: assetContents, headers: { "Content-Type": "application/zip" } });
-                if (existingAsset) {
-                    core.info(`Updating GitHub release asset: id=${existingAsset.id}, name=${existingAsset.name}`);
-                    yield this.octokit.repos.updateReleaseAsset(Object.assign(Object.assign({}, updateParams), { asset_id: existingAsset.id }));
-                    delete existingAssets[assetName];
-                }
-                else {
-                    core.info(`Uploading GitHub release asset: ${asset}`);
-                    yield this.octokit.repos.uploadReleaseAsset(Object.assign(Object.assign({}, updateParams), { release_id: releaseId }));
-                }
-            }
-            for (const asset of Object.values(existingAssets)) {
-                core.info(`Deleting GitHub release asset: id=${asset.id}, name=${asset.name}`);
-                yield this.octokit.repos.deleteReleaseAsset(Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId, asset_id: asset.id }));
+                core.info(`Uploading GitHub release asset: ${asset}`);
+                yield this.octokit.repos.uploadReleaseAsset(Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId, name: assetName, data: assetContents, headers: { "Content-Type": "application/zip" } }));
             }
         });
     }

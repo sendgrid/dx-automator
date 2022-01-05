@@ -1,7 +1,6 @@
 import * as core from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { Octokit } from "@octokit/rest";
-import { components } from "@octokit/openapi-types";
 import { readFileSync } from "fs";
 import * as path from "path";
 
@@ -120,49 +119,8 @@ export default class ReleaseGitHub {
       ...this.context.repo,
       release_id: releaseId,
     });
-    const existingAssets: {
-      [key: string]: components["schemas"]["release-asset"];
-    } = assetsResponse.data.reduce(
-      (acc, cur) => ({
-        ...acc,
-        [cur.name]: cur,
-      }),
-      {}
-    );
 
-    for (const asset of this.params.assets) {
-      core.info(`Reading asset from disk: ${asset}`);
-      const assetContents = readFileSync(asset, "binary");
-      const assetName = path.basename(asset);
-
-      const existingAsset = existingAssets[assetName];
-      const updateParams = {
-        ...this.context.repo,
-        name: assetName,
-        data: assetContents,
-        headers: { "Content-Type": "application/zip" },
-      };
-
-      if (existingAsset) {
-        core.info(
-          `Updating GitHub release asset: id=${existingAsset.id}, name=${existingAsset.name}`
-        );
-        await this.octokit.repos.updateReleaseAsset({
-          ...updateParams,
-          asset_id: existingAsset.id,
-        });
-
-        delete existingAssets[assetName];
-      } else {
-        core.info(`Uploading GitHub release asset: ${asset}`);
-        await this.octokit.repos.uploadReleaseAsset({
-          ...updateParams,
-          release_id: releaseId,
-        });
-      }
-    }
-
-    for (const asset of Object.values(existingAssets)) {
+    for (const asset of assetsResponse.data) {
       core.info(
         `Deleting GitHub release asset: id=${asset.id}, name=${asset.name}`
       );
@@ -170,6 +128,21 @@ export default class ReleaseGitHub {
         ...this.context.repo,
         release_id: releaseId,
         asset_id: asset.id,
+      });
+    }
+
+    for (const asset of this.params.assets) {
+      core.info(`Reading asset from disk: ${asset}`);
+      const assetContents = readFileSync(asset, "binary");
+      const assetName = path.basename(asset);
+
+      core.info(`Uploading GitHub release asset: ${asset}`);
+      await this.octokit.repos.uploadReleaseAsset({
+        ...this.context.repo,
+        release_id: releaseId,
+        name: assetName,
+        data: assetContents,
+        headers: { "Content-Type": "application/zip" },
       });
     }
   }

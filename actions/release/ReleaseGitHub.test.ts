@@ -9,9 +9,8 @@ const mockGetReleaseByTag = jest.fn();
 const mockUpdateRelease = jest.fn();
 const mockCreateRelease = jest.fn();
 const mockListReleaseAssets = jest.fn();
-const mockUpdateReleaseAsset = jest.fn();
-const mockUploadReleaseAsset = jest.fn();
 const mockDeleteReleaseAsset = jest.fn();
+const mockUploadReleaseAsset = jest.fn();
 
 jest.mock("@octokit/rest", () => ({
   Octokit: jest.fn(() => ({
@@ -20,9 +19,8 @@ jest.mock("@octokit/rest", () => ({
       updateRelease: mockUpdateRelease,
       createRelease: mockCreateRelease,
       listReleaseAssets: mockListReleaseAssets,
-      updateReleaseAsset: mockUpdateReleaseAsset,
-      uploadReleaseAsset: mockUploadReleaseAsset,
       deleteReleaseAsset: mockDeleteReleaseAsset,
+      uploadReleaseAsset: mockUploadReleaseAsset,
     },
   })),
 }));
@@ -112,7 +110,6 @@ describe("ReleaseGitHub", () => {
       await release.uploadAssets(123);
       expect(mockListReleaseAssets).toHaveBeenCalledTimes(1);
       expect(mockUploadReleaseAsset).toHaveBeenCalledTimes(1);
-      expect(mockUpdateReleaseAsset).not.toHaveBeenCalled();
       expect(mockDeleteReleaseAsset).not.toHaveBeenCalled();
 
       const params: any = mockUploadReleaseAsset.mock.calls[0][0];
@@ -120,32 +117,15 @@ describe("ReleaseGitHub", () => {
       expect(params.name).toEqual("CHANGES.md");
     });
 
-    test("updates an existing asset", async () => {
+    test("deletes an existing asset", async () => {
       mockListReleaseAssets.mockReturnValue({
         data: [{ id: 456, name: "CHANGES.md" }],
       });
 
       await release.uploadAssets(123);
       expect(mockListReleaseAssets).toHaveBeenCalledTimes(1);
-      expect(mockUpdateReleaseAsset).toHaveBeenCalledTimes(1);
-      expect(mockUploadReleaseAsset).not.toHaveBeenCalled();
-      expect(mockDeleteReleaseAsset).not.toHaveBeenCalled();
-
-      const params: any = mockUpdateReleaseAsset.mock.calls[0][0];
-      expect(params.name).toEqual("CHANGES.md");
-      expect(params.asset_id).toEqual(456);
-    });
-
-    test("deletes an existing asset", async () => {
-      mockListReleaseAssets.mockReturnValue({
-        data: [{ id: 456, name: "NOT_CHANGES.md" }],
-      });
-
-      await release.uploadAssets(123);
-      expect(mockListReleaseAssets).toHaveBeenCalledTimes(1);
-      expect(mockUploadReleaseAsset).toHaveBeenCalledTimes(1);
       expect(mockDeleteReleaseAsset).toHaveBeenCalledTimes(1);
-      expect(mockUpdateReleaseAsset).not.toHaveBeenCalled();
+      expect(mockUploadReleaseAsset).toHaveBeenCalledTimes(1);
 
       const params: any = mockDeleteReleaseAsset.mock.calls[0][0];
       expect(params.release_id).toEqual(123);
