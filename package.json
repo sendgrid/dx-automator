@@ -9,7 +9,7 @@
     "lint": "eslint actions/**/*.ts",
     "package-release": "ncc build lib/actions/release --license licenses.txt --out actions/release/dist",
     "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm test && npm run package-release"
+    "all": "npm run format && npm run lint && npm run build && npm test && npm run package-release"
   },
   "repository": {
     "type": "git",
