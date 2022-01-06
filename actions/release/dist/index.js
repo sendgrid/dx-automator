@@ -41,6 +41,7 @@ const fs_1 = __nccwpck_require__(7147);
 const path = __importStar(__nccwpck_require__(1017));
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
 const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
+const VARIABLE_REGEX = /\${.*?}/;
 class ReleaseGitHub {
     constructor(context, params, octokit = new rest_1.Octokit({ auth: process.env.GITHUB_TOKEN })) {
         this.context = context;
@@ -146,7 +147,15 @@ class ReleaseGitHub {
             ];
         }
         if (this.params.customFooter) {
-            const expandedFooter = this.params.customFooter.replace("${version}", version);
+            let expandedFooter = this.params.customFooter;
+            const expectedVariables = { "version": version };
+            Object.entries(expectedVariables).forEach(([key, value]) => {
+                expandedFooter = expandedFooter.replace(`\${${key}}`, value);
+            });
+            const [unexpected] = expandedFooter.match(VARIABLE_REGEX) || [];
+            if (unexpected) {
+                throw new Error(`Unexpected variable in footer: ${unexpected}`);
+            }
             footer = footer.concat(expandedFooter.split("\n"));
         }
         return footer;

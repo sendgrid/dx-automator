@@ -19,8 +19,7 @@ export default class ReleaseGitHub {
     private readonly context: Context,
     private readonly params: ReleaseGitHubParams,
     private readonly octokit = new Octokit({ auth: process.env.GITHUB_TOKEN })
-  ) {
-  }
+  ) {}
 
   async run() {
     const version = this.getVersion();
@@ -165,7 +164,7 @@ export default class ReleaseGitHub {
     if (this.params.customFooter) {
       let expandedFooter = this.params.customFooter;
 
-      const expectedVariables = { "version": version };
+      const expectedVariables = { version: version };
       Object.entries(expectedVariables).forEach(([key, value]) => {
         expandedFooter = expandedFooter.replace(`\${${key}}`, value);
       });
