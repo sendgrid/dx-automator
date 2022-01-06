@@ -4,7 +4,6 @@ inputs:
   changelog-filename:
     description: Filename of the changelog file
     required: false
-    default: CHANGES.md
   footer:
     description: Custom release notes footer
     required: false

@@ -42,6 +42,7 @@ const path = __importStar(__nccwpck_require__(1017));
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
 const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
 const VARIABLE_REGEX = /\${.*?}/;
+const CHANGELOG_FILENAMES = ["CHANGES.md", "CHANGELOG.md"];
 class ReleaseGitHub {
     constructor(context, params, octokit = new rest_1.Octokit({ auth: process.env.GITHUB_TOKEN })) {
         this.context = context;
@@ -68,8 +69,7 @@ class ReleaseGitHub {
     }
     getReleaseNotes(version) {
         const shortVersion = version.replace(/^\D/, "");
-        const changelog = (0, fs_1.readFileSync)(this.params.changelogFilename, "utf-8");
-        const changelogLines = changelog.split("\n");
+        const changelogLines = this.getChangelogLines();
         let start = -1;
         let end = changelogLines.length;
         core.info(`Searching for version ${shortVersion} in changelog`);
@@ -135,6 +135,22 @@ class ReleaseGitHub {
                 yield this.octokit.repos.uploadReleaseAsset(Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId, name: assetName, data: assetContents, headers: { "Content-Type": "application/zip" } }));
             }
         });
+    }
+    getChangelogLines() {
+        const changelogFilenames = this.params.changelogFilename
+            ? [this.params.changelogFilename]
+            : CHANGELOG_FILENAMES;
+        for (const filename of changelogFilenames) {
+            try {
+                core.info(`Attempting to read changelog: ${filename}`);
+                const changelog = (0, fs_1.readFileSync)(filename, "utf-8");
+                return changelog.split("\n");
+            }
+            catch (error) {
+                core.info(`Failed reading changelog: ${filename}`);
+            }
+        }
+        throw new Error("Failed to find a changelog file");
     }
     getHeader() {
         return [];

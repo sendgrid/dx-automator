@@ -7,6 +7,7 @@ import * as path from "path";
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
 const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
 const VARIABLE_REGEX = /\${.*?}/;
+const CHANGELOG_FILENAMES = ["CHANGES.md", "CHANGELOG.md"];
 
 export interface ReleaseGitHubParams {
   changelogFilename: string;
@@ -43,8 +44,7 @@ export default class ReleaseGitHub {
 
   getReleaseNotes(version: string): string {
     const shortVersion = version.replace(/^\D/, "");
-    const changelog = readFileSync(this.params.changelogFilename, "utf-8");
-    const changelogLines = changelog.split("\n");
+    const changelogLines = this.getChangelogLines();
 
     let start = -1;
     let end = changelogLines.length;
@@ -146,6 +146,24 @@ export default class ReleaseGitHub {
         headers: { "Content-Type": "application/zip" },
       });
     }
+  }
+
+  getChangelogLines(): string[] {
+    const changelogFilenames = this.params.changelogFilename
+      ? [this.params.changelogFilename]
+      : CHANGELOG_FILENAMES;
+
+    for (const filename of changelogFilenames) {
+      try {
+        core.info(`Attempting to read changelog: ${filename}`);
+        const changelog = readFileSync(filename, "utf-8");
+        return changelog.split("\n");
+      } catch (error) {
+        core.info(`Failed reading changelog: ${filename}`);
+      }
+    }
+
+    throw new Error("Failed to find a changelog file");
   }
 
   getHeader(): string[] {

@@ -3,8 +3,6 @@ import ReleaseGitHub, { ReleaseGitHubParams } from "./ReleaseGitHub";
 import { Context } from "@actions/github/lib/context";
 import path from "path";
 
-const CHANGES = path.join(__dirname, "fixtures", "CHANGES.md");
-
 const mockGetReleaseByTag = jest.fn();
 const mockUpdateRelease = jest.fn();
 const mockCreateRelease = jest.fn();
@@ -25,6 +23,8 @@ jest.mock("@octokit/rest", () => ({
   })),
 }));
 
+process.chdir(path.join(__dirname, "fixtures"));
+
 describe("ReleaseGitHub", () => {
   describe("run", () => {
     const release = new ReleaseGitHub(
@@ -33,8 +33,7 @@ describe("ReleaseGitHub", () => {
         ref: "refs/tags/2021.11.12",
       } as Context,
       {
-        changelogFilename: CHANGES,
-        assets: [CHANGES],
+        assets: ["CHANGELOG.md"],
       } as ReleaseGitHubParams
     );
 
@@ -101,7 +100,7 @@ describe("ReleaseGitHub", () => {
   describe("uploadAssets", () => {
     const release = new ReleaseGitHub(
       { repo: { owner: "twilio", repo: "twilio-BASIC" } } as Context,
-      { assets: [CHANGES] } as ReleaseGitHubParams
+      { assets: ["CHANGELOG.md"] } as ReleaseGitHubParams
     );
 
     test("uploads a new asset", async () => {
@@ -114,7 +113,7 @@ describe("ReleaseGitHub", () => {
 
       const params: any = mockUploadReleaseAsset.mock.calls[0][0];
       expect(params.release_id).toEqual(123);
-      expect(params.name).toEqual("CHANGES.md");
+      expect(params.name).toEqual("CHANGELOG.md");
     });
 
     test("deletes an existing asset", async () => {
@@ -166,9 +165,7 @@ describe("ReleaseGitHub", () => {
   describe("getReleaseNotes", () => {
     const release = new ReleaseGitHub(
       { repo: { owner: "twilio", repo: "twilio-BASIC" } } as Context,
-      {
-        changelogFilename: CHANGES,
-      } as ReleaseGitHubParams
+      {} as ReleaseGitHubParams
     );
 
     test("handles the newest release", () => {
@@ -196,6 +193,18 @@ describe("ReleaseGitHub", () => {
       expect(() => release.getReleaseNotes("2021.10.11")).toThrow(
         "not found in changelog"
       );
+    });
+  });
+
+  describe("getChangelogLines", () => {
+    test("errors when the changelog does not exist", () => {
+      const release = new ReleaseGitHub(
+        {} as Context,
+        {
+          changelogFilename: "CHANGES.md",
+        } as ReleaseGitHubParams
+      );
+      expect(() => release.getChangelogLines()).toThrow("Failed to find");
     });
   });
 

@@ -19,11 +19,11 @@ A GitHub action to create or update a Release in GitHub.
 
 ### Action Inputs
 
-| Name                 | Description                                                | Default      |
-|----------------------|------------------------------------------------------------|--------------|
-| `changelog-filename` | Filename of the changelog file                             | `CHANGES.md` |
-| `footer`             | Custom release notes footer                                |              |
-| `assets`             | Space-separated list of assets to include with the release |              |
+| Name                 | Description                                                | Default                        |
+|----------------------|------------------------------------------------------------|--------------------------------|
+| `changelog-filename` | Filename of the changelog file                             | `CHANGES.md` or `CHANGELOG.md` |
+| `footer`             | Custom release notes footer                                |                                |
+| `assets`             | Space-separated list of assets to include with the release |                                |
 
 The env var `GITHUB_TOKEN` must also be given which can be either `GITHUB_TOKEN` or a `repo`
 -scoped [PAT](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
