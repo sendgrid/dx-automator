@@ -142,9 +142,16 @@ class ReleaseGitHub {
     getFooter(version) {
         let footer = [];
         if (this.context.repo.owner === "twilio") {
-            footer = [
-                `**[Docs](https://twilio.com/docs/libraries/reference/${this.context.repo.repo}/${version}/index.html)**`,
-            ];
+            if (this.context.repo.repo === "twilio-go") {
+                footer = [
+                    `**[Docs](https://pkg.go.dev/github.com/${this.context.repo.owner}/${this.context.repo.repo}@${version})**`,
+                ];
+            }
+            else {
+                footer = [
+                    `**[Docs](https://twilio.com/docs/libraries/reference/${this.context.repo.repo}/${version}/index.html)**`,
+                ];
+            }
         }
         if (this.params.customFooter) {
             let expandedFooter = this.params.customFooter;

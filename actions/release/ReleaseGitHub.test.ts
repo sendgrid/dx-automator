@@ -210,6 +210,16 @@ describe("ReleaseGitHub", () => {
       expect(footer[0]).toContain("twilio-BASIC/1.2.3/index.html");
     });
 
+    test("uses a different footer for twilio-go", () => {
+      const release = new ReleaseGitHub(
+        { repo: { owner: "twilio", repo: "twilio-go" } } as Context,
+        {} as ReleaseGitHubParams
+      );
+      const footer = release.getFooter("1.2.3");
+      expect(footer).toHaveLength(1);
+      expect(footer[0]).toContain("github.com/twilio/twilio-go@1.2.3");
+    });
+
     test("excludes the Twilio footer for non-Twilio repos", () => {
       const release = new ReleaseGitHub(
         { repo: { owner: "sendgrid", repo: "sendgrid-BASIC" } } as Context,
