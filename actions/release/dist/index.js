@@ -148,7 +148,7 @@ class ReleaseGitHub {
         }
         if (this.params.customFooter) {
             let expandedFooter = this.params.customFooter;
-            const expectedVariables = { "version": version };
+            const expectedVariables = { version: version };
             Object.entries(expectedVariables).forEach(([key, value]) => {
                 expandedFooter = expandedFooter.replace(`\${${key}}`, value);
             });
