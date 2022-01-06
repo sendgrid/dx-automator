@@ -6,6 +6,7 @@ import * as path from "path";
 
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
 const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
+const VARIABLE_REGEX = /\${.*?}/;
 
 export interface ReleaseGitHubParams {
   changelogFilename: string;
@@ -18,7 +19,8 @@ export default class ReleaseGitHub {
     private readonly context: Context,
     private readonly params: ReleaseGitHubParams,
     private readonly octokit = new Octokit({ auth: process.env.GITHUB_TOKEN })
-  ) {}
+  ) {
+  }
 
   async run() {
     const version = this.getVersion();
@@ -161,10 +163,18 @@ export default class ReleaseGitHub {
     }
 
     if (this.params.customFooter) {
-      const expandedFooter = this.params.customFooter.replace(
-        "${version}",
-        version
-      );
+      let expandedFooter = this.params.customFooter;
+
+      const expectedVariables = { "version": version };
+      Object.entries(expectedVariables).forEach(([key, value]) => {
+        expandedFooter = expandedFooter.replace(`\${${key}}`, value);
+      });
+
+      const [unexpected] = expandedFooter.match(VARIABLE_REGEX) || [];
+      if (unexpected) {
+        throw new Error(`Unexpected variable in footer: ${unexpected}`);
+      }
+
       footer = footer.concat(expandedFooter.split("\n"));
     }
 

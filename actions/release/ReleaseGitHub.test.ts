@@ -240,5 +240,15 @@ describe("ReleaseGitHub", () => {
       expect(footer).toHaveLength(2);
       expect(footer[1]).toEqual("the version is 1.2.3, okay");
     });
+
+    test("errors on unexpected variables in custom footer", () => {
+      const release = new ReleaseGitHub(
+        { repo: { owner: "twilio", repo: "twilio-BASIC" } } as Context,
+        {
+          customFooter: "the version is ${blur-sion}, okay",
+        } as ReleaseGitHubParams
+      );
+      expect(() => release.getFooter("1.2.3")).toThrow("Unexpected variable");
+    });
   });
 });
