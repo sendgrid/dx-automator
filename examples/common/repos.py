@@ -1,7 +1,7 @@
 from collections import namedtuple
 from typing import List
 
-Repo = namedtuple('Repo', 'org repo')
+Repo = namedtuple('Repo', 'org name')
 
 ALL_REPOS = {
     'sendgrid': [

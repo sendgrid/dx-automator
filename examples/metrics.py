@@ -51,9 +51,9 @@ class MetricCollector:
             time.sleep(5)
 
             org_node = global_node['nodes'][repo.org]
-            repo_node = org_node['nodes'][repo.repo]
+            repo_node = org_node['nodes'][repo.name]
 
-            self.process_repo(repo_node, repo.org, repo.repo, start_date, end_date)
+            self.process_repo(repo_node, repo.org, repo.name, start_date, end_date)
 
         # If we have any untagged issues, print them
         if self.untagged_issues:
@@ -348,11 +348,11 @@ def parse_args():
     parser.add_argument('--include', '-i', nargs='*',
                         help='repos to include',
                         default=[],
-                        choices=[repo.repo for repo in get_repos()])
+                        choices=[repo.name for repo in get_repos()])
     parser.add_argument('--exclude', '-e', nargs='*',
                         help='repos to exclude',
                         default=[],
-                        choices=[repo.repo for repo in get_repos()])
+                        choices=[repo.name for repo in get_repos()])
 
     parsed_args = vars(parser.parse_args())
 
