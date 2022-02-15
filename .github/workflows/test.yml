@@ -4,8 +4,8 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
-    name: Test
+  test-actions:
+    name: Test Actions
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -28,3 +28,22 @@ jobs:
           git status
           git diff
           test -z "$(git status --porcelain)"
+
+  test-examples:
+    name: Test Examples
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout dx-automator
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: make test-install
+
+      - name: Test
+        run: make test

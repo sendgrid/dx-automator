@@ -11,7 +11,7 @@ from typing import Dict, List
 from common.admins import ADMINS
 from common.google_api import get_spreadsheets
 from common.issue import substitute, get_issues, Issue, get_delta_days, get_date_time
-from common.repos import ALL_REPOS, ALL_REPOS_CONSOLIDATED
+from common.repos import ALL_REPOS, get_repos
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
 GOOGLE_SHEET_NAME_DAILY = 'Daily'
@@ -38,33 +38,22 @@ class MetricCollector:
         self.spreadsheets = get_spreadsheets()
 
     def run(self, run_options: dict) -> None:
+        repos = run_options['repos']
         start_date = run_options['start_date']
         end_date = run_options['end_date']
         reporting_period = run_options['reporting_period'] or end_date
-        org_specified = run_options['org']
-        repos_to_include = run_options['include']
-        repos_to_exclude = run_options['exclude']
-
-        repos = repos_to_include or ALL_REPOS_CONSOLIDATED
-
-        if org_specified:
-            repos = ALL_REPOS[org_specified]
-        if repos_to_include or repos_to_exclude:
-            repos = set(repos_to_include + repos) - set(repos_to_exclude)
 
         print(f'repos to run the metrics on: {repos}')
         global_node = self.metrics
 
-        for org in ALL_REPOS:
-            org_node = global_node['nodes'][org]
+        for repo in repos:
+            # sleep 5 seconds to not hit the secondary rate limit
+            time.sleep(5)
 
-            for repo in ALL_REPOS[org]:
-                if repo not in repos:
-                    continue
-                # sleep 5 seconds to not hit the secondary rate limit
-                time.sleep(5)
-                repo_node = org_node['nodes'][repo]
-                self.process_repo(repo_node, org, repo, start_date, end_date)
+            org_node = global_node['nodes'][repo.org]
+            repo_node = org_node['nodes'][repo.name]
+
+            self.process_repo(repo_node, repo.org, repo.name, start_date, end_date)
 
         # If we have any untagged issues, print them
         if self.untagged_issues:
@@ -322,21 +311,21 @@ def run_backfill() -> None:
 
     for end_date in chain(mondays, fridays):
         options = {
+            'repos': get_repos(),
             'start_date': '2020-01-01',
             'end_date': end_date,
         }
         MetricCollector().run(options)
 
 
-def run_now(reporting_period: str, org: str, to_include: list, to_exclude: list) -> None:
+def run_now(reporting_period: str, org: List[str], include: List[str], exclude: List[str]) -> None:
     today = datetime.now().strftime(DATE_TIME_FORMAT)
+    repos = get_repos(org, include, exclude)
     options = {
+        'repos': repos,
         'start_date': today,
         'end_date': today,
         'reporting_period': reporting_period,
-        'org': org,
-        'include': to_include,
-        'exclude': to_exclude
     }
 
     if reporting_period == DAILY:
@@ -349,34 +338,32 @@ def run_now(reporting_period: str, org: str, to_include: list, to_exclude: list)
 
 
 def parse_args():
-    options_parser = argparse.ArgumentParser(description='dx-automator')
-    options_parser.add_argument('--period', '-p', required=True, help="period to run the metrics on",
-                                choices=[DAILY, WEEKLY])
-    options_parser.add_argument('--org', '-o', action='store',
-                                help="if none specified, runs on both twilio and sendgrid orgs",
-                                choices=[TWILIO, SENDGRID])
-    options_parser.add_argument('--exclude', '-e', nargs='*', help="libraries to exclude", default=[],
-                                choices=ALL_REPOS_CONSOLIDATED)
-    options_parser.add_argument('--include', '-i', nargs='*',
-                                help="libraries to include; when specified with no org, runs on just the specified "
-                                     "libraries",
-                                default=[],
-                                choices=ALL_REPOS_CONSOLIDATED)
+    parser = argparse.ArgumentParser(description='dx-automator')
+    parser.add_argument('--period', '-p', required=True, help='period to run the metrics on',
+                        choices=[DAILY, WEEKLY])
+    parser.add_argument('--org', '-o', nargs='*',
+                        help='if none specified, runs on all orgs',
+                        default=[],
+                        choices=ALL_REPOS.keys())
+    parser.add_argument('--include', '-i', nargs='*',
+                        help='repos to include',
+                        default=[],
+                        choices=[repo.name for repo in get_repos()])
+    parser.add_argument('--exclude', '-e', nargs='*',
+                        help='repos to exclude',
+                        default=[],
+                        choices=[repo.name for repo in get_repos()])
 
-    args = vars(options_parser.parse_args())
+    parsed_args = vars(parser.parse_args())
 
-    return options_parser, args
-
-
-if __name__ == '__main__':
-    parser, args = parse_args()
-    if not args:
+    if not parsed_args:
         parser.print_help()
         sys.exit(1)
 
-    reporting_period = args['period']
-    org = args['org']
-    to_include = args['include']
-    to_exclude = args['exclude']
+    return parsed_args
 
-    run_now(reporting_period, org, to_include, to_exclude)
+
+if __name__ == '__main__':
+    args = parse_args()
+
+    run_now(args['period'], args['org'], args['include'], args['exclude'])
