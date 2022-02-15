@@ -5,9 +5,9 @@ from typing import Any, Dict, Iterator, List
 from datadog_api_client.v1.model.point import Point
 from datadog_api_client.v1.model.series import Series
 
-from examples.common.datadog_api import DatadogApi
-from examples.common.repos import ALL_REPOS, Repo, get_repos
-from examples.common.sonar_cloud_api import Metrics, SonarCloudApi
+from common.datadog_api import DatadogApi
+from common.repos import ALL_REPOS, Repo, get_repos
+from common.sonar_cloud_api import Metrics, SonarCloudApi
 
 METRICS = [Metrics.LINES_TO_COVER, Metrics.UNCOVERED_LINES, Metrics.BRANCH_COVERAGE]
 
