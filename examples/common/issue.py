@@ -1,14 +1,12 @@
 import json
-import os
-import re
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict, Iterator
 
-import requests
 from businesstime import BusinessTime
 from businesstime.holidays.usa import USFederalHolidays
 
 from common.admins import ADMINS
+from common.git_hub_api import submit_graphql_query
 
 ISSUE_CATEGORIES = {
     'question': {'question', 'getting started'},
@@ -283,11 +281,11 @@ def get_date_time(date: str) -> str:
 
 def get_issues(org: str, repo: str, fragments: str,
                issue_type: str = None, issue_state: str = None,
-               start_date: str = '*', end_date: str = '*') -> List[Dict]:
+               start_date: str = '*', end_date: str = '*') -> Iterator[Dict]:
     issue_type = f'type:{issue_type}' if issue_type else ''
     issue_state = f'state:{issue_state}' if issue_state else ''
 
-    return post_query(f"""
+    return submit_graphql_query(f"""
 query{{
     search(type: ISSUE,
            first: 50,
@@ -303,40 +301,6 @@ query{{
         }}
     }}
 }}""")
-
-
-def post_query(query: str) -> List[Dict]:
-    url = 'https://api.github.com/graphql'
-    github_token = os.environ['GITHUB_TOKEN']
-    headers = {'Authorization': f'token {github_token}'}
-    cursor = None
-
-    while True:
-        paged_query = substitute(query, {'cursor': f'after: "{cursor}"' if cursor else ''})
-
-        response = requests.post(url, json={'query': paged_query}, headers=headers)
-        response.raise_for_status()
-        response = response.json()
-
-        if 'data' not in response:
-            print_json(response)
-
-        search = response['data']['search']
-        for node in search['nodes']:
-            yield node
-
-        page_info = search['pageInfo']
-        cursor = page_info['endCursor']
-
-        if not page_info['hasNextPage']:
-            break
-
-
-def substitute(target: str, values: Dict) -> str:
-    for name, value in values.items():
-        value = ' '.join(value) if isinstance(value, list) else value
-        target = target.replace(f'%{name}%', value)
-    return re.sub('%.*?%', '', target)
 
 
 def print_json(payload):

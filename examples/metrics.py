@@ -9,8 +9,9 @@ from itertools import chain
 from typing import Dict, List
 
 from common.admins import ADMINS
+from common.git_hub_api import substitute
 from common.google_api import get_spreadsheets
-from common.issue import substitute, get_issues, Issue, get_delta_days, get_date_time
+from common.issue import get_issues, Issue, get_delta_days, get_date_time
 from common.repos import ALL_REPOS, get_repos
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'

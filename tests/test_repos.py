@@ -3,7 +3,7 @@ import unittest
 from examples.common.repos import ALL_REPOS, get_repos, is_repo_included
 
 
-class TestHttpClientRequest(unittest.TestCase):
+class TestRepos(unittest.TestCase):
 
     def test_is_repo_included(self):
         self.assertTrue(is_repo_included('twilio', 'twilio-cli', [], [], []))
