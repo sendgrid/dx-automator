@@ -1,10 +1,10 @@
-import types
 from datetime import date, datetime, timedelta
 from functools import lru_cache
 from typing import List
 
 from common.admins import ADMINS
-from common.issue import DATE_TIME_FORMAT, get_date, get_issues, Issue, substitute
+from common.git_hub_api import substitute
+from common.issue import DATE_TIME_FORMAT, get_date, get_issues, Issue
 from common.repos import ALL_REPOS
 
 STUCK_DATE = str(date.today() - timedelta(days=30))
