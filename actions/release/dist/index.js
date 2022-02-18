@@ -129,10 +129,14 @@ class ReleaseGitHub {
             }
             for (const asset of this.params.assets) {
                 core.info(`Reading asset from disk: ${asset}`);
-                const assetContents = (0, fs_1.readFileSync)(asset, "binary");
+                const assetContents = (0, fs_1.createReadStream)(asset);
+                const assetSize = (0, fs_1.statSync)(asset).size;
                 const assetName = path.basename(asset);
                 core.info(`Uploading GitHub release asset: ${asset}`);
-                yield this.octokit.repos.uploadReleaseAsset(Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId, name: assetName, data: assetContents, headers: { "Content-Type": "application/zip" } }));
+                yield this.octokit.repos.uploadReleaseAsset(Object.assign(Object.assign({}, this.context.repo), { release_id: releaseId, name: assetName, data: assetContents, headers: {
+                        "Content-Type": "application/zip",
+                        "Content-Length": assetSize,
+                    } }));
             }
         });
     }

@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { Octokit } from "@octokit/rest";
-import { readFileSync } from "fs";
+import { createReadStream, readFileSync, statSync } from "fs";
 import * as path from "path";
 
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
@@ -134,7 +134,8 @@ export default class ReleaseGitHub {
 
     for (const asset of this.params.assets) {
       core.info(`Reading asset from disk: ${asset}`);
-      const assetContents = readFileSync(asset, "binary");
+      const assetContents = createReadStream(asset) as any;
+      const assetSize = statSync(asset).size;
       const assetName = path.basename(asset);
 
       core.info(`Uploading GitHub release asset: ${asset}`);
@@ -143,7 +144,10 @@ export default class ReleaseGitHub {
         release_id: releaseId,
         name: assetName,
         data: assetContents,
-        headers: { "Content-Type": "application/zip" },
+        headers: {
+          "Content-Type": "application/zip",
+          "Content-Length": assetSize,
+        },
       });
     }
   }
