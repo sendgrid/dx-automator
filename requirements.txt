@@ -1,7 +1,8 @@
-python_http_client
-requests
+backoff
+businesstime
+datadog-api-client
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
-businesstime
-datadog-api-client
+python_http_client
+requests

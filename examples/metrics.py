@@ -1,7 +1,6 @@
 import argparse
 import statistics
 import sys
-import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 from functools import lru_cache
@@ -9,8 +8,9 @@ from itertools import chain
 from typing import Dict, List
 
 from common.admins import ADMINS
+from common.git_hub_api import substitute
 from common.google_api import get_spreadsheets
-from common.issue import substitute, get_issues, Issue, get_delta_days, get_date_time
+from common.issue import get_issues, Issue, get_delta_days, get_date_time
 from common.repos import ALL_REPOS, get_repos
 
 GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
@@ -47,9 +47,6 @@ class MetricCollector:
         global_node = self.metrics
 
         for repo in repos:
-            # sleep 5 seconds to not hit the secondary rate limit
-            time.sleep(5)
-
             org_node = global_node['nodes'][repo.org]
             repo_node = org_node['nodes'][repo.name]
 
