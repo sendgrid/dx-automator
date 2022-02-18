@@ -1,7 +1,6 @@
 import argparse
 import statistics
 import sys
-import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 from functools import lru_cache
@@ -48,9 +47,6 @@ class MetricCollector:
         global_node = self.metrics
 
         for repo in repos:
-            # sleep 5 seconds to not hit the secondary rate limit
-            time.sleep(5)
-
             org_node = global_node['nodes'][repo.org]
             repo_node = org_node['nodes'][repo.name]
 

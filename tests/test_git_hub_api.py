@@ -2,7 +2,9 @@ import os
 import unittest
 from unittest.mock import patch, Mock
 
-from examples.common.git_hub_api import GRAPH_QL_URL, submit_graphql_query, substitute
+from requests import HTTPError
+
+from examples.common.git_hub_api import GRAPH_QL_URL, submit_graphql_query, post, substitute
 
 
 @patch.dict(os.environ, {"GITHUB_TOKEN": "THE TOKEN"})
@@ -66,6 +68,28 @@ class TestGitHubApi(unittest.TestCase):
         requests_mock.post.assert_any_call(GRAPH_QL_URL,
                                            json={'query': 'some_query after: "123"'},
                                            headers={'Authorization': 'token THE TOKEN'})
+
+    @patch('examples.common.git_hub_api.requests')
+    def test_post_retry_success(self, requests_mock):
+        response_mock = Mock()
+        response_mock.status_code = 403
+        response_mock.raise_for_status.side_effect = [HTTPError('limited!', response=response_mock), None]
+        requests_mock.post.return_value = response_mock
+
+        self.assertEqual(response_mock, post('url'))
+        self.assertEqual(2, requests_mock.post.call_count)
+
+    @patch('examples.common.git_hub_api.requests')
+    def test_post_retry_failure(self, requests_mock):
+        response_mock = Mock()
+        response_mock.status_code = 500
+        response_mock.raise_for_status.side_effect = HTTPError('Server Error!', response=response_mock)
+        requests_mock.post.return_value = response_mock
+
+        with self.assertRaises(HTTPError):
+            post('url')
+
+        requests_mock.post.assert_called_once()
 
     def test_substitute(self):
         self.assertEqual('no substitutions', substitute('no substitutions', {}))
