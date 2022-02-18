@@ -11,7 +11,6 @@ STUCK_DATE = str(date.today() - timedelta(days=30))
 BUG_DATE = str(date.today() - timedelta(days=20))
 ENHANCEMENT_DATE = str(date.today() - timedelta(days=60))
 TODAY = datetime.utcnow().strftime(DATE_TIME_FORMAT)
-TOP_ITEM_COUNT = 10
 
 
 class ActionItemsCollector:
@@ -52,13 +51,13 @@ class ActionItemsCollector:
                 # Default split before/after 2020
                 divider = lambda issue: issue.created_at >= '2020'
 
-            sorted_top_x = sorted(issues, key=sort_key, reverse=reverse_sort)[:TOP_ITEM_COUNT]
+            sorted_issues = sorted(issues, key=sort_key, reverse=reverse_sort)
 
             print(f'\n{title}:')
 
             if divider:
                 top, bottom = [], []
-                for x in sorted_top_x:
+                for x in sorted_issues:
                     (top if divider(x) else bottom).append(x)
 
                 if top and bottom:
@@ -67,7 +66,7 @@ class ActionItemsCollector:
                     print('\n'.join([issue.url for issue in bottom]))
                     return
 
-            print('\n'.join([issue.url for issue in sorted_top_x]))
+            print('\n'.join([issue.url for issue in sorted_issues]))
 
     def process_repo(self, org: str, repo: str) -> None:
         issues = get_open_items(org, repo)
