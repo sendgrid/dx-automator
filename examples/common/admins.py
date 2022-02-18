@@ -1,5 +1,7 @@
 ADMINS = {
+    'astuteape',
     'beebzz',
+    'charan678',
     'childish-sambino',
     'eshanholtz',
     'garethpaul',
@@ -12,6 +14,5 @@ ADMINS = {
     'shamantraghav',
     'shrutiburman',
     'thinkingserious',
-    'rakatyal',
-    'astuteape'
+    'rakatyal'
 }
