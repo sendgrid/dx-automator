@@ -12,5 +12,6 @@ ADMINS = {
     'shamantraghav',
     'shrutiburman',
     'thinkingserious',
-    'rakatyal'
+    'rakatyal',
+    'astuteape'
 }
