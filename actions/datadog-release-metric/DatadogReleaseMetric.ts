@@ -1,6 +1,9 @@
 import * as core from "@actions/core";
 import { Context } from "@actions/github/lib/context";
-import { MetricsApi, MetricsApiSubmitMetricsRequest } from "@datadog/datadog-api-client/dist/packages/datadog-api-client-v1";
+import {
+  MetricsApi,
+  MetricsApiSubmitMetricsRequest,
+} from "@datadog/datadog-api-client/dist/packages/datadog-api-client-v1";
 
 const METRIC_TYPE = "count";
 const METRIC_NAME = "library.release.count";
@@ -17,10 +20,7 @@ export default class DatadogReleaseMetric {
   private readonly type: string = METRIC_TYPE;
   private readonly name: string = METRIC_NAME;
 
-  constructor(
-      private readonly context: Context,
-      private datadog: MetricsApi
-  ) {}
+  constructor(private readonly context: Context, private datadog: MetricsApi) {}
 
   async run() {
     const params: MetricParams = {
@@ -50,7 +50,7 @@ export default class DatadogReleaseMetric {
       `org:${owner}`,
       `repo:${repo}`,
       "type:helper",
-      `version:${version}`
+      `version:${version}`,
     ];
   }
 

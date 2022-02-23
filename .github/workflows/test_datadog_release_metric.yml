@@ -1,7 +1,7 @@
 name: Test Datadog Release Metric Action
 on:
   push:
-    tags: ["*"]
+    tags: [ "*" ]
 
 jobs:
   releaseMetric:

@@ -1,6 +1,6 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import * as core from "@actions/core";
-import { v1 } from "@datadog/datadog-api-client"
+import { v1 } from "@datadog/datadog-api-client";
 import datadogReleaseMetric from "./index";
 import DatadogReleaseMetric from "./DatadogReleaseMetric";
 import { MockedObject } from "ts-jest";
