@@ -1,0 +1,12 @@
+name: Test Datadog Release Metric Action
+on:
+  push:
+    tags: [*]
+
+jobs:
+  releaseMetric:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: sendgrid/dx-automator/actions/datadog-release-metric@main
