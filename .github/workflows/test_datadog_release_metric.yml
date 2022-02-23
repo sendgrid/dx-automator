@@ -10,3 +10,5 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: sendgrid/dx-automator/actions/datadog-release-metric@datadog-gh-action
+        env:
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
