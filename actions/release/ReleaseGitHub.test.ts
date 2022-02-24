@@ -132,36 +132,6 @@ describe("ReleaseGitHub", () => {
     });
   });
 
-  describe("getVersion", () => {
-    test("parses a tag ref properly", () => {
-      const release = new ReleaseGitHub(
-        { ref: "refs/tags/1.2.3" } as Context,
-        {} as ReleaseGitHubParams
-      );
-
-      const version = release.getVersion();
-      expect(version).toEqual("1.2.3");
-    });
-
-    test("throws on branch refs", () => {
-      const release = new ReleaseGitHub(
-        { ref: "refs/heads/main" } as Context,
-        {} as ReleaseGitHubParams
-      );
-
-      expect(() => release.getVersion()).toThrow("Invalid ref");
-    });
-
-    test("throws on bad refs", () => {
-      const release = new ReleaseGitHub(
-        { ref: "bad-ref" } as Context,
-        {} as ReleaseGitHubParams
-      );
-
-      expect(() => release.getVersion()).toThrow("Invalid ref");
-    });
-  });
-
   describe("getReleaseNotes", () => {
     const release = new ReleaseGitHub(
       { repo: { owner: "twilio", repo: "twilio-BASIC" } } as Context,

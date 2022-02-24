@@ -8,8 +8,9 @@
     "format-check": "prettier --check 'actions/**/*.ts'",
     "lint": "eslint actions/**/*.ts",
     "package-release": "ncc build lib/actions/release --license licenses.txt --out actions/release/dist",
+    "package-datadog-release-metric": "ncc build lib/actions/datadog-release-metric --license licenses.txt --out actions/datadog-release-metric/dist",
     "test": "jest",
-    "all": "npm run format && npm run lint && npm run build && npm test && npm run package-release"
+    "all": "npm run format && npm run lint && npm run build && npm test && npm run package-release && npm run package-datadog-release-metric"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
+    "@datadog/datadog-api-client": "^1.0.0-beta.7",
     "@octokit/rest": "^18.12.0"
   },
   "devDependencies": {
