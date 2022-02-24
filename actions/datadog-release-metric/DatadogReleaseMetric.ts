@@ -18,9 +18,6 @@ export interface MetricParams {
 }
 
 export default class DatadogReleaseMetric {
-  private readonly type: string = METRIC_TYPE;
-  private readonly name: string = METRIC_NAME;
-
   constructor(private readonly context: Context, private datadog: MetricsApi) {}
 
   async run() {
