@@ -8,7 +8,6 @@ import getVersion from "../utils/getVersion";
 
 const METRIC_TYPE = "count";
 const METRIC_NAME = "library.release.count";
-const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
 
 export interface MetricParams {
   type: string;
