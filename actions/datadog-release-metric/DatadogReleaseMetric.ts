@@ -4,6 +4,7 @@ import {
   MetricsApi,
   MetricsApiSubmitMetricsRequest,
 } from "@datadog/datadog-api-client/dist/packages/datadog-api-client-v1";
+import getVersion from "../utils/getVersion";
 
 const METRIC_TYPE = "count";
 const METRIC_NAME = "library.release.count";
@@ -23,35 +24,30 @@ export default class DatadogReleaseMetric {
   constructor(private readonly context: Context, private datadog: MetricsApi) {}
 
   async run() {
+    if (!this.isTaggedCommit()) {
+      throw new Error("This GitHub Action should only be run on tags");
+    }
+
     const params: MetricParams = {
-      type: this.getType(),
-      name: this.getName(),
-      tags: this.getTags(this.getOrg(), this.getRepo(), this.getVersion()),
+      type: METRIC_TYPE,
+      name: METRIC_NAME,
+      tags: this.getTags(this.getOrg(), this.getRepo()),
       value: 1,
     };
     await this.sendMetric(params);
   }
 
-  getVersion(): string {
-    const [ref, refType, refName] = this.context.ref.match(REF_REGEX) || [];
-
-    if (!ref) {
-      throw new Error(`Invalid ref: ${this.context.ref}`);
-    }
-    if (refType !== "tags") {
-      throw new Error(`Invalid ref type, must be "tags": ${refType}`);
-    }
-
-    return refName;
+  getTags(owner: string, repo: string): string[] {
+    return [`org:${owner}`, `repo:${repo}`, "type:helper"];
   }
 
-  getTags(owner: string, repo: string, version: string): string[] {
-    return [
-      `org:${owner}`,
-      `repo:${repo}`,
-      "type:helper",
-      `version:${version}`,
-    ];
+  private isTaggedCommit(): boolean {
+    try {
+      const version = getVersion(this.context);
+      return !!version;
+    } catch (error) {
+      return false;
+    }
   }
 
   private getOrg(): string {
@@ -60,14 +56,6 @@ export default class DatadogReleaseMetric {
 
   private getRepo(): string {
     return `${this.context.repo.owner}/${this.context.repo.repo}`;
-  }
-
-  getType(): string {
-    return this.type;
-  }
-
-  getName(): string {
-    return this.name;
   }
 
   async sendMetric(metricParams: MetricParams): Promise<void> {

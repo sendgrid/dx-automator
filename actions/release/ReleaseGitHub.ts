@@ -3,9 +3,9 @@ import { Context } from "@actions/github/lib/context";
 import { Octokit } from "@octokit/rest";
 import { createReadStream, readFileSync, statSync } from "fs";
 import * as path from "path";
+import getVersion from "../utils/getVersion";
 
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
-const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
 const VARIABLE_REGEX = /\${.*?}/;
 const CHANGELOG_FILENAMES = ["CHANGES.md", "CHANGELOG.md"];
 
@@ -23,23 +23,10 @@ export default class ReleaseGitHub {
   ) {}
 
   async run() {
-    const version = this.getVersion();
+    const version = getVersion(this.context);
     const releaseNotes = this.getReleaseNotes(version);
     const releaseId = await this.release(version, releaseNotes);
     await this.uploadAssets(releaseId);
-  }
-
-  getVersion(): string {
-    const [ref, refType, refName] = this.context.ref.match(REF_REGEX) || [];
-
-    if (!ref) {
-      throw new Error(`Invalid ref: ${this.context.ref}`);
-    }
-    if (refType !== "tags") {
-      throw new Error(`Invalid ref type, must be "tags": ${refType}`);
-    }
-
-    return refName;
   }
 
   getReleaseNotes(version: string): string {
