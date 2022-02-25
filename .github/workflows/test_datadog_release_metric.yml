@@ -11,4 +11,4 @@ jobs:
 
       - uses: sendgrid/dx-automator/actions/datadog-release-metric@main
         env:
-          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
