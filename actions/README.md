@@ -45,7 +45,7 @@ A GitHub action to submit a Release metric to Datadog.
       - name: Submit metric to Datadog
         uses: sendgrid/dx-automator/actions/datadog-release-metric@main
         env:
-          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
 ```
 The env var `DD_API_KEY` must be given in order to authenticate to the Datadog API. 
 
