@@ -46,7 +46,7 @@ class MetricCollector:
         self.datadog_api = DatadogApi()
 
         # Load up the spreadsheet connector early to validate credentials.
-        #self.spreadsheets = get_spreadsheets()
+        self.spreadsheets = get_spreadsheets()
 
     def run(self, run_options: dict) -> None:
         repos = run_options['repos']
@@ -78,7 +78,7 @@ class MetricCollector:
                 self.summarize(name, reporting_period, repo_node)
 
         # Until we move our entire data to Datadog, we will continue to push data to Google Sheet as well
-        #self.output_google_sheet(reporting_period=reporting_period)
+        self.output_google_sheet(reporting_period=reporting_period)
         
         # Convert data to Datadog time series
         datadog_series = []
