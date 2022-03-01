@@ -8,6 +8,7 @@ from itertools import chain
 from typing import Dict, List, Iterator
 from datadog_api_client.v1.model.point import Point
 from datadog_api_client.v1.model.series import Series
+from enum import Enum
 
 from common.admins import ADMINS
 from common.datadog_api import DatadogApi
@@ -32,17 +33,20 @@ DATADOG_METRICS = [('issue_count', 'count')]
 def base_type():
     return {'nodes': defaultdict(base_type), 'metrics': {}}
 
+class DatadogSeriesType(str, Enum):
+    GAUGE = 'gauge'
+    COUNT = 'count'
 
 class MetricCollector:
 
-    def __init__(self, datadog_api: DatadogApi):
+    def __init__(self):
         self.metrics = base_type()
         self.untagged_issues = []
         self.all_metrics = []
-        self.datadog_api = datadog_api
+        self.datadog_api = DatadogApi()
 
         # Load up the spreadsheet connector early to validate credentials.
-        self.spreadsheets = get_spreadsheets()
+        #self.spreadsheets = get_spreadsheets()
 
     def run(self, run_options: dict) -> None:
         repos = run_options['repos']
@@ -74,7 +78,7 @@ class MetricCollector:
                 self.summarize(name, reporting_period, repo_node)
 
         # Until we move our entire data to Datadog, we will continue to push data to Google Sheet as well
-        self.output_google_sheet(reporting_period=reporting_period)
+        #self.output_google_sheet(reporting_period=reporting_period)
         
         # Convert data to Datadog time series
         datadog_series = []
@@ -102,7 +106,7 @@ class MetricCollector:
 
             yield Series(
                 metric=f'helper_library.{metric_name}.{metric_type}',
-                type='gauge',
+                type=f'{DatadogSeriesType.GAUGE}',
                 points=[Point([datetime.now().timestamp(), float(data)])],
                 tags=[f'org:{org}', f'repo:{org}/{repo}'],
             )
@@ -365,12 +369,12 @@ def run_now(reporting_period: str, org: List[str], include: List[str], exclude: 
     }
 
     if reporting_period == DAILY:
-        MetricCollector(DatadogApi()).run(options)
+        MetricCollector().run(options)
     if reporting_period == WEEKLY:
         start_date = datetime.strptime(today, DATE_TIME_FORMAT) - timedelta(days=7)
         start_date = start_date.strftime(DATE_TIME_FORMAT)
         options['start_date'] = start_date
-        MetricCollector(DatadogApi()).run(options)
+        MetricCollector().run(options)
 
 
 def parse_args():
