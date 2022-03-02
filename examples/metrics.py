@@ -5,9 +5,13 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from functools import lru_cache
 from itertools import chain
-from typing import Dict, List
+from typing import Dict, List, Iterator
+from datadog_api_client.v1.model.point import Point
+from datadog_api_client.v1.model.series import Series
+from enum import Enum
 
 from common.admins import ADMINS
+from common.datadog_api import DatadogApi
 from common.git_hub_api import substitute
 from common.google_api import get_spreadsheets
 from common.issue import get_issues, Issue, get_delta_days, get_date_time
@@ -21,11 +25,17 @@ WEEKLY = 'weekly'
 TWILIO = 'twilio'
 SENDGRID = 'sendgrid'
 STALE_DAYS = 365
+# Tuple to specify the metric name and type to be collected in Datadog
+# Type could be 'count', 'median', 'min' or 'max'
+DATADOG_METRICS = [('issue_count', 'count')]
 
 
 def base_type():
     return {'nodes': defaultdict(base_type), 'metrics': {}}
 
+class DatadogSeriesType(str, Enum):
+    GAUGE = 'gauge'
+    COUNT = 'count'
 
 class MetricCollector:
 
@@ -33,6 +43,7 @@ class MetricCollector:
         self.metrics = base_type()
         self.untagged_issues = []
         self.all_metrics = []
+        self.datadog_api = DatadogApi()
 
         # Load up the spreadsheet connector early to validate credentials.
         self.spreadsheets = get_spreadsheets()
@@ -65,8 +76,39 @@ class MetricCollector:
                 self.aggregate(repo_node)
                 name = f'https://github.com/{org}/{repo}'
                 self.summarize(name, reporting_period, repo_node)
-        self.output_google_sheet(reporting_period=reporting_period)
 
+        # Until we move our entire data to Datadog, we will continue to push data to Google Sheet as well
+        self.output_google_sheet(reporting_period=reporting_period)
+        
+        # Convert data to Datadog time series
+        datadog_series = []
+
+        for org in global_node['nodes']:
+            org_node = global_node['nodes'][org]
+            for repo in org_node['nodes']:
+                repo_node = org_node['nodes'][repo]
+                datadog_series += self.get_series_for_datadog(repo_node, org, repo)
+
+        # Submit data to Datadog
+        self.datadog_api.submit_metrics(datadog_series)
+    
+    def get_series_for_datadog(self, repo_node: Dict, org: str, repo: str) -> Iterator[Series]:
+        for metric_name, metric_type in DATADOG_METRICS:
+            
+            try:
+                data = repo_node['metrics'][metric_name][metric_type]
+
+            except KeyError as e:
+                print(f'Failed to find metric "{metric_name}" for {repo}: {e}')
+                continue
+
+            yield Series(
+                metric=f'library.{metric_name}.{metric_type}',
+                type=f'{DatadogSeriesType.GAUGE}',
+                points=[Point([datetime.now().timestamp(), float(data)])],
+                tags=[f'org:{org}', f'repo:{org}/{repo}', 'type:helper'],
+            )
+    
     def process_repo(self, nodes: Dict,
                      org: str, repo: str,
                      start_date: str, end_date: str) -> None:
@@ -75,7 +117,6 @@ class MetricCollector:
         stale_date = datetime.strptime(datetime.now().strftime(DATE_TIME_FORMAT), DATE_TIME_FORMAT) - timedelta(
             days=STALE_DAYS)
         stale_date = get_date_time(stale_date.strftime(DATE_TIME_FORMAT))
-
         issues = get_repo_issues(org, repo)
         issue_count = 0
         pr_count = 0

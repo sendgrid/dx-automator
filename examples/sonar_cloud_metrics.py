@@ -8,6 +8,7 @@ from datadog_api_client.v1.model.series import Series
 from common.datadog_api import DatadogApi
 from common.repos import ALL_REPOS, Repo, get_repos
 from common.sonar_cloud_api import Metrics, SonarCloudApi
+from examples.metrics import DatadogSeriesType
 
 METRICS = [Metrics.LINES_TO_COVER, Metrics.UNCOVERED_LINES, Metrics.BRANCH_COVERAGE]
 
@@ -40,7 +41,7 @@ class SonarCloudMetricCollector:
 
             yield Series(
                 metric=f'sonar_cloud.measures.{metric}',
-                type='gauge',
+                type=f'{DatadogSeriesType.GAUGE}',
                 points=[Point([datetime.now().timestamp(), float(measure['value'])])],
                 tags=[f'org:{repo.org}', f'repo:{repo.org}/{repo.name}'],
             )
