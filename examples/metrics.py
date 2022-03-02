@@ -353,7 +353,7 @@ def run_backfill() -> None:
             'start_date': '2020-01-01',
             'end_date': end_date,
         }
-        MetricCollector(DatadogApi()).run(options)
+        MetricCollector().run(options)
 
 
 def run_now(reporting_period: str, org: List[str], include: List[str], exclude: List[str]) -> None:
