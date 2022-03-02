@@ -30,6 +30,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_API_CREDS: ${{ secrets.GOOGLE_API_CREDS }}
+          DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
         run: |
           source venv/bin/activate && python examples/metrics.py --period weekly --org sendgrid
 

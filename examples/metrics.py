@@ -89,6 +89,9 @@ class MetricCollector:
                 repo_node = org_node['nodes'][repo]
                 datadog_series += self.get_series_for_datadog(repo_node, org, repo)
 
+        # Helps with debugging in Github Actions logs
+        print("Datadog series data:", datadog_series)
+
         # Submit data to Datadog
         self.datadog_api.submit_metrics(datadog_series)
     
