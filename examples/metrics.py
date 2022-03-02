@@ -89,8 +89,6 @@ class MetricCollector:
                 repo_node = org_node['nodes'][repo]
                 datadog_series += self.get_series_for_datadog(repo_node, org, repo)
 
-        print("Datadog series data:", datadog_series)
-
         # Submit data to Datadog
         self.datadog_api.submit_metrics(datadog_series)
     
@@ -105,10 +103,10 @@ class MetricCollector:
                 continue
 
             yield Series(
-                metric=f'helper_library.{metric_name}.{metric_type}',
+                metric=f'library.{metric_name}.{metric_type}',
                 type=f'{DatadogSeriesType.GAUGE}',
                 points=[Point([datetime.now().timestamp(), float(data)])],
-                tags=[f'org:{org}', f'repo:{org}/{repo}'],
+                tags=[f'org:{org}', f'repo:{org}/{repo}', 'type:helper'],
             )
     
     def process_repo(self, nodes: Dict,
