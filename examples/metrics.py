@@ -26,8 +26,8 @@ TWILIO = 'twilio'
 SENDGRID = 'sendgrid'
 STALE_DAYS = 365
 # Tuple to specify the metric name and type to be collected in Datadog
-# Type could be 'count', 'median', 'min' or 'max'
-DATADOG_METRICS = [('issue_count', 'count')]
+# Type could be 'count', 'mean', 'median', 'min' or 'max'
+DATADOG_METRICS = [('issue_count', 'count'), ('time_to_contact', 'mean'), ('time_to_contact_pr', 'mean')]
 
 
 def base_type():
