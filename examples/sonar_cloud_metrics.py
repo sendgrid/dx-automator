@@ -8,7 +8,7 @@ from datadog_api_client.v1.model.series import Series
 from common.datadog_api import DatadogApi
 from common.repos import ALL_REPOS, Repo, get_repos
 from common.sonar_cloud_api import Metrics, SonarCloudApi
-from examples.metrics import DatadogSeriesType
+from metrics import DatadogSeriesType
 
 METRICS = [Metrics.LINES_TO_COVER, Metrics.UNCOVERED_LINES, Metrics.BRANCH_COVERAGE]
 
