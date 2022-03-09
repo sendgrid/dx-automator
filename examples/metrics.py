@@ -27,15 +27,18 @@ SENDGRID = 'sendgrid'
 STALE_DAYS = 365
 # Tuple to specify the metric name and type to be collected in Datadog
 # Type could be 'count', 'mean', 'median', 'min' or 'max'
-DATADOG_METRICS = [('issue_count', 'count'), ('time_to_contact', 'mean'), ('time_to_contact_pr', 'mean')]
+DATADOG_METRICS = [('issue_count', 'count'), ('time_to_contact', 'mean'), ('time_to_contact_pr', 'mean'),
+                   ('time_to_close', 'mean')]
 
 
 def base_type():
     return {'nodes': defaultdict(base_type), 'metrics': {}}
 
+
 class DatadogSeriesType(str, Enum):
     GAUGE = 'gauge'
     COUNT = 'count'
+
 
 class MetricCollector:
 
@@ -79,7 +82,7 @@ class MetricCollector:
 
         # Until we move our entire data to Datadog, we will continue to push data to Google Sheet as well
         self.output_google_sheet(reporting_period=reporting_period)
-        
+
         # Convert data to Datadog time series
         datadog_series = []
 
@@ -94,10 +97,10 @@ class MetricCollector:
 
         # Submit data to Datadog
         self.datadog_api.submit_metrics(datadog_series)
-    
+
     def get_series_for_datadog(self, repo_node: Dict, org: str, repo: str) -> Iterator[Series]:
         for metric_name, metric_type in DATADOG_METRICS:
-            
+
             try:
                 data = repo_node['metrics'][metric_name][metric_type]
 
@@ -111,7 +114,7 @@ class MetricCollector:
                 points=[Point([datetime.now().timestamp(), float(data)])],
                 tags=[f'org:{org}', f'repo:{org}/{repo}', 'type:helper'],
             )
-    
+
     def process_repo(self, nodes: Dict,
                      org: str, repo: str,
                      start_date: str, end_date: str) -> None:
