@@ -4,14 +4,14 @@ from unittest.mock import patch, Mock
 
 from requests import HTTPError
 
-from examples.common.git_hub_api import GRAPH_QL_URL, submit_graphql_query, post, substitute
+from examples.common.git_hub_api import GRAPH_QL_URL, submit_graphql_search_query, post, substitute
 
 
 @patch.dict(os.environ, {"GITHUB_TOKEN": "THE TOKEN"})
 class TestGitHubApi(unittest.TestCase):
 
     @patch('examples.common.git_hub_api.requests')
-    def test_submit_graphql_query_single_page(self, requests_mock):
+    def test_submit_graphql_search_query_single_page(self, requests_mock):
         response_mock = Mock()
         response_mock.json.return_value = {
             'data': {
@@ -26,7 +26,7 @@ class TestGitHubApi(unittest.TestCase):
         }
         requests_mock.post.return_value = response_mock
 
-        nodes = list(submit_graphql_query('some_query %cursor%'))
+        nodes = list(submit_graphql_search_query('some_query %cursor%'))
 
         self.assertEqual(2, len(nodes))
         requests_mock.post.assert_called_once_with(GRAPH_QL_URL,
@@ -34,7 +34,7 @@ class TestGitHubApi(unittest.TestCase):
                                                    headers={'Authorization': 'token THE TOKEN'})
 
     @patch('examples.common.git_hub_api.requests')
-    def test_submit_graphql_query_multi_page(self, requests_mock):
+    def test_submit_graphql_search_query_multi_page(self, requests_mock):
         response_mock = Mock()
         response_mock.json.side_effect = [{
             'data': {
@@ -59,7 +59,7 @@ class TestGitHubApi(unittest.TestCase):
         }]
         requests_mock.post.return_value = response_mock
 
-        nodes = list(submit_graphql_query('some_query %cursor%'))
+        nodes = list(submit_graphql_search_query('some_query %cursor%'))
 
         self.assertEqual(3, len(nodes))
         requests_mock.post.assert_any_call(GRAPH_QL_URL,
