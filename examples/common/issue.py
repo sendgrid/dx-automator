@@ -6,7 +6,7 @@ from businesstime import BusinessTime
 from businesstime.holidays.usa import USFederalHolidays
 
 from common.admins import ADMINS
-from common.git_hub_api import submit_graphql_query
+from common.git_hub_api import submit_graphql_search_query
 
 ISSUE_CATEGORIES = {
     'question': {'question', 'getting started'},
@@ -285,7 +285,7 @@ def get_issues(org: str, repo: str, fragments: str,
     issue_type = f'type:{issue_type}' if issue_type else ''
     issue_state = f'state:{issue_state}' if issue_state else ''
 
-    return submit_graphql_query(f"""
+    return submit_graphql_search_query(f"""
 query{{
     search(type: ISSUE,
            first: 50,

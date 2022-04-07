@@ -4,27 +4,40 @@ import re
 from typing import Iterator, Dict
 
 import backoff
+import github
 import requests
 from requests import Response
 
 GRAPH_QL_URL = 'https://api.github.com/graphql'
 
 
-def submit_graphql_query(query: str) -> Iterator[Dict]:
+def get_client() -> github.Github:
+    github_token = os.environ['GITHUB_TOKEN']
+    return github.Github(github_token)
+
+
+def submit_graphql_query(query: str) -> Dict:
     github_token = os.environ['GITHUB_TOKEN']
     headers = {'Authorization': f'token {github_token}'}
+
+    response = post(GRAPH_QL_URL, json={'query': query}, headers=headers)
+    response = response.json()
+
+    if 'data' not in response:
+        print(json.dumps(response, indent=2))
+
+    return response['data']
+
+
+def submit_graphql_search_query(query: str) -> Iterator[Dict]:
     cursor = None
 
     while True:
         paged_query = substitute(query, {'cursor': f'after: "{cursor}"' if cursor else ''})
 
-        response = post(GRAPH_QL_URL, json={'query': paged_query}, headers=headers)
-        response = response.json()
+        data = submit_graphql_query(paged_query)
 
-        if 'data' not in response:
-            print(json.dumps(response, indent=2))
-
-        search = response['data']['search']
+        search = data['search']
         for node in search['nodes']:
             yield node
 
