@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from "@jest/globals";
-import DatadogReleaseMetric, { MetricParams } from "./DatadogReleaseMetric";
+import DatadogReleaseMetric from "./DatadogReleaseMetric";
 import { Context } from "@actions/github/lib/context";
 import {
   Configuration,
@@ -41,21 +41,31 @@ describe("DatadogReleaseMetric", () => {
 
       expect(mockSubmitMetrics).toHaveBeenCalledTimes(1);
       const getMetricsRequestParams: any = mockSubmitMetrics.mock.calls[0][0];
-      expect(getMetricsRequestParams.body.series[0].metric).toEqual(
-        "library.release.count"
+      const series = getMetricsRequestParams.body.series[0];
+      expect(series.metric).toEqual("library.release.count");
+      expect(series.type).toEqual("count");
+      expect(series.tags).toHaveLength(4);
+      expect(series.tags).toContain("org:twilio");
+      expect(series.tags).toContain("repo:twilio/twilio-BASIC");
+      expect(series.tags).toContain("pre-release:false");
+      expect(series.tags).toContain("type:helper");
+      expect(series.points[0]).toContain(1);
+    });
+
+    test("handles pre-release versions", async () => {
+      const datadogReleaseMetric = new DatadogReleaseMetric(
+        {
+          repo: { owner: "twilio", repo: "twilio-BASIC" },
+          ref: "refs/tags/1.2.3-rc1.0",
+        } as Context,
+        new MetricsApi({} as Configuration)
       );
-      expect(getMetricsRequestParams.body.series[0].type).toEqual("count");
-      expect(getMetricsRequestParams.body.series[0].tags).toHaveLength(3);
-      expect(getMetricsRequestParams.body.series[0].tags).toContain(
-        "org:twilio"
-      );
-      expect(getMetricsRequestParams.body.series[0].tags).toContain(
-        "repo:twilio/twilio-BASIC"
-      );
-      expect(getMetricsRequestParams.body.series[0].tags).toContain(
-        "type:helper"
-      );
-      expect(getMetricsRequestParams.body.series[0].points[0]).toContain(1);
+
+      await datadogReleaseMetric.run();
+
+      const getMetricsRequestParams: any = mockSubmitMetrics.mock.calls[0][0];
+      const series = getMetricsRequestParams.body.series[0];
+      expect(series.tags).toContain("pre-release:true");
     });
 
     test("errors when no tag present", async () => {
@@ -73,38 +83,6 @@ describe("DatadogReleaseMetric", () => {
     });
   });
 
-  describe("sendMetric", () => {
-    test("sends a metric to Datadog", async () => {
-      const ddReleaseMetrics = new DatadogReleaseMetric(
-        {} as Context,
-        new MetricsApi({} as Configuration)
-      );
-      await ddReleaseMetrics.sendMetric({
-        type: "count",
-        name: "library.release.count",
-        value: 1,
-        tags: ["org:twilio", "repo:twilio/twilio-BASIC", "type:helper"],
-      } as MetricParams);
-      expect(mockSubmitMetrics).toHaveBeenCalledTimes(1);
-
-      const getMetricsRequestParams: any = mockSubmitMetrics.mock.calls[0][0];
-      expect(getMetricsRequestParams.body.series[0].metric).toEqual(
-        "library.release.count"
-      );
-      expect(getMetricsRequestParams.body.series[0].type).toEqual("count");
-      expect(getMetricsRequestParams.body.series[0].tags).toContain(
-        "org:twilio"
-      );
-      expect(getMetricsRequestParams.body.series[0].tags).toContain(
-        "repo:twilio/twilio-BASIC"
-      );
-      expect(getMetricsRequestParams.body.series[0].tags).toContain(
-        "type:helper"
-      );
-      expect(getMetricsRequestParams.body.series[0].points[0]).toContain(1);
-    });
-  });
-
   describe("getTags", () => {
     test("creates Datadog tags properly", () => {
       const ddReleaseMetrics = new DatadogReleaseMetric(
@@ -112,10 +90,11 @@ describe("DatadogReleaseMetric", () => {
         {} as MetricsApi
       );
 
-      const tags = ddReleaseMetrics.getTags("twilio", "twilio-BASIC");
-      expect(tags).toHaveLength(3);
+      const tags = ddReleaseMetrics.getTags("twilio", "twilio-BASIC", true);
+      expect(tags).toHaveLength(4);
       expect(tags).toContain("org:twilio");
       expect(tags).toContain("repo:twilio-BASIC");
+      expect(tags).toContain("pre-release:true");
       expect(tags).toContain("type:helper");
     });
   });
