@@ -8,6 +8,7 @@ import getVersion from "../utils/getVersion";
 
 const METRIC_TYPE = "count";
 const METRIC_NAME = "library.release.count";
+const PRE_RELEASE_SEPARATOR = "-";
 
 export interface MetricParams {
   type: string;
@@ -27,19 +28,24 @@ export default class DatadogReleaseMetric {
     const params: MetricParams = {
       type: METRIC_TYPE,
       name: METRIC_NAME,
-      tags: this.getTags(this.getOrg(), this.getRepo()),
+      tags: this.getTags(this.getOrg(), this.getRepo(), this.isPreRelease()),
       value: 1,
     };
     await this.sendMetric(params);
   }
 
-  getTags(owner: string, repo: string): string[] {
-    return [`org:${owner}`, `repo:${repo}`, "type:helper"];
+  getTags(org: string, repo: string, isPreRelease: boolean): string[] {
+    return [
+      `org:${org}`,
+      `repo:${repo}`,
+      `pre-release:${isPreRelease}`,
+      "type:helper",
+    ];
   }
 
   private isTaggedCommit(): boolean {
     try {
-      const version = getVersion(this.context);
+      const version = this.getVersion();
       return !!version;
     } catch (error) {
       return false;
@@ -54,7 +60,15 @@ export default class DatadogReleaseMetric {
     return `${this.context.repo.owner}/${this.context.repo.repo}`;
   }
 
-  async sendMetric(metricParams: MetricParams): Promise<void> {
+  private getVersion(): string {
+    return getVersion(this.context);
+  }
+
+  private isPreRelease(): boolean {
+    return this.getVersion().includes(PRE_RELEASE_SEPARATOR);
+  }
+
+  private async sendMetric(metricParams: MetricParams): Promise<void> {
     core.info(`Submitting Datadog Metric: ${metricParams.name}`);
     const params: MetricsApiSubmitMetricsRequest = {
       body: {
