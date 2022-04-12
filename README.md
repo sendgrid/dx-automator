@@ -33,7 +33,7 @@ python ./examples/metrics.py daily
 python ./examples/metrics.py weekly
 ```
 ## Usage - Updating DataDog Monitors through Terraform
-1. Open a PR that includes any relevant changes to `terraform_datadog_monitors.tf` located in the `terraform` directory
+1. Open a PR that includes any relevant changes to `datadog_monitors.tf` located in the `terraform` directory
 2. After your changes are approved, merge the PR to Main
 3. Use the team's credentials to login to the Terraform-DI service account
 4. Navigate to the [workspaces](app.terraform.io/app) tab.
