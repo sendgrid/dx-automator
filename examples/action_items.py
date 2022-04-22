@@ -29,8 +29,9 @@ class ActionItemsCollector:
 
     def run(self) -> None:
         for org in ALL_REPOS:
-            for repo in ALL_REPOS[org]:
-                self.process_repo(org, repo)
+            if org != 'sendgrid':
+                for repo in ALL_REPOS[org]:
+                    self.process_repo(org, repo)
 
         self.print_issues('Issues needing contact', self.issues_contact_needed)
         self.print_issues('Issues needing response', self.issues_response_needed)
