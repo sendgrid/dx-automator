@@ -39,17 +39,36 @@ describe("DatadogReleaseMetric", () => {
 
       await datadogReleaseMetric.run();
 
-      expect(mockSubmitMetrics).toHaveBeenCalledTimes(1);
-      const getMetricsRequestParams: any = mockSubmitMetrics.mock.calls[0][0];
-      const series = getMetricsRequestParams.body.series[0];
-      expect(series.metric).toEqual("library.release.count");
-      expect(series.type).toEqual("count");
-      expect(series.tags).toHaveLength(4);
-      expect(series.tags).toContain("org:twilio");
-      expect(series.tags).toContain("repo:twilio/twilio-BASIC");
-      expect(series.tags).toContain("pre-release:false");
-      expect(series.tags).toContain("type:helper");
-      expect(series.points[0]).toContain(1);
+      expect(mockSubmitMetrics).toHaveBeenCalledTimes(2);
+      const getMetricsRequestParams: any = mockSubmitMetrics.mock.calls;
+      expect(getMetricsRequestParams.length).toEqual(2);
+
+      for (const metricRequestParams of getMetricsRequestParams) {
+        const series = metricRequestParams[0].body.series[0];
+        expect(series.tags).toHaveLength(4);
+        expect(series.tags).toContain("org:twilio");
+        expect(series.tags).toContain("repo:twilio/twilio-BASIC");
+        expect(series.tags).toContain("pre-release:false");
+        expect(series.tags).toContain("type:helper");
+
+        switch (series.metric) {
+          case "library.release.count": {
+            expect(series.type).toEqual("count");
+            expect(series.points[0]).toContain(1);
+            break;
+          }
+
+          case "library.release.status": {
+            expect(series.type).toEqual("gauge");
+            expect(series.points[0]).toContain(0);
+            break;
+          }
+
+          default: {
+            fail("Unexpected metric name");
+          }
+        }
+      }
     });
 
     test("handles pre-release versions", async () => {
