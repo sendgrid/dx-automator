@@ -27,7 +27,11 @@ export default class DatadogReleaseMetric {
       throw new Error("This GitHub Action should only be run on tags");
     }
 
-    const tags = this.getTags(this.getOrg(), this.getRepo(), this.isPreRelease());
+    const tags = this.getTags(
+      this.getOrg(),
+      this.getRepo(),
+      this.isPreRelease()
+    );
 
     const release_count_params: MetricParams = {
       type: METRIC_TYPE_COUNT,
@@ -40,10 +44,13 @@ export default class DatadogReleaseMetric {
       type: METRIC_TYPE_GAUGE,
       name: METRIC_NAME_RELEASE_STATUS,
       tags: tags,
-      value: 0, // This indicates the repo is no longer releasing. 
+      value: 0, // This indicates the repo is no longer releasing.
     };
 
-    await Promise.all([this.sendMetric(release_count_params), this.sendMetric(release_status_params)]);
+    await Promise.all([
+      this.sendMetric(release_count_params),
+      this.sendMetric(release_status_params),
+    ]);
   }
 
   getTags(org: string, repo: string, isPreRelease: boolean): string[] {

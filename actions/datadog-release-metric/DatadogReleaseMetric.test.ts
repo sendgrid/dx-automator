@@ -52,23 +52,22 @@ describe("DatadogReleaseMetric", () => {
         expect(series.tags).toContain("type:helper");
 
         switch (series.metric) {
+          case "library.release.count": {
+            expect(series.type).toEqual("count");
+            expect(series.points[0]).toContain(1);
+            break;
+          }
 
-        case "library.release.count": {
-          expect(series.type).toEqual("count");
-          expect(series.points[0]).toContain(1);
-          break;
-        }
-          
-        case "library.release.status": {
-          expect(series.type).toEqual("gauge");
-          expect(series.points[0]).toContain(0);
-          break;
-        }
+          case "library.release.status": {
+            expect(series.type).toEqual("gauge");
+            expect(series.points[0]).toContain(0);
+            break;
+          }
 
-        default: {
-          fail("Unexpected metric name");
+          default: {
+            fail("Unexpected metric name");
+          }
         }
-        }         
       }
     });
 
