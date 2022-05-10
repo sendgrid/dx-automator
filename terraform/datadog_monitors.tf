@@ -52,12 +52,12 @@ variable "GH_helper_library_release_critical" {
 
 #Twilio Monitors
 resource "datadog_monitor" "time_to_contact_issues_twilio" {
-  name    = "Mean time to contact for Issues for Twilio Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Mean time to contact for Issues for Twilio Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to contact for Issues for Twilio org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for Issues for Twilio org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_issues_critical, var.time_to_contact_issues_critical)
-  query   = format("sum(last_5m):max:library.time_to_contact.mean{org:twilio} >= %s", var.time_to_contact_issues_critical)
+  timeout_h           = 0
+  message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to contact for Issues for Twilio org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for Issues for Twilio org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_issues_critical, var.time_to_contact_issues_critical)
+  query               = format("sum(last_5m):max:library.time_to_contact.mean{org:twilio} >= %s", var.time_to_contact_issues_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_issues_warning
@@ -68,12 +68,12 @@ resource "datadog_monitor" "time_to_contact_issues_twilio" {
 }
 
 resource "datadog_monitor" "time_to_contact_PRs_twilio" {
-  name    = "Mean time to contact for PRs for Twilio Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Mean time to contact for PRs for Twilio Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to contact for PRs for Twilio org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for PRs for Twilio org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_PRs_critical, var.time_to_contact_PRs_critical)
-  query   = format("sum(last_5m):max:library.time_to_contact_pr.mean{org:twilio} >= %s", var.time_to_contact_PRs_critical)
+  timeout_h           = 0
+  message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to contact for PRs for Twilio org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for PRs for Twilio org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_PRs_critical, var.time_to_contact_PRs_critical)
+  query               = format("sum(last_5m):max:library.time_to_contact_pr.mean{org:twilio} >= %s", var.time_to_contact_PRs_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_PRs_warning
@@ -84,12 +84,12 @@ resource "datadog_monitor" "time_to_contact_PRs_twilio" {
 }
 
 resource "datadog_monitor" "time_to_resolve_issue_twilio" {
-  name    = "Mean time to resolve issues for Twilio Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Mean time to resolve issues for Twilio Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("```{{#is_alert}} ALERT! Mean time to resolve issues for Twilio org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to resolve issues for Twilio org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
-  query   = format("sum(last_5m):max:library.time_to_close.mean{org:twilio} >= %s", var.time_to_resolve_issue_critical)
+  timeout_h           = 0
+  message             = format("```{{#is_alert}} ALERT! Mean time to resolve issues for Twilio org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to resolve issues for Twilio org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
+  query               = format("sum(last_5m):max:library.time_to_close.mean{org:twilio} >= %s", var.time_to_resolve_issue_critical)
 
   monitor_thresholds {
     warning  = var.time_to_resolve_issue_warning
@@ -100,12 +100,12 @@ resource "datadog_monitor" "time_to_resolve_issue_twilio" {
 }
 
 resource "datadog_monitor" "open_issue_count_twilio" {
-  name    = "Open Issues Count for Twilio Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Open Issues Count for Twilio Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Open issues count for Twilio org= {{value}}. We are in breach of our SLO (<= %s). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Open issues count for Twilio org= {{value}}. Our SLA threshold is <= %s. {{override_priority 'P3'}} {{/is_warning}}```", var.open_issue_count_twilio_critical, var.open_issue_count_twilio_critical)
-  query   = format("sum(last_5m):sum:library.issue_count.count{org:twilio} >= %s", var.open_issue_count_twilio_critical)
+  timeout_h           = 0
+  message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Open issues count for Twilio org= {{value}}. We are in breach of our SLO (<= %s). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Open issues count for Twilio org= {{value}}. Our SLA threshold is <= %s. {{override_priority 'P3'}} {{/is_warning}}```", var.open_issue_count_twilio_critical, var.open_issue_count_twilio_critical)
+  query               = format("sum(last_5m):sum:library.issue_count.count{org:twilio} >= %s", var.open_issue_count_twilio_critical)
 
   monitor_thresholds {
     warning  = var.open_issue_count_warning
@@ -129,12 +129,12 @@ resource "datadog_monitor" "GH_helper_library_release_is_due" {
 
 #SendGrid Monitors
 resource "datadog_monitor" "time_to_contact_issues_sendgrid" {
-  name    = "Mean time to contact for Issues for SendGrid Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Mean time to contact for Issues for SendGrid Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("@slack-Twilio-alerts-dev-interfaces ``` {{#is_alert}} ALERT! Mean time to contact for Issues for SendGrid org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for Issues for SendGrid org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}}```", var.time_to_contact_issues_critical, var.time_to_contact_issues_critical)
-  query   = format("sum(last_5m):max:library.time_to_contact.mean{org:sendgrid} >= %s", var.time_to_contact_issues_critical)
+  timeout_h           = 0
+  message             = format("@slack-Twilio-alerts-dev-interfaces ``` {{#is_alert}} ALERT! Mean time to contact for Issues for SendGrid org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for Issues for SendGrid org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}}```", var.time_to_contact_issues_critical, var.time_to_contact_issues_critical)
+  query               = format("sum(last_5m):max:library.time_to_contact.mean{org:sendgrid} >= %s", var.time_to_contact_issues_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_issues_warning
@@ -145,12 +145,12 @@ resource "datadog_monitor" "time_to_contact_issues_sendgrid" {
 }
 
 resource "datadog_monitor" "time_to_contact_PRs_sendgrid" {
-  name    = "Mean time to contact for PRs for SendGrid Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Mean time to contact for PRs for SendGrid Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to contact for PRs for SendGrid org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for PRs for SendGrid org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}}```", var.time_to_contact_PRs_critical, var.time_to_contact_PRs_critical)
-  query   = format("sum(last_5m):max:library.time_to_contact_pr.mean{org:sendgrid} >= %s", var.time_to_contact_PRs_critical)
+  timeout_h           = 0
+  message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to contact for PRs for SendGrid org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to contact for PRs for SendGrid org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}}```", var.time_to_contact_PRs_critical, var.time_to_contact_PRs_critical)
+  query               = format("sum(last_5m):max:library.time_to_contact_pr.mean{org:sendgrid} >= %s", var.time_to_contact_PRs_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_PRs_warning
@@ -161,12 +161,12 @@ resource "datadog_monitor" "time_to_contact_PRs_sendgrid" {
 }
 
 resource "datadog_monitor" "time_to_resolve_PRs_sendgrid" {
-  name    = "Mean time to resolve issues for SendGrid Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Mean time to resolve issues for SendGrid Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to resolve issues for SendGrid org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to resolve issues for SendGrid org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}}```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
-  query   = format("sum(last_5m):max:library.time_to_close.mean{org:sendgrid} >= %s", var.time_to_resolve_issue_critical)
+  timeout_h           = 0
+  message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to resolve issues for SendGrid org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to resolve issues for SendGrid org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}}```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
+  query               = format("sum(last_5m):max:library.time_to_close.mean{org:sendgrid} >= %s", var.time_to_resolve_issue_critical)
 
   monitor_thresholds {
     warning  = var.time_to_resolve_issue_warning
@@ -177,12 +177,12 @@ resource "datadog_monitor" "time_to_resolve_PRs_sendgrid" {
 }
 
 resource "datadog_monitor" "open_issue_count_sendgrid" {
-  name    = "Open Issues Count for SendGrid Org [TERRAFORM]"
-  type    = "metric alert"
+  name                = "Open Issues Count for SendGrid Org [TERRAFORM]"
+  type                = "metric alert"
   require_full_window = false
-  timeout_h = 0
-  message = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Open issues count for SendGrid org= {{value}}. We are in breach of our SLO (<= %s). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Open issues count for SendGrid org= {{value}}. Our SLA threshold is <= %s. {{override_priority 'P3'}} {{/is_warning}}```", var.open_issue_count_sendgrid_critical, var.open_issue_count_sendgrid_critical)
-  query   = format("sum(last_5m):sum:library.issue_count.count{org:sendgrid} >= %s", var.open_issue_count_sendgrid_critical)
+  timeout_h           = 0
+  message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Open issues count for SendGrid org= {{value}}. We are in breach of our SLO (<= %s). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Open issues count for SendGrid org= {{value}}. Our SLA threshold is <= %s. {{override_priority 'P3'}} {{/is_warning}}```", var.open_issue_count_sendgrid_critical, var.open_issue_count_sendgrid_critical)
+  query               = format("sum(last_5m):sum:library.issue_count.count{org:sendgrid} >= %s", var.open_issue_count_sendgrid_critical)
 
   monitor_thresholds {
     warning  = var.open_issue_count_warning
