@@ -1,5 +1,5 @@
 name: DatadogReleaseMetric
 description: Pushes a GitHub Release Metric to Datadog
 runs:
-  using: node12
+  using: node16
   main: dist/index.js
