@@ -16,5 +16,6 @@ ADMINS = {
     'sr010',
     'thinkingserious',
     'rakatyal',
-    'claudiachua'
+    'claudiachua',
+    'sbansla',
 }
