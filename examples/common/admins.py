@@ -18,4 +18,5 @@ ADMINS = {
     'rakatyal',
     'claudiachua',
     'sbansla',
+    'mattcole19',
 }
