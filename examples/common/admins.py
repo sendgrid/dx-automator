@@ -19,4 +19,5 @@ ADMINS = {
     'claudiachua',
     'sbansla',
     'mattcole19',
+    'AsabuHere',
 }
