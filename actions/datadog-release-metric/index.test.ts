@@ -1,6 +1,6 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import * as core from "@actions/core";
-import { v1 } from "@datadog/datadog-api-client";
+import { client, v1 } from "@datadog/datadog-api-client";
 import datadogReleaseMetric from "./index";
 import DatadogReleaseMetric from "./DatadogReleaseMetric";
 import { MockedObject } from "ts-jest";
@@ -12,7 +12,7 @@ jest.mock("./DatadogReleaseMetric");
 
 const mockSetFailed = core.setFailed as MockedObject<any>;
 const mockDatadogReleaseMetric = DatadogReleaseMetric as MockedObject<any>;
-const mockCreateConfiguration = v1.createConfiguration as MockedObject<any>;
+const mockCreateConfiguration = client.createConfiguration as MockedObject<any>;
 const mockDatadogMetricsApi = v1.MetricsApi as MockedObject<any>;
 
 describe("datadog-release-metric", () => {

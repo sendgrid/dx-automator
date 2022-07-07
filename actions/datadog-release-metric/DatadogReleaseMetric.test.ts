@@ -1,10 +1,8 @@
 import { describe, expect, jest, test } from "@jest/globals";
 import DatadogReleaseMetric from "./DatadogReleaseMetric";
 import { Context } from "@actions/github/lib/context";
-import {
-  Configuration,
-  MetricsApi,
-} from "@datadog/datadog-api-client/dist/packages/datadog-api-client-v1";
+import { Configuration } from "@datadog/datadog-api-client/dist/packages/datadog-api-client-common";
+import { MetricsApi } from "@datadog/datadog-api-client/dist/packages/datadog-api-client-v1";
 
 const mockSubmitMetrics = jest.spyOn(MetricsApi.prototype, "submitMetrics");
 
