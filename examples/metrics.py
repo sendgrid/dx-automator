@@ -1,11 +1,9 @@
 import argparse
-import statistics
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
 from enum import Enum
 from functools import lru_cache
-from itertools import chain
 from typing import Dict, List, Iterator
 
 from datadog_api_client.v1.model.point import Point
@@ -19,9 +17,11 @@ from common.repos import ALL_REPOS, get_repos
 
 STALE_DAYS = 365
 # Tuple to specify the metric name and type to be collected in Datadog
-# Type could be 'count', 'mean', 'median', 'min' or 'max'
-DATADOG_METRICS = [('issue_count', 'count'), ('time_to_contact', 'mean'), ('time_to_contact_pr', 'mean'),
-                   ('time_to_close', 'mean')]
+# Type could be 'count', 'sum', 'min' or 'max'
+DATADOG_METRICS = [('issue_count', 'count'),
+                   ('time_to_contact', 'count'), ('time_to_contact', 'sum'),
+                   ('time_to_contact_pr', 'count'), ('time_to_contact_pr', 'sum'),
+                   ('time_to_close', 'count'), ('time_to_close', 'sum')]
 
 
 def base_type():
@@ -205,8 +205,7 @@ class MetricCollector:
                 'count': len(values),
                 'min': min(values),
                 'max': max(values),
-                'mean': statistics.mean(values),
-                'median': statistics.median(values),
+                'sum': sum(values),
             }
 
     def summarize(self, name: str, node: Dict) -> None:
@@ -292,34 +291,12 @@ def get_repo_issues(org: str, repo: str):
 DATE_TIME_FORMAT = '%Y-%m-%d'
 
 
-def get_date_range(start_date: str, end_date: str) -> Iterator[str]:
-    start_date = datetime.strptime(start_date, DATE_TIME_FORMAT)
-    end_date = datetime.strptime(end_date, DATE_TIME_FORMAT)
-
-    while start_date <= end_date:
-        yield start_date.strftime(DATE_TIME_FORMAT)
-        start_date = start_date + timedelta(days=7)
-
-
-def run_backfill() -> None:
-    mondays = get_date_range('2020-01-06', '2020-05-18')
-    fridays = get_date_range('2020-05-22', datetime.now().strftime(DATE_TIME_FORMAT))
-
-    for end_date in chain(mondays, fridays):
-        options = {
-            'repos': get_repos(),
-            'start_date': '2020-01-01',
-            'end_date': end_date,
-        }
-        MetricCollector().run(options)
-
-
-def run_now(org: List[str], include: List[str], exclude: List[str]) -> None:
+def run(org: List[str], include: List[str], exclude: List[str]) -> None:
     today = datetime.now().strftime(DATE_TIME_FORMAT)
     repos = get_repos(org, include, exclude)
     options = {
         'repos': repos,
-        'start_date': today,
+        'start_date': '2020-01-01',
         'end_date': today,
     }
 
@@ -353,4 +330,4 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    run_now(args['org'], args['include'], args['exclude'])
+    run(args['org'], args['include'], args['exclude'])
