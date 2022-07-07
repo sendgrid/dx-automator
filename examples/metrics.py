@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 from functools import lru_cache
 from itertools import chain
-from typing import Dict, List, Iterator, Generator
+from typing import Dict, List, Iterator
 
 from datadog_api_client.v1.model.point import Point
 from datadog_api_client.v1.model.series import Series
@@ -292,7 +292,7 @@ def get_repo_issues(org: str, repo: str):
 DATE_TIME_FORMAT = '%Y-%m-%d'
 
 
-def get_date_range(start_date: str, end_date: str) -> Generator[str]:
+def get_date_range(start_date: str, end_date: str) -> Iterator[str]:
     start_date = datetime.strptime(start_date, DATE_TIME_FORMAT)
     end_date = datetime.strptime(end_date, DATE_TIME_FORMAT)
 
