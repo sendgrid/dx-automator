@@ -1,6 +1,5 @@
 name: twilio metrics daily
 
-# Controls when the action will run.
 on:
   # Triggers the workflow every business day at 9AM PT
   schedule:
@@ -8,16 +7,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "actionItems"
   metrics:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -29,15 +23,14 @@ jobs:
         id: metrics_daily_twilio
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GOOGLE_API_CREDS: ${{ secrets.GOOGLE_API_CREDS }}
           DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
         run: |
-          source venv/bin/activate && python examples/metrics.py --period daily --org twilio
+          source venv/bin/activate && python examples/metrics.py --org twilio
 
   notify-on-failure:
     name: Slack notify on failure
     if: ${{ failure() }}
-    needs: [metrics]
+    needs: [ metrics ]
     runs-on: ubuntu-latest
     steps:
       - uses: rtCamp/action-slack-notify@v2
