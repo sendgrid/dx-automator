@@ -3,27 +3,20 @@ import statistics
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
+from enum import Enum
 from functools import lru_cache
 from itertools import chain
-from typing import Dict, List, Iterator
+from typing import Dict, List, Iterator, Generator
+
 from datadog_api_client.v1.model.point import Point
 from datadog_api_client.v1.model.series import Series
-from enum import Enum
 
 from common.admins import ADMINS
 from common.datadog_api import DatadogApi
 from common.git_hub_api import substitute
-from common.google_api import get_spreadsheets
 from common.issue import get_issues, Issue, get_delta_days, get_date_time
 from common.repos import ALL_REPOS, get_repos
 
-GOOGLE_SHEET_ID = '1cQOOT5aYxfXOSwEV0cJyf01KkV-uKCBJnKK3PHjouCE'
-GOOGLE_SHEET_NAME_DAILY = 'Daily'
-GOOGLE_SHEET_NAME_WEEKLY = 'Weekly'
-DAILY = 'daily'
-WEEKLY = 'weekly'
-TWILIO = 'twilio'
-SENDGRID = 'sendgrid'
 STALE_DAYS = 365
 # Tuple to specify the metric name and type to be collected in Datadog
 # Type could be 'count', 'mean', 'median', 'min' or 'max'
@@ -48,14 +41,10 @@ class MetricCollector:
         self.all_metrics = []
         self.datadog_api = DatadogApi()
 
-        # Load up the spreadsheet connector early to validate credentials.
-        self.spreadsheets = get_spreadsheets()
-
     def run(self, run_options: dict) -> None:
         repos = run_options['repos']
         start_date = run_options['start_date']
         end_date = run_options['end_date']
-        reporting_period = run_options['reporting_period'] or end_date
 
         print(f'repos to run the metrics on: {repos}')
         global_node = self.metrics
@@ -78,10 +67,7 @@ class MetricCollector:
                 repo_node = org_node['nodes'][repo]
                 self.aggregate(repo_node)
                 name = f'https://github.com/{org}/{repo}'
-                self.summarize(name, reporting_period, repo_node)
-
-        # Until we move our entire data to Datadog, we will continue to push data to Google Sheet as well
-        self.output_google_sheet(reporting_period=reporting_period)
+                self.summarize(name, repo_node)
 
         # Convert data to Datadog time series
         datadog_series = []
@@ -92,7 +78,7 @@ class MetricCollector:
                 repo_node = org_node['nodes'][repo]
                 datadog_series += self.get_series_for_datadog(repo_node, org, repo)
 
-        # Helps with debugging in Github Actions logs
+        # Helps with debugging in GitHub Actions logs
         print("Datadog series data:", datadog_series)
 
         # Submit data to Datadog
@@ -223,7 +209,7 @@ class MetricCollector:
                 'median': statistics.median(values),
             }
 
-    def summarize(self, name: str, reporting_date: str, node: Dict) -> None:
+    def summarize(self, name: str, node: Dict) -> None:
         repo_metrics = {'name': name, 'date': datetime.now().strftime(DATE_TIME_FORMAT)}
 
         metrics = node['metrics']
@@ -234,40 +220,6 @@ class MetricCollector:
                     repo_metrics[f'{metric}_{k}'] = v
 
         self.all_metrics.append(repo_metrics)
-
-    def output_google_sheet(self, reporting_period: str) -> None:
-        if reporting_period == DAILY:
-            google_sheet_name = GOOGLE_SHEET_NAME_DAILY
-        if reporting_period == WEEKLY:
-            google_sheet_name = GOOGLE_SHEET_NAME_WEEKLY
-
-        response = self.spreadsheets.values().get(spreadsheetId=GOOGLE_SHEET_ID,
-                                                  range=f'{google_sheet_name}!1:1').execute()
-        header = response.get('values', [[]])[0]
-
-        values = []
-
-        for metrics in self.all_metrics:
-            row = []
-            values.append(row)
-
-            for metric_id in header:
-                row.append(metrics.get(metric_id))
-
-            for metric_id, value in metrics.items():
-                if metric_id not in header:
-                    header.append(metric_id)
-                    row.append(value)
-
-        self.spreadsheets.values().update(spreadsheetId=GOOGLE_SHEET_ID,
-                                          range=f'{google_sheet_name}!1:1',
-                                          valueInputOption='USER_ENTERED',
-                                          body={'values': [header]}).execute()
-
-        self.spreadsheets.values().append(spreadsheetId=GOOGLE_SHEET_ID,
-                                          range=f'{google_sheet_name}!A2:A',
-                                          valueInputOption='USER_ENTERED',
-                                          body={'values': values}).execute()
 
 
 @lru_cache(maxsize=None)
@@ -340,7 +292,7 @@ def get_repo_issues(org: str, repo: str):
 DATE_TIME_FORMAT = '%Y-%m-%d'
 
 
-def get_date_range(start_date: str, end_date: str) -> List[str]:
+def get_date_range(start_date: str, end_date: str) -> Generator[str]:
     start_date = datetime.strptime(start_date, DATE_TIME_FORMAT)
     end_date = datetime.strptime(end_date, DATE_TIME_FORMAT)
 
@@ -362,29 +314,20 @@ def run_backfill() -> None:
         MetricCollector().run(options)
 
 
-def run_now(reporting_period: str, org: List[str], include: List[str], exclude: List[str]) -> None:
+def run_now(org: List[str], include: List[str], exclude: List[str]) -> None:
     today = datetime.now().strftime(DATE_TIME_FORMAT)
     repos = get_repos(org, include, exclude)
     options = {
         'repos': repos,
         'start_date': today,
         'end_date': today,
-        'reporting_period': reporting_period,
     }
 
-    if reporting_period == DAILY:
-        MetricCollector().run(options)
-    if reporting_period == WEEKLY:
-        start_date = datetime.strptime(today, DATE_TIME_FORMAT) - timedelta(days=7)
-        start_date = start_date.strftime(DATE_TIME_FORMAT)
-        options['start_date'] = start_date
-        MetricCollector().run(options)
+    MetricCollector().run(options)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='dx-automator')
-    parser.add_argument('--period', '-p', required=True, help='period to run the metrics on',
-                        choices=[DAILY, WEEKLY])
     parser.add_argument('--org', '-o', nargs='*',
                         help='if none specified, runs on all orgs',
                         default=[],
@@ -410,4 +353,4 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    run_now(args['period'], args['org'], args['include'], args['exclude'])
+    run_now(args['org'], args['include'], args['exclude'])

@@ -29,8 +29,8 @@ source venv/bin/activate
 
 ```bash
 python ./examples/action_items.py
-python ./examples/metrics.py daily
-python ./examples/metrics.py weekly
+python ./examples/metrics.py
+python ./examples/metrics.py --org twilio
 ```
 ## Usage - Updating DataDog Monitors through Terraform
 1. Open a PR that includes any relevant changes to `datadog_monitors.tf` located in the `terraform` directory
