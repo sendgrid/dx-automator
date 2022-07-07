@@ -1,4 +1,4 @@
-# The Developer Experience (DX) Automator
+# The Developer Experience (DX) Automator 
 
 This tool is intended to help make managing multiple GitHub repositories much easier for DX, DevRel, and Open Source Engineering teams.
 
