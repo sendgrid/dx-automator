@@ -12,7 +12,7 @@ from datadog_api_client.v1.model.series import Series
 from common.admins import ADMINS
 from common.datadog_api import DatadogApi
 from common.git_hub_api import substitute
-from common.issue import get_issues, Issue, get_delta_days, get_date_time
+from common.issue import ISSUE_CATEGORIES, get_issues, Issue, get_delta_days, get_date_time
 from common.repos import ALL_REPOS, get_repos
 
 STALE_DAYS = 365
@@ -20,8 +20,11 @@ STALE_DAYS = 365
 # Type could be 'count', 'sum', 'min' or 'max'
 DATADOG_METRICS = [('issue_count', 'count'),
                    ('time_to_contact', 'count'), ('time_to_contact', 'sum'),
-                   ('time_to_contact_pr', 'count'), ('time_to_contact_pr', 'sum'),
-                   ('time_to_close', 'count'), ('time_to_close', 'sum')]
+                   ('time_to_contact_pr', 'count'), ('time_to_contact_pr', 'sum')]
+
+for category in ISSUE_CATEGORIES:
+    DATADOG_METRICS.append((f'time_to_close_{category}', 'count'))
+    DATADOG_METRICS.append((f'time_to_close_{category}', 'sum'))
 
 
 def base_type():
