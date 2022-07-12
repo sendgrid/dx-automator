@@ -89,7 +89,7 @@ resource "datadog_monitor" "time_to_resolve_issue_twilio" {
   require_full_window = false
   timeout_h           = 0
   message             = format("```{{#is_alert}} ALERT! Mean time to resolve issues for Twilio org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to resolve issues for Twilio org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
-  query               = format("sum(last_5m):sum:library.time_to_close.sum{org:twilio} / sum:library.time_to_close.count{org:twilio} >= %s", var.time_to_resolve_issue_critical)
+  query               = format("sum(last_5m):(sum:library.time_to_close_community_enhancement.sum{org:twilio} + sum:library.time_to_close_question.sum{org:twilio} + sum:library.time_to_close_support.sum{org:twilio} + sum:library.time_to_close_twilio_enhancement.sum{org:twilio} + sum:library.time_to_close_bug.sum{org:twilio}) / (sum:library.time_to_close_community_enhancement.count{org:twilio} + sum:library.time_to_close_question.count{org:twilio} + sum:library.time_to_close_support.count{org:twilio} + sum:library.time_to_close_twilio_enhancement.count{org:twilio} + sum:library.time_to_close_bug.count{org:twilio}) >= %s", var.time_to_resolve_issue_critical)
 
   monitor_thresholds {
     warning  = var.time_to_resolve_issue_warning
@@ -181,7 +181,7 @@ resource "datadog_monitor" "time_to_resolve_PRs_sendgrid" {
   require_full_window = false
   timeout_h           = 0
   message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Mean time to resolve issues for SendGrid org= {{value}}. We are in breach of our SLO (<= %s days). {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Mean time to resolve issues for SendGrid org= {{value}}. Our SLA threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}}```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
-  query               = format("sum(last_5m):sum:library.time_to_close.sum{org:sendgrid} / sum:library.time_to_close.count{org:sendgrid} >= %s", var.time_to_resolve_issue_critical)
+  query               = format("sum(last_5m):(sum:library.time_to_close_community_enhancement.sum{org:sendgrid} + sum:library.time_to_close_question.sum{org:sendgrid} + sum:library.time_to_close_support.sum{org:sendgrid} + sum:library.time_to_close_twilio_enhancement.sum{org:sendgrid} + sum:library.time_to_close_bug.sum{org:sendgrid}) / (sum:library.time_to_close_community_enhancement.count{org:sendgrid} + sum:library.time_to_close_question.count{org:sendgrid} + sum:library.time_to_close_support.count{org:sendgrid} + sum:library.time_to_close_twilio_enhancement.count{org:sendgrid} + sum:library.time_to_close_bug.count{org:sendgrid}) >= %s", var.time_to_resolve_issue_critical)
 
   monitor_thresholds {
     warning  = var.time_to_resolve_issue_warning
