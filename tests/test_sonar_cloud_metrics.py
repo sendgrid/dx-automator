@@ -41,7 +41,7 @@ class TestSonarCloudMetricCollector(unittest.TestCase):
 
         first = series[0]
         self.assertEqual('sonar_cloud.measures.branch_coverage', first.metric)
-        self.assertEqual(['org:erg', 'repo:erg/goo'], first.tags)
+        self.assertEqual(['org:erg', 'repo:erg/goo', 'pre-release:false'], first.tags)
         self.assertEqual(1, len(first.points))
 
     def test_run(self):
