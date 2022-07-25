@@ -4,13 +4,12 @@ import {
   MetricsApi,
   MetricsApiSubmitMetricsRequest,
 } from "@datadog/datadog-api-client/dist/packages/datadog-api-client-v1";
-import getVersion from "../utils/getVersion";
+import getVersion, { isPreRelease } from "../utils/getVersion";
 
 const METRIC_TYPE_COUNT = "count";
 const METRIC_TYPE_GAUGE = "gauge";
 const METRIC_NAME_RELEASE_COUNT = "library.release.count";
 const METRIC_NAME_RELEASE_STATUS = "library.release.status";
-const PRE_RELEASE_SEPARATOR = "-";
 
 export interface MetricParams {
   type: string;
@@ -53,11 +52,11 @@ export default class DatadogReleaseMetric {
     ]);
   }
 
-  getTags(org: string, repo: string, isPreRelease: boolean): string[] {
+  getTags(org: string, repo: string, preRelease: boolean): string[] {
     return [
       `org:${org}`,
       `repo:${repo}`,
-      `pre-release:${isPreRelease}`,
+      `pre-release:${preRelease}`,
       "type:helper",
     ];
   }
@@ -84,7 +83,7 @@ export default class DatadogReleaseMetric {
   }
 
   private isPreRelease(): boolean {
-    return this.getVersion().includes(PRE_RELEASE_SEPARATOR);
+    return isPreRelease(this.getVersion());
   }
 
   private async sendMetric(metricParams: MetricParams): Promise<void> {

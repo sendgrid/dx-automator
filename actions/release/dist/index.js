@@ -38,15 +38,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const rest_1 = __nccwpck_require__(5375);
 const fs_1 = __nccwpck_require__(7147);
 const path = __importStar(__nccwpck_require__(1017));
-const getVersion_1 = __importDefault(__nccwpck_require__(2256));
+const getVersion_1 = __importStar(__nccwpck_require__(2256));
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
 const VARIABLE_REGEX = /\${.*?}/;
 const CHANGELOG_FILENAMES = ["CHANGES.md", "CHANGELOG.md"];
@@ -105,14 +102,20 @@ class ReleaseGitHub {
             catch (error) {
                 core.info(`Could not get existing GitHub release: ${error}`);
             }
+            const releaseParams = {
+                tag_name: version,
+                name: version,
+                body: releaseNotes,
+                prerelease: (0, getVersion_1.isPreRelease)(version),
+            };
             if (existingRelease) {
                 core.info(`Updating existing GitHub release: ${version}`);
-                const updateReleaseResponse = yield this.octokit.repos.updateRelease(Object.assign(Object.assign({}, this.context.repo), { release_id: existingRelease.data.id, tag_name: version, name: version, body: releaseNotes }));
+                const updateReleaseResponse = yield this.octokit.repos.updateRelease(Object.assign(Object.assign(Object.assign({}, this.context.repo), releaseParams), { release_id: existingRelease.data.id }));
                 return updateReleaseResponse.data.id;
             }
             else {
                 core.info(`Creating GitHub release: ${version}`);
-                const createReleaseResponse = yield this.octokit.repos.createRelease(Object.assign(Object.assign({}, this.context.repo), { tag_name: version, name: version, body: releaseNotes }));
+                const createReleaseResponse = yield this.octokit.repos.createRelease(Object.assign(Object.assign({}, this.context.repo), releaseParams));
                 return createReleaseResponse.data.id;
             }
         });
@@ -264,7 +267,9 @@ exports["default"] = main;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isPreRelease = void 0;
 const REF_REGEX = /^refs\/(.+?)\/(.+)$/;
+const PRE_RELEASE_SEPARATOR = "-";
 function getVersion(context) {
     const [ref, refType, refName] = context.ref.match(REF_REGEX) || [];
     if (!ref) {
@@ -276,6 +281,10 @@ function getVersion(context) {
     return refName;
 }
 exports["default"] = getVersion;
+function isPreRelease(version) {
+    return version.includes(PRE_RELEASE_SEPARATOR);
+}
+exports.isPreRelease = isPreRelease;
 
 
 /***/ }),

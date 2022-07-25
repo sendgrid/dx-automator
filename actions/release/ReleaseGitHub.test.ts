@@ -77,13 +77,14 @@ describe("ReleaseGitHub", () => {
       expect(createReleaseParams.tag_name).toEqual("1.2.3");
       expect(createReleaseParams.name).toEqual("1.2.3");
       expect(createReleaseParams.body).toEqual("NOTES");
+      expect(createReleaseParams.prerelease).toBeFalsy();
     });
 
     test("updates an existing release", async () => {
       mockGetReleaseByTag.mockReturnValue({ data: { id: 123 } });
       mockUpdateRelease.mockReturnValue({ data: { id: 123 } });
 
-      const releaseId = await release.release("1.2.3", "NOTES");
+      const releaseId = await release.release("1.2.3-alpha", "NOTES");
       expect(releaseId).toEqual(123);
       expect(mockGetReleaseByTag).toHaveBeenCalledTimes(1);
       expect(mockUpdateRelease).toHaveBeenCalledTimes(1);
@@ -91,9 +92,10 @@ describe("ReleaseGitHub", () => {
 
       const updateReleaseParams: any = mockUpdateRelease.mock.calls[0][0];
       expect(updateReleaseParams.release_id).toEqual(123);
-      expect(updateReleaseParams.tag_name).toEqual("1.2.3");
-      expect(updateReleaseParams.name).toEqual("1.2.3");
+      expect(updateReleaseParams.tag_name).toEqual("1.2.3-alpha");
+      expect(updateReleaseParams.name).toEqual("1.2.3-alpha");
       expect(updateReleaseParams.body).toEqual("NOTES");
+      expect(updateReleaseParams.prerelease).toBeTruthy();
     });
   });
 

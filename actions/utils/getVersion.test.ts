@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import { Context } from "@actions/github/lib/context";
-import getVersion from "./getVersion";
+import getVersion, { isPreRelease } from "./getVersion";
 
 describe("getVersion", () => {
   test("parses a tag ref properly", () => {
@@ -20,5 +20,12 @@ describe("getVersion", () => {
     const context = { ref: "bad-ref" } as Context;
 
     expect(() => getVersion(context)).toThrow("Invalid ref");
+  });
+});
+
+describe("isPreRelease", () => {
+  test("handles pre-releases and non-pre-releases", () => {
+    expect(isPreRelease("1.2.3-rc.1")).toBeTruthy();
+    expect(isPreRelease("1.2.3")).toBeFalsy();
   });
 });

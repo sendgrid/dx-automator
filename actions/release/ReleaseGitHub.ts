@@ -3,7 +3,7 @@ import { Context } from "@actions/github/lib/context";
 import { Octokit } from "@octokit/rest";
 import { createReadStream, readFileSync, statSync } from "fs";
 import * as path from "path";
-import getVersion from "../utils/getVersion";
+import getVersion, { isPreRelease } from "../utils/getVersion";
 
 const VERSION_REGEX = /\[([\d-]+)] +[vV]ersion +(\d+\.\d+\.\d+)\s?/;
 const VARIABLE_REGEX = /\${.*?}/;
@@ -78,14 +78,19 @@ export default class ReleaseGitHub {
       core.info(`Could not get existing GitHub release: ${error}`);
     }
 
+    const releaseParams = {
+      tag_name: version,
+      name: version,
+      body: releaseNotes,
+      prerelease: isPreRelease(version),
+    };
+
     if (existingRelease) {
       core.info(`Updating existing GitHub release: ${version}`);
       const updateReleaseResponse = await this.octokit.repos.updateRelease({
         ...this.context.repo,
+        ...releaseParams,
         release_id: existingRelease.data.id,
-        tag_name: version,
-        name: version,
-        body: releaseNotes,
       });
 
       return updateReleaseResponse.data.id;
@@ -93,9 +98,7 @@ export default class ReleaseGitHub {
       core.info(`Creating GitHub release: ${version}`);
       const createReleaseResponse = await this.octokit.repos.createRelease({
         ...this.context.repo,
-        tag_name: version,
-        name: version,
-        body: releaseNotes,
+        ...releaseParams,
       });
 
       return createReleaseResponse.data.id;
