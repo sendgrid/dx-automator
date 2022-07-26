@@ -43,7 +43,11 @@ class SonarCloudMetricCollector:
                 metric=f'sonar_cloud.measures.{metric}',
                 type=f'{DatadogSeriesType.GAUGE}',
                 points=[Point([datetime.now().timestamp(), float(measure['value'])])],
-                tags=[f'org:{repo.org}', f'repo:{repo.org}/{repo.name}'],
+                tags=[
+                    f'org:{repo.org}',
+                    f'repo:{repo.org}/{repo.name}',
+                    'pre-release:false',
+                ],
             )
 
 
