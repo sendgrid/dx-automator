@@ -131,8 +131,8 @@ resource "datadog_monitor" "GH_helper_library_release_is_due" {
 resource "datadog_monitor" "helper_library_release_incomplete" {
   name                = "Helper Library Release Incomplete [TERRAFORM]"
   type                = "query alert"
-  message             = "@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Library {{repo.name}} did not release within 1 hour {{override_priority 'P1'}} {{/is_alert}}```"
-  query               = "min(last_1h):sum:library.release.status{*} by {repo} >= 1"
+  message             = "@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Library {{repo.name}} (pre-release: {{pre-release.name}}) did not release within 1 hour {{override_priority 'P1'}} {{/is_alert}}```"
+  query               = "min(last_1h):sum:library.release.status{*} by {repo,pre-release} >= 1"
   require_full_window = false
 
   monitor_thresholds {
