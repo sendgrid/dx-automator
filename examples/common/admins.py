@@ -20,4 +20,6 @@ ADMINS = {
     'sbansla',
     'mattcole19',
     'AsabuHere',
+    'isha689',
+    'rohith-prakash',
 }
