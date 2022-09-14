@@ -7,7 +7,7 @@ from datadog_api_client.v1.model.series import Series
 
 from common.datadog_api import DatadogApi
 from common.repos import ALL_REPOS, Repo, get_repos
-from common.sonar_cloud_api import Metrics, SonarCloudApi
+from common.sonar_cloud_api import ProjectBranch, Metrics, SonarCloudApi
 from metrics import DatadogSeriesType
 
 METRICS = [Metrics.LINES_TO_COVER, Metrics.UNCOVERED_LINES, Metrics.BRANCH_COVERAGE]
@@ -22,21 +22,36 @@ class SonarCloudMetricCollector:
         series = []
 
         for repo in repos:
-            measures = self.sonar_cloud_api.get_component_measures(repo.org, repo.name, METRICS)
+            for branch in self.get_branches(repo):
+                measures = self.sonar_cloud_api.get_component_measures(repo.org, repo.name, branch.name, METRICS)
 
-            if measures:
-                series += self.get_series(repo, measures)
+                if measures:
+                    series += self.get_series(repo, branch, measures)
 
-        print("Series data:", series)
+        print('Series data:', series)
 
         self.datadog_api.submit_metrics(series)
 
-    def get_series(self, repo: Repo, measures: List[Dict[str, Any]]) -> Iterator[Series]:
+    def get_branches(self, repo: Repo) -> List[ProjectBranch]:
+        branches = self.sonar_cloud_api.get_project_branches(repo.org, repo.name) or []
+
+        # Filter out non-main, non-pre-release branches.
+        main_branch = [branch for branch in branches if branch.is_main]
+        pre_release_branch = [branch for branch in branches if branch.is_pre_release]
+
+        if len(main_branch) > 1:
+            raise RuntimeError('found more than 1 main branch', main_branch)
+        if len(pre_release_branch) > 1:
+            raise RuntimeError('found more than 1 pre-release branch', pre_release_branch)
+
+        return main_branch + pre_release_branch
+
+    def get_series(self, repo: Repo, branch: ProjectBranch, measures: List[Dict[str, Any]]) -> Iterator[Series]:
         for metric in METRICS:
             measure = next((measure for measure in measures if measure['metric'] == metric), None)
 
             if not measure:
-                print(f'Failed to find metric "{metric}" in measures for {repo}')
+                print(f'Failed to find metric "{metric}" in measures for {repo}:{branch}')
                 continue
 
             yield Series(
@@ -46,7 +61,7 @@ class SonarCloudMetricCollector:
                 tags=[
                     f'org:{repo.org}',
                     f'repo:{repo.org}/{repo.name}',
-                    'pre-release:false',
+                    f'pre-release:{branch.is_pre_release}',
                 ],
             )
 
