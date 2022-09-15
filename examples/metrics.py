@@ -41,7 +41,6 @@ class MetricCollector:
     def __init__(self):
         self.metrics = base_type()
         self.untagged_issues = []
-        self.all_metrics = []
         self.datadog_api = DatadogApi()
 
     def run(self, run_options: dict) -> None:
@@ -64,14 +63,6 @@ class MetricCollector:
             for issue in self.untagged_issues:
                 print(issue.url)
 
-        for org in global_node['nodes']:
-            org_node = global_node['nodes'][org]
-            for repo in org_node['nodes']:
-                repo_node = org_node['nodes'][repo]
-                self.aggregate(repo_node)
-                name = f'https://github.com/{org}/{repo}'
-                self.summarize(name, repo_node)
-
         # Convert data to Datadog time series
         datadog_series = []
 
@@ -79,28 +70,29 @@ class MetricCollector:
             org_node = global_node['nodes'][org]
             for repo in org_node['nodes']:
                 repo_node = org_node['nodes'][repo]
+                self.aggregate(repo_node)
                 datadog_series += self.get_series_for_datadog(repo_node, org, repo)
 
         # Helps with debugging in GitHub Actions logs
-        print("Datadog series data:", datadog_series)
+        print('Datadog series data:', datadog_series)
 
         # Submit data to Datadog
         self.datadog_api.submit_metrics(datadog_series)
 
     def get_series_for_datadog(self, repo_node: Dict, org: str, repo: str) -> Iterator[Series]:
         for metric_name, metric_type in DATADOG_METRICS:
-
             try:
-                data = repo_node['metrics'][metric_name][metric_type]
-
-            except KeyError as e:
-                print(f'Failed to find metric "{metric_name}" for {repo}: {e}')
+                metric = repo_node['metrics'][metric_name]
+            except KeyError:
+                print(f'Failed to find metric "{metric_name}" for {repo}')
                 continue
+
+            metric_value = metric[metric_type]
 
             yield Series(
                 metric=f'library.{metric_name}.{metric_type}',
                 type=f'{DatadogSeriesType.GAUGE}',
-                points=[Point([datetime.now().timestamp(), float(data)])],
+                points=[Point([datetime.now().timestamp(), float(metric_value)])],
                 tags=[f'org:{org}', f'repo:{org}/{repo}', 'type:helper'],
             )
 
@@ -109,12 +101,9 @@ class MetricCollector:
                      start_date: str, end_date: str) -> None:
         start_date = get_date_time(start_date)
         end_date = get_date_time(end_date)
-        stale_date = datetime.strptime(datetime.now().strftime(DATE_TIME_FORMAT), DATE_TIME_FORMAT) - timedelta(
-            days=STALE_DAYS)
+        stale_date = datetime.now() - timedelta(days=STALE_DAYS)
         stale_date = get_date_time(stale_date.strftime(DATE_TIME_FORMAT))
-        issues = get_repo_issues(org, repo)
-        issue_count = 0
-        pr_count = 0
+        issues = get_repo_issues(org, repo, start_date=start_date, end_date=end_date)
 
         for issue_json in issues:
             issue = Issue(issue_json, end_date=end_date)
@@ -122,17 +111,10 @@ class MetricCollector:
             if issue.author in ADMINS:
                 continue
 
-            if issue.created_at > end_date:
-                continue
-
-            if issue.created_at < stale_date:
-                continue
-
             issue.process_events()
+            issue_category = issue.get_issue_category()
 
-            if issue.created_at >= start_date:
-                issue_category = issue.get_issue_category()
-
+            if issue.created_at >= stale_date:
                 self.add_time_to_resolve(issue)
 
                 if 'time_to_close' in issue.metrics:
@@ -156,25 +138,15 @@ class MetricCollector:
                 if not issue.first_admin_comment:
                     issue.metrics.pop('time_to_close_pr', None)
 
-            nodes['nodes'][issue.url]['metrics'] = issue.metrics
+                nodes['nodes'][issue.url]['metrics'] = issue.metrics
 
-            if issue.events != []:
-                if issue.events is not None:
-                    last_update = issue.events[-1].get('createdAt', None)
-                if last_update is None:
-                    last_update = issue.events[-1]['commit']['committedDate']
-            else:
-                last_update = issue.created_at
-
-            if not issue.closed and last_update > stale_date:
+            if not issue.closed and not issue.merged:
                 time_open = get_delta_days(issue.created_at, end_date)
-                if '/pull/' in issue.url:
-                    pr_count += 1
-                    nodes['nodes'][issue.url]['metrics']['pr_count'] = pr_count
+                if issue.is_pr:
+                    nodes['nodes'][issue.url]['metrics']['pr_count'] = 1
                     nodes['nodes'][issue.url]['metrics']['time_open_pr'] = time_open
                 else:
-                    issue_count += 1
-                    nodes['nodes'][issue.url]['metrics']['issue_count'] = issue_count
+                    nodes['nodes'][issue.url]['metrics']['issue_count'] = 1
                     nodes['nodes'][issue.url]['metrics']['time_open_issue'] = time_open
 
     def add_time_to_resolve(self, issue: Issue) -> None:
@@ -211,21 +183,9 @@ class MetricCollector:
                 'sum': sum(values),
             }
 
-    def summarize(self, name: str, node: Dict) -> None:
-        repo_metrics = {'name': name, 'date': datetime.now().strftime(DATE_TIME_FORMAT)}
-
-        metrics = node['metrics']
-
-        for metric, values in metrics.items():
-            for k, v in values.items():
-                if k != 'values':
-                    repo_metrics[f'{metric}_{k}'] = v
-
-        self.all_metrics.append(repo_metrics)
-
 
 @lru_cache(maxsize=None)
-def get_repo_issues(org: str, repo: str):
+def get_repo_issues(org: str, repo: str, start_date: str, end_date: str):
     fragment_template = """
 ... on %issue_type% {
     author {
@@ -288,7 +248,8 @@ def get_repo_issues(org: str, repo: str):
     inline_fragments = [substitute(fragment_template, fragment)
                         for fragment in fragment_params]
 
-    return list(get_issues(org, repo, ''.join(inline_fragments)))
+    return list(get_issues(org, repo, ''.join(inline_fragments),
+                           start_date=start_date, end_date=end_date))
 
 
 DATE_TIME_FORMAT = '%Y-%m-%d'
