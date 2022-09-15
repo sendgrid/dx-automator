@@ -113,6 +113,7 @@ class MetricCollector:
 
             issue.process_events()
             issue_category = issue.get_issue_category()
+            issue_node = nodes['nodes'][issue.url]
 
             if issue.created_at >= stale_date:
                 self.add_time_to_resolve(issue)
@@ -138,16 +139,16 @@ class MetricCollector:
                 if not issue.first_admin_comment:
                     issue.metrics.pop('time_to_close_pr', None)
 
-                nodes['nodes'][issue.url]['metrics'] = issue.metrics
+                issue_node['metrics'] = issue.metrics
 
             if not issue.closed and not issue.merged:
                 time_open = get_delta_days(issue.created_at, end_date)
                 if issue.is_pr:
-                    nodes['nodes'][issue.url]['metrics']['pr_count'] = 1
-                    nodes['nodes'][issue.url]['metrics']['time_open_pr'] = time_open
+                    issue_node['metrics']['pr_count'] = 1
+                    issue_node['metrics']['time_open_pr'] = time_open
                 else:
-                    nodes['nodes'][issue.url]['metrics']['issue_count'] = 1
-                    nodes['nodes'][issue.url]['metrics']['time_open_issue'] = time_open
+                    issue_node['metrics']['issue_count'] = 1
+                    issue_node['metrics']['time_open_issue'] = time_open
 
     def add_time_to_resolve(self, issue: Issue) -> None:
         for ext in {'', '_pr'}:
