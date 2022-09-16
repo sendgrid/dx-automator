@@ -1,6 +1,6 @@
 import re
 from enum import Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import requests
 
@@ -11,7 +11,7 @@ PRE_RELEASE_BRANCH_REGEX = r'\d+\.0\.0-\w+'
 
 
 class ProjectBranch:
-    def __init__(self, branch_data: dict[str, any]) -> None:
+    def __init__(self, branch_data: Dict[str, any]) -> None:
         self.branch_data = branch_data
 
         self.name = branch_data['name']
