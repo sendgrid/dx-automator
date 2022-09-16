@@ -12,19 +12,19 @@ from datadog_api_client.v1.model.series import Series
 from common.admins import ADMINS
 from common.datadog_api import DatadogApi
 from common.git_hub_api import substitute
-from common.issue import ISSUE_CATEGORIES, get_issues, Issue, get_delta_days, get_date_time
+from common.issue import get_issues, Issue, get_delta_days, get_date_time
 from common.repos import ALL_REPOS, get_repos
 
 STALE_DAYS = 365
 # Tuple to specify the metric name and type to be collected in Datadog
 # Type could be 'count', 'sum', 'min' or 'max'
-DATADOG_METRICS = [('issue_count', 'count'),
+DATADOG_METRICS = [('issue_count', 'count'), ('pr_count', 'count'),
                    ('time_to_contact', 'count'), ('time_to_contact', 'sum'),
-                   ('time_to_contact_pr', 'count'), ('time_to_contact_pr', 'sum')]
-
-for category in ISSUE_CATEGORIES:
-    DATADOG_METRICS.append((f'time_to_close_{category}', 'count'))
-    DATADOG_METRICS.append((f'time_to_close_{category}', 'sum'))
+                   ('time_to_contact_pr', 'count'), ('time_to_contact_pr', 'sum'),
+                   ('time_to_close', 'count'), ('time_to_close', 'sum'),
+                   ('time_open', 'max'), ('time_open_pr', 'max'),
+                   ('time_awaiting_contact', 'max'), ('time_awaiting_contact_pr', 'max'),
+                   ('time_awaiting_response', 'max'), ('time_awaiting_response_pr', 'max')]
 
 
 def base_type():
@@ -82,19 +82,20 @@ class MetricCollector:
     def get_series_for_datadog(self, repo_node: Dict, org: str, repo: str) -> Iterator[Series]:
         for metric_name, metric_type in DATADOG_METRICS:
             try:
-                metric = repo_node['metrics'][metric_name]
+                category_values = repo_node['metrics'][metric_name]
             except KeyError:
                 print(f'Failed to find metric "{metric_name}" for {repo}')
                 continue
 
-            metric_value = metric[metric_type]
+            for category, values in category_values.items():
+                metric_value = values[metric_type]
 
-            yield Series(
-                metric=f'library.{metric_name}.{metric_type}',
-                type=f'{DatadogSeriesType.GAUGE}',
-                points=[Point([datetime.now().timestamp(), float(metric_value)])],
-                tags=[f'org:{org}', f'repo:{org}/{repo}', 'type:helper'],
-            )
+                yield Series(
+                    metric=f'library.{metric_name}.{metric_type}',
+                    type=f'{DatadogSeriesType.GAUGE}',
+                    points=[Point([datetime.now().timestamp(), float(metric_value)])],
+                    tags=[f'org:{org}', f'repo:{org}/{repo}', f'category:{category}', 'type:helper'],
+                )
 
     def process_repo(self, nodes: Dict,
                      org: str, repo: str,
@@ -113,28 +114,21 @@ class MetricCollector:
 
             issue.process_events()
             issue_category = issue.get_issue_category()
+
             issue_node = nodes['nodes'][issue.url]
+            issue_node['category'] = issue_category
 
             if issue.created_at >= stale_date:
                 self.add_time_to_resolve(issue)
 
                 if 'time_to_close' in issue.metrics:
-                    time_to_close = issue.metrics.pop('time_to_close')
-
-                    if issue.get_issue_status() not in ['duplicate', 'invalid']:
-                        if issue.first_admin_comment:
-                            if issue_category:
-                                issue.metrics[f'time_to_close_{issue_category}'] = time_to_close
-                            else:
-                                self.untagged_issues.append(issue)
-
-                if 'time_awaiting_resolution' in issue.metrics:
-                    resolution = issue.metrics.pop('time_awaiting_resolution')
-
-                    if issue_category:
-                        issue.metrics[f'time_awaiting_resolution_{issue_category}'] = resolution
-                    else:
+                    if issue.get_issue_status() in ['duplicate', 'invalid'] or not issue.first_admin_comment:
+                        issue.metrics.pop('time_to_close')
+                    elif not issue_category:
                         self.untagged_issues.append(issue)
+
+                if 'time_awaiting_resolution' in issue.metrics and not issue_category:
+                    self.untagged_issues.append(issue)
 
                 if not issue.first_admin_comment:
                     issue.metrics.pop('time_to_close_pr', None)
@@ -148,7 +142,7 @@ class MetricCollector:
                     issue_node['metrics']['time_open_pr'] = time_open
                 else:
                     issue_node['metrics']['issue_count'] = 1
-                    issue_node['metrics']['time_open_issue'] = time_open
+                    issue_node['metrics']['time_open'] = time_open
 
     def add_time_to_resolve(self, issue: Issue) -> None:
         for ext in {'', '_pr'}:
@@ -160,29 +154,32 @@ class MetricCollector:
                 issue.metrics[f'time_to_resolve'] = sum(contact) + sum(respond) + sum(close)
 
     def aggregate(self, node: Dict) -> None:
-        metrics: Dict[str, List[float]] = {}
+        metrics = node['metrics']
 
         for item in node['nodes'].values():
-            for metric_id, value in item['metrics'].items():
+            category = item['category']
+
+            for metric_id, values in item['metrics'].items():
+                if isinstance(values, dict):
+                    values = values['values']
+                if not isinstance(values, list):
+                    values = [values]
+
                 if metric_id not in metrics:
-                    metrics[metric_id] = []
+                    metrics[metric_id] = {}
+                if category not in metrics[metric_id]:
+                    metrics[metric_id][category] = {
+                        'count': 0,
+                        'sum': 0,
+                        'min': float('inf'),
+                        'max': float('-inf')
+                    }
 
-                if isinstance(value, dict):
-                    value = value['values']
-
-                if not isinstance(value, list):
-                    value = [value]
-
-                metrics[metric_id].extend(value)
-
-        for metric_id, values in metrics.items():
-            node['metrics'][metric_id] = {
-                'values': sorted(values),
-                'count': len(values),
-                'min': min(values),
-                'max': max(values),
-                'sum': sum(values),
-            }
+                category_metrics = metrics[metric_id][category]
+                category_metrics['count'] += len(values)
+                category_metrics['sum'] += sum(values)
+                category_metrics['min'] = min(values + [category_metrics['min']])
+                category_metrics['max'] = max(values + [category_metrics['max']])
 
 
 @lru_cache(maxsize=None)
