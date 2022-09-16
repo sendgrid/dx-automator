@@ -57,6 +57,7 @@ def get_closed_items(org: str, repo: str):
         login
     }
     createdAt
+    closedAt
     url
     timelineItems(first: 100, itemTypes: [CLOSED_EVENT]) {
         nodes {

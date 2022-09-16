@@ -133,6 +133,7 @@ def get_open_items(org: str, repo: str):
         login
     }
     createdAt
+    closedAt
     url
     reactions(content: THUMBS_UP) {
       totalCount

@@ -30,6 +30,7 @@ class Issue:
             self.author = get_author(issue_json)
             self.type = issue_json['__typename']
             self.created_at = issue_json['createdAt']
+            self.closed_at = issue_json['closedAt']
             self.url = issue_json['url']
             self.reaction_count = issue_json.get('reactions', {}).get('totalCount')
 
@@ -74,7 +75,7 @@ class Issue:
                     action = event_type_map[event_type]
                     action(event)
 
-            if not self.closed and not self.merged:
+            if self.is_open():
                 if 'time_to_contact' not in self.metrics and 'time_to_contact_pr' not in self.metrics:
                     if self.is_pr:
                         if self.checks_passed:
@@ -227,6 +228,9 @@ class Issue:
         if metric_id not in self.metrics or multi:
             self.metrics[metric_id] = self.metrics.get(metric_id, [])
             self.metrics[metric_id].append(get_delta_days(start, end))
+
+    def is_open(self) -> bool:
+        return self.closed_at is None or self.closed_at > self.end_date
 
     @property
     def last_event(self):
