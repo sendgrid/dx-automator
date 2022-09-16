@@ -166,7 +166,7 @@ class MetricCollector:
             else:
                 last_update = issue.created_at
 
-            if not issue.closed and last_update > stale_date:
+            if issue.is_open() and last_update > stale_date:
                 time_open = get_delta_days(issue.created_at, end_date)
                 if '/pull/' in issue.url:
                     pr_count += 1
@@ -232,6 +232,7 @@ def get_repo_issues(org: str, repo: str):
         login
     }
     createdAt
+    closedAt
     url
     timelineItems(first: 100, itemTypes: [LABELED_EVENT UNLABELED_EVENT
                                           ISSUE_COMMENT
