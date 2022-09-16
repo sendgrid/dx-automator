@@ -141,7 +141,7 @@ class MetricCollector:
 
                 issue_node['metrics'] = issue.metrics
 
-            if not issue.closed and not issue.merged:
+            if issue.is_open():
                 time_open = get_delta_days(issue.created_at, end_date)
                 if issue.is_pr:
                     issue_node['metrics']['pr_count'] = 1
@@ -193,6 +193,7 @@ def get_repo_issues(org: str, repo: str, start_date: str, end_date: str):
         login
     }
     createdAt
+    closedAt
     url
     timelineItems(first: 100, itemTypes: [LABELED_EVENT UNLABELED_EVENT
                                           ISSUE_COMMENT

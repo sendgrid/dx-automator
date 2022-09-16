@@ -47,6 +47,7 @@ def get_opened_items(org: str, repo: str, start_date: str, end_date: str):
         login
     }
     createdAt
+    closedAt
     url
 }
 ... on PullRequest {
