@@ -85,7 +85,7 @@ resource "datadog_monitor" "time_to_contact_issues_max_twilio" {
   require_full_window = false
   timeout_h           = 0
   message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Max time awaiting contact for issues for Twilio org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Max time awaiting contact for issues for Twilio org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_issues_critical, var.time_to_contact_issues_critical)
-  query               = format("sum(last_5m):sum:library.time_awaiting_contact.max{org:twilio} >= %s", var.time_to_contact_issues_max_critical)
+  query               = format("max(last_5m):max:library.time_awaiting_contact.max{org:twilio} >= %s", var.time_to_contact_issues_max_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_issues_warning
@@ -117,7 +117,7 @@ resource "datadog_monitor" "time_to_contact_PRs_max_twilio" {
   require_full_window = false
   timeout_h           = 0
   message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Max time awaiting contact for PRs for Twilio org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Max time awaiting contact for PRs for Twilio org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_PRs_critical, var.time_to_contact_PRs_critical)
-  query               = format("sum(last_5m):sum:library.time_awaiting_contact_pr.max{org:twilio} >= %s", var.time_to_contact_PRs_max_critical)
+  query               = format("max(last_5m):max:library.time_awaiting_contact_pr.max{org:twilio} >= %s", var.time_to_contact_PRs_max_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_PRs_warning
@@ -149,7 +149,7 @@ resource "datadog_monitor" "time_to_resolve_issue_max_twilio" {
   require_full_window = false
   timeout_h           = 0
   message             = format("```{{#is_alert}} ALERT! Max time awaiting resolution for issues for Twilio org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Max time awaiting resolution for issues for Twilio org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
-  query               = format("sum(last_5m):sum:library.time_open.max{org:twilio} >= %s", var.time_to_resolve_issue_max_critical)
+  query               = format("max(last_5m):max:library.time_open.max{org:twilio} >= %s", var.time_to_resolve_issue_max_critical)
 
   monitor_thresholds {
     warning  = var.time_to_resolve_issue_warning
@@ -225,7 +225,7 @@ resource "datadog_monitor" "time_to_contact_issues_max_sendgrid" {
   require_full_window = false
   timeout_h           = 0
   message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Max time awaiting contact for issues for SendGrid org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Max time awaiting contact for issues for SendGrid org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_issues_critical, var.time_to_contact_issues_critical)
-  query               = format("sum(last_5m):sum:library.time_awaiting_contact.max{org:sendgrid} >= %s", var.time_to_contact_issues_max_critical)
+  query               = format("max(last_5m):max:library.time_awaiting_contact.max{org:sendgrid} >= %s", var.time_to_contact_issues_max_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_issues_warning
@@ -257,7 +257,7 @@ resource "datadog_monitor" "time_to_contact_PRs_max_sendgrid" {
   require_full_window = false
   timeout_h           = 0
   message             = format("@slack-Twilio-alerts-dev-interfaces ```{{#is_alert}} ALERT! Max time awaiting contact for PRs for SendGrid org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Max time awaiting contact for PRs for SendGrid org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_contact_PRs_critical, var.time_to_contact_PRs_critical)
-  query               = format("sum(last_5m):sum:library.time_awaiting_contact_pr.max{org:sendgrid} >= %s", var.time_to_contact_PRs_max_critical)
+  query               = format("max(last_5m):max:library.time_awaiting_contact_pr.max{org:sendgrid} >= %s", var.time_to_contact_PRs_max_critical)
 
   monitor_thresholds {
     warning  = var.time_to_contact_PRs_warning
@@ -289,7 +289,7 @@ resource "datadog_monitor" "time_to_resolve_issue_max_sendgrid" {
   require_full_window = false
   timeout_h           = 0
   message             = format("```{{#is_alert}} ALERT! Max time awaiting resolution for issues for SendGrid org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P1'}} {{/is_alert}} {{#is_warning}} WARNING! Max time awaiting resolution for issues for SendGrid org= {{value}}. Our SLO threshold is <= %s days. {{override_priority 'P3'}} {{/is_warning}} ```", var.time_to_resolve_issue_critical, var.time_to_resolve_issue_critical)
-  query               = format("sum(last_5m):sum:library.time_open.max{org:sendgrid} >= %s", var.time_to_resolve_issue_max_critical)
+  query               = format("max(last_5m):max:library.time_open.max{org:sendgrid} >= %s", var.time_to_resolve_issue_max_critical)
 
   monitor_thresholds {
     warning  = var.time_to_resolve_issue_warning
