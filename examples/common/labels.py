@@ -20,6 +20,7 @@ ALL_LABELS: List[Label] = [
     Label('status: waiting for feedback', 'cccccc', 'waiting for feedback from the submitter'),
     Label('status: wontfix', 'cccccc', 'enhancement or fix that was rejected'),
     Label('status: work in progress', 'cccccc', 'Twilio or the community is in the process of implementing'),
+    Label('status: waiting for feature', 'cccccc', 'feature will be implemented in the future'),
     Label('type: getting started', '0e8a16', 'question while getting started'),
     Label('type: question', 'fbca04', 'question directed at the library'),
     Label('type: bug', 'b60205', 'bug in the library'),

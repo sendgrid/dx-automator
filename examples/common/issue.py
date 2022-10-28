@@ -232,6 +232,9 @@ class Issue:
     def is_open(self) -> bool:
         return self.closed_at is None or self.closed_at > self.end_date
 
+    def has_waiting_for_feature_label(self):
+        return "status: waiting for feature" in self.labels.values()
+
     @property
     def last_event(self):
         if self.waiting_removed:
@@ -247,6 +250,9 @@ class Issue:
 
     def is_past_end_date(self, element):
         return self.end_date and get_date(element) > self.end_date
+
+    def __str__(self):
+        return f"{self.type}: {self.url}"
 
 
 def get_author(element: Dict) -> str:
