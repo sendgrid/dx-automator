@@ -5,6 +5,7 @@ ADMINS = {
     'childish-sambino',
     'eshanholtz',
     'garethpaul',
+    'Hunga1',
     'JenniferMah',
     'shwetha-manvinkurke',
     'Sindhura3',
