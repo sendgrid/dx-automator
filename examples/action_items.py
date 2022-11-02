@@ -23,6 +23,7 @@ class ActionItemsCollector:
         self.prs_contact_needed = []
         self.prs_response_needed = []
         self.prs_stuck_waiting = []
+        self.prs_waiting_for_feature = []
 
         self.open_bugs = []
         self.open_enhancements = []
@@ -40,6 +41,7 @@ class ActionItemsCollector:
         self.print_issues('PRs needing contact', self.prs_contact_needed)
         self.print_issues('PRs needing response', self.prs_response_needed)
         self.print_issues('PRs stuck waiting', self.prs_stuck_waiting)
+        self.print_issues("PRs waiting for feature", self.prs_waiting_for_feature)
 
     def print_issues(self, title: str, issues: List[Issue],
                      sort_key=None, reverse_sort=False, divider=None):
@@ -90,6 +92,8 @@ class ActionItemsCollector:
                 self.issues_contact_needed.append(issue)
             elif 'time_awaiting_response' in issue.metrics:
                 self.issues_response_needed.append(issue)
+            elif issue.has_waiting_for_feature_label():
+                self.prs_waiting_for_feature.append(issue)
             elif 'time_awaiting_contact_pr' in issue.metrics:
                 self.prs_contact_needed.append(issue)
             elif 'time_awaiting_response_pr' in issue.metrics:
