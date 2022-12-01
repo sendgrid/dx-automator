@@ -11,5 +11,5 @@ inputs:
     description: Space-separated list of assets to include with the release
     required: false
 runs:
-  using: node16
+  using: node18
   main: dist/index.js
