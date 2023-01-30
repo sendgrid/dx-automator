@@ -19,6 +19,7 @@ class ActionItemsCollector:
         self.issues_contact_needed = []
         self.issues_response_needed = []
         self.issues_stuck_waiting = []
+        self.issues_marked_stale = []
 
         self.prs_contact_needed = []
         self.prs_response_needed = []
@@ -37,6 +38,7 @@ class ActionItemsCollector:
         self.print_issues('Issues needing contact', self.issues_contact_needed)
         self.print_issues('Issues needing response', self.issues_response_needed)
         self.print_issues('Issues stuck waiting', self.issues_stuck_waiting)
+        self.print_issues('Issues marked stale', self.issues_marked_stale)
 
         self.print_issues('PRs needing contact', self.prs_contact_needed)
         self.print_issues('PRs needing response', self.prs_response_needed)
@@ -94,6 +96,8 @@ class ActionItemsCollector:
                 self.issues_response_needed.append(issue)
             elif issue.has_waiting_for_feature_label():
                 self.prs_waiting_for_feature.append(issue)
+            elif issue.is_marked_stale_label():
+                self.issues_marked_stale.append(issue)
             elif 'time_awaiting_contact_pr' in issue.metrics:
                 self.prs_contact_needed.append(issue)
             elif 'time_awaiting_response_pr' in issue.metrics:

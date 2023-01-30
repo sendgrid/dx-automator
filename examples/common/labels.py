@@ -30,6 +30,9 @@ ALL_LABELS: List[Label] = [
     Label('type: community enhancement', '1d76db', 'feature request not on Twilio\'s roadmap'),
     Label('type: twilio enhancement', '0052cc', 'feature request on Twilio\'s roadmap'),
     Label('type: security', 'b60205', 'known security issue'),
+    Label('stale', 'f0A286', 'The issue is older than 30 days and queued for being closed'),
+    Label('triage queue', '006B75', 'Issue is in our internal backlog. It\'s either a bug or a feature enhancement.'),
+
 ]
 
 
