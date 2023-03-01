@@ -235,6 +235,9 @@ class Issue:
     def has_waiting_for_feature_label(self):
         return "status: waiting for feature" in self.labels.values()
 
+    def is_marked_stale_label(self):
+        return "issue inactive marked as stale" in self.labels.values()
+
     @property
     def last_event(self):
         if self.waiting_removed:
