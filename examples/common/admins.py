@@ -23,4 +23,5 @@ ADMINS = {
     'AsabuHere',
     'isha689',
     'rohith-prakash',
+    'tiwarishubham635',
 }
