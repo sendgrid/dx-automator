@@ -24,4 +24,5 @@ ADMINS = {
     'isha689',
     'rohith-prakash',
     'tiwarishubham635',
+    'manisha1997'
 }
