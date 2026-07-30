@@ -1,0 +1,8 @@
+name: TestDxAutomator
+description: Dummy action to verify sendgrid/dx-automator actions are allowed by enterprise policy
+runs:
+  using: composite
+  steps:
+    - name: Echo
+      shell: bash
+      run: echo "sendgrid/dx-automator action is allowed"
